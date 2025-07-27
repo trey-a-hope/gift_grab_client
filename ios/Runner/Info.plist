@@ -22,10 +22,30 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.955072082839-oo9gainsq9d4scss7kjuttqt5u54vshj</string>
+				<string>com.example.giftGrab</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>GIDClientID</key>
+	<string>955072082839-oo9gainsq9d4scss7kjuttqt5u54vshj.apps.googleusercontent.com</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Used for assigning profile images.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Used for downloading images from chat messages.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Used for assigning profile images.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
@@ -43,8 +63,6 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -52,25 +70,7 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>GIDClientID</key>
-	<string>955072082839-oo9gainsq9d4scss7kjuttqt5u54vshj.apps.googleusercontent.com</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.955072082839-oo9gainsq9d4scss7kjuttqt5u54vshj</string>
-				<string>com.example.giftGrab</string>
-			</array>
-		</dict>
-	</array>
-	<key>NSCameraUsageDescription</key>
-	<string>Used for assigning profile images.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Used for downloading images from chat messages.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Used for assigning profile images.</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
 </dict>
 </plist>
