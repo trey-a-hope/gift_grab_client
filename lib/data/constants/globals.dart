@@ -1,14 +1,12 @@
 part 'feedback_messages.dart';
 part '../enums/go_routes.dart';
 part 'test_descriptions.dart';
-part 'durations.dart';
 
 class Globals {
   Globals._();
 
   static final feedbackMessages = _FeedbackMessages();
   static final testDescriptions = _TestDescriptions();
-  static final durations = _Durations();
 
   // Limits
   static const paginationLimit = 20;
