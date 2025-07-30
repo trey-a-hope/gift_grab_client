@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_info/flutter_app_info.dart';
 import 'package:gift_grab_client/presentation/pages/game_page.dart';
 import 'package:gift_grab_ui/ui.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  runApp(
-    AppInfo(
-      data: await AppInfoData.get(),
-      child: const MyAppPage(),
-    ),
-  );
+  runApp(const MyAppPage());
 }
 
 class MyAppPage extends StatelessWidget {
