@@ -1,5 +1,4 @@
 part 'feedback_messages.dart';
-part '../enums/go_routes.dart';
 part 'test_descriptions.dart';
 
 class Globals {
