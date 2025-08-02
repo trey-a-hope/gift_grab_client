@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gift_grab_client/presentation/pages/game_page.dart';
+import 'package:gift_grab_game/game/gift_grab_game_widget.dart';
 import 'package:gift_grab_ui/ui.dart';
 
 void main() async {
@@ -28,7 +28,9 @@ class MyAppView extends StatelessWidget {
       darkTheme: GiftGrabTheme.darkTheme,
       themeMode: ThemeMode.dark,
       title: 'Gift Grab',
-      home: const GamePage(),
+      home: GiftGrabGameWidget(
+        onEndGame: (score) => debugPrint('Score: $score'),
+      ),
     );
   }
 }
