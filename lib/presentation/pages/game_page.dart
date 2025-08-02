@@ -1,8 +1,7 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:gift_grab_client/data/enums/screens.dart';
 import 'package:gift_grab_game/game.dart';
-
-enum Screens { main, gameOver, login }
 
 class GamePage extends StatelessWidget {
   const GamePage({
