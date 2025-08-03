@@ -1,9 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:gift_grab_game/game/gift_grab_game_widget.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:gift_grab_client/data/configuration/app_routes.dart';
+import 'package:gift_grab_client/data/repositories/session_repository.dart';
+import 'package:gift_grab_client/data/repositories/social_auth_repository.dart';
+import 'package:gift_grab_client/domain/services/session_service.dart';
+import 'package:gift_grab_client/domain/services/social_auth_service.dart';
+import 'package:gift_grab_client/presentation/blocs/account/account_read/bloc/account_read_bloc.dart';
+import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 import 'package:gift_grab_ui/ui.dart';
+import 'package:nakama/nakama.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final _ = getNakamaClient(
+    host: '24.144.85.68',
+    serverKey: 'defaultkey',
+  );
 
   runApp(const MyAppPage());
 }
@@ -13,7 +27,56 @@ class MyAppPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MyAppView();
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<SessionService>(
+          create: (context) {
+            return SessionService(
+              SessionRepository(
+                const FlutterSecureStorage(),
+                getNakamaClient(),
+              ),
+            );
+          },
+        ),
+        RepositoryProvider<SocialAuthService>(
+          create: (context) => SocialAuthService(
+            SocialAuthRepository(),
+          ),
+        ),
+      ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<AuthCubit>(
+            create: (context) {
+              final sessionService = context.read<SessionService>();
+              final socialAuthService = context.read<SocialAuthService>();
+
+              final authCubit = AuthCubit(
+                getNakamaClient(),
+                sessionService,
+                socialAuthService,
+              );
+
+              sessionService.setUnauthenticatedCallback(
+                () => authCubit.logout(),
+              );
+
+              authCubit.checkAuthStatus();
+
+              return authCubit;
+            },
+          ),
+          BlocProvider(
+            create: (context) => AccountReadBloc(
+              getNakamaClient(),
+              context.read<SessionService>(),
+            ),
+          ),
+        ],
+        child: const MyAppView(),
+      ),
+    );
   }
 }
 
@@ -22,15 +85,17 @@ class MyAppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    final router = appRouter(context);
+
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: GiftGrabTheme.lightTheme,
       darkTheme: GiftGrabTheme.darkTheme,
       themeMode: ThemeMode.dark,
       title: 'Gift Grab',
-      home: GiftGrabGameWidget(
-        onEndGame: (score) => debugPrint('Score: $score'),
-      ),
+      routeInformationParser: router.routeInformationParser,
+      routerDelegate: router.routerDelegate,
+      routeInformationProvider: router.routeInformationProvider,
     );
   }
 }

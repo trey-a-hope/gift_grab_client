@@ -1,0 +1,124 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gift_grab_client/data/enums/go_routes.dart';
+import 'package:gift_grab_client/domain/services/session_service.dart';
+import 'package:gift_grab_client/presentation/blocs/record/record_create/bloc/record_create_bloc.dart';
+import 'package:gift_grab_client/presentation/blocs/record/record_create/record_create.dart';
+import 'package:gift_grab_client/presentation/blocs/record/record_list/view/leaderboard_page.dart';
+import 'package:gift_grab_client/presentation/blocs/user/user_list/view/search_users_page.dart';
+import 'package:gift_grab_client/presentation/blocs/user/user_read/view/view.dart';
+import 'package:gift_grab_client/presentation/blocs/user/user_update/view/edit_profile_page.dart';
+import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
+import 'package:gift_grab_client/presentation/cubits/auth/view/login_page.dart';
+import 'package:gift_grab_client/presentation/pages/main_menu_page.dart';
+import 'package:gift_grab_client/presentation/pages/settings_page.dart';
+import 'package:gift_grab_game/game/gift_grab_game_widget.dart';
+import 'package:go_router/go_router.dart';
+import 'package:nakama/nakama.dart';
+
+GoRouter appRouter(BuildContext context) {
+  final authCubit = context.read<AuthCubit>();
+
+  return GoRouter(
+    initialLocation: '/${GoRoutes.MAIN.name}',
+    refreshListenable: _GoRouterRefreshStream(authCubit.stream),
+    redirect: (context, state) {
+      final isAuthenticated = authCubit.state.authenticated;
+
+      if (!isAuthenticated && !state.matchedLocation.contains('/login')) {
+        return '/login';
+      }
+
+      if (isAuthenticated && state.matchedLocation == '/login') {
+        return '/main';
+      }
+
+      return null;
+    },
+    routes: [
+      GoRoute(
+        path: '/${GoRoutes.LOGIN.name}',
+        name: GoRoutes.LOGIN.name,
+        builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: '/${GoRoutes.MAIN.name}',
+        name: GoRoutes.MAIN.name,
+        builder: (context, state) => const MainMenuPage(),
+        routes: [
+          GoRoute(
+            path: GoRoutes.GAME.name,
+            name: GoRoutes.GAME.name,
+            builder: (context, state) {
+              final recordCreateBloc = RecordCreateBloc(
+                context.read<SessionService>(),
+                getNakamaClient(),
+              );
+              return BlocProvider(
+                create: (context) => recordCreateBloc,
+                child: GiftGrabGameWidget(
+                  onEndGame: (score) => recordCreateBloc.add(
+                    SubmitRecord(score),
+                  ),
+                ),
+              );
+            },
+          ),
+          GoRoute(
+            path: GoRoutes.SETTINGS.name,
+            name: GoRoutes.SETTINGS.name,
+            builder: (context, state) => const SettingsPage(),
+          ),
+          GoRoute(
+            path: GoRoutes.PROFILE.name + '/:uid',
+            name: GoRoutes.PROFILE.name,
+            builder: (context, state) {
+              final uid = state.pathParameters['uid'];
+              if (uid == null) throw Exception();
+              return ProfilePage(uid);
+            },
+            routes: [
+              GoRoute(
+                path: GoRoutes.PROFILE_EDIT.name,
+                name: GoRoutes.PROFILE_EDIT.name,
+                builder: (context, state) => const EditProfilePage(),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: GoRoutes.SEARCH_USERS.name,
+            name: GoRoutes.SEARCH_USERS.name,
+            builder: (context, state) => const SearchUsersPage(),
+          ),
+          GoRoute(
+              path: GoRoutes.LEADERBOARD.name + '/:uid',
+              name: GoRoutes.LEADERBOARD.name,
+              builder: (context, state) {
+                final uid = state.pathParameters['uid'];
+                if (uid == null) throw Exception();
+                return LeaderboardPage(uid);
+              }),
+        ],
+      ),
+    ],
+  );
+}
+
+class _GoRouterRefreshStream extends ChangeNotifier {
+  late final StreamSubscription<AuthState?> _subscription;
+
+  _GoRouterRefreshStream(Stream<AuthState?> stream) {
+    notifyListeners();
+    _subscription = stream.asBroadcastStream().listen(
+          (AuthState? _) => notifyListeners(),
+        );
+  }
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+}
