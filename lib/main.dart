@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gift_grab_client/util/window_manager_util.dart';
 import 'package:gift_grab_game/game/gift_grab_game_widget.dart';
 import 'package:gift_grab_ui/ui.dart';
-import 'package:window_manager/window_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await _maximizeWindow();
-
+  await WindowManagerUtil.maximizeWindow();
   runApp(const MyAppPage());
 }
 
@@ -36,25 +34,4 @@ class MyAppView extends StatelessWidget {
       ),
     );
   }
-}
-
-Future<void> _maximizeWindow() async {
-  await windowManager.ensureInitialized();
-
-  WindowOptions windowOptions = const WindowOptions(
-    size: Size(1200, 800),
-    center: true,
-    backgroundColor: Colors.transparent,
-    skipTaskbar: false,
-    titleBarStyle: TitleBarStyle.normal,
-  );
-
-  windowManager.waitUntilReadyToShow(
-    windowOptions,
-    () async {
-      await windowManager.show();
-      await windowManager.focus();
-      await windowManager.maximize();
-    },
-  );
 }
