@@ -8,12 +8,15 @@
 	<true/>
 	<key>com.apple.security.network.server</key>
 	<true/>
-	<!-- Add this line for outbound connections -->
 	<key>com.apple.security.network.client</key>
 	<true/>
 	<key>keychain-access-groups</key>
 	<array>
 		<string>AYXEVPG9Z5.com.example.giftGrab</string>
+	</array>
+	<key>com.apple.developer.applesignin</key>
+	<array>
+		<string>Default</string>
 	</array>
 </dict>
 </plist>
