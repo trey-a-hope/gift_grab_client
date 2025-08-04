@@ -24,7 +24,7 @@ Future<String?> getAppleToken() async {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final token = await getAppleToken();
+  // final token = await getAppleToken();
 
   runApp(const MyAppPage());
 }
