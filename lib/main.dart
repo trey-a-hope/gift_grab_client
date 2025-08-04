@@ -1,30 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gift_grab_game/game/gift_grab_game_widget.dart';
 import 'package:gift_grab_ui/ui.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-
-Future<String?> getAppleToken() async {
-  try {
-    final credential = await SignInWithApple.getAppleIDCredential(
-      scopes: [
-        AppleIDAuthorizationScopes.email,
-        AppleIDAuthorizationScopes.fullName,
-      ],
-    );
-
-    return credential.identityToken;
-  } on SignInWithAppleException catch (e) {
-    if (e.toString().contains('canceled')) {
-      return null;
-    }
-    rethrow;
-  }
-}
+import 'package:window_manager/window_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // final token = await getAppleToken();
+  await _maximizeWindow();
 
   runApp(const MyAppPage());
 }
@@ -54,4 +36,25 @@ class MyAppView extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<void> _maximizeWindow() async {
+  await windowManager.ensureInitialized();
+
+  WindowOptions windowOptions = const WindowOptions(
+    size: Size(1200, 800),
+    center: true,
+    backgroundColor: Colors.transparent,
+    skipTaskbar: false,
+    titleBarStyle: TitleBarStyle.normal,
+  );
+
+  windowManager.waitUntilReadyToShow(
+    windowOptions,
+    () async {
+      await windowManager.show();
+      await windowManager.focus();
+      await windowManager.maximize();
+    },
+  );
 }
