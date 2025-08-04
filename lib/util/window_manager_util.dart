@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:window_manager/window_manager.dart';
 
 class WindowManagerUtil {
   static Future<void> maximizeWindow() async {
+    if (Platform.isAndroid || Platform.isIOS) return;
+
     await windowManager.ensureInitialized();
 
     WindowOptions windowOptions = const WindowOptions(
