@@ -2,10 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:gift_grab_client/util/window_manager_util.dart';
 import 'package:gift_grab_game/game/gift_grab_game_widget.dart';
 import 'package:gift_grab_ui/ui.dart';
+import 'package:nakama/nakama.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await WindowManagerUtil.maximizeWindow();
+
+  final client = getNakamaClient(
+    host: '24.144.85.68',
+    serverKey: 'defaultkey',
+  );
+
+  final session = await client.authenticateDevice(deviceId: 'TESTDEVICEID');
+
   runApp(const MyAppPage());
 }
 
