@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -11,10 +10,15 @@ import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart'
 import 'package:gift_grab_client/util/utils.dart';
 import 'package:gift_grab_ui/ui.dart';
 import 'package:nakama/nakama.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
+late PackageInfo packageInfo;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (!kIsWeb) {
+
+  packageInfo = await PackageInfo.fromPlatform();
+
+  if (!PlatformUtil.isWeb) {
     await WindowManagerUtil.maximizeWindow();
   }
 

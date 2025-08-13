@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gift_grab_client/main.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
 import 'package:modal_util/modal_util.dart';
@@ -42,6 +43,19 @@ class SettingsView extends StatelessWidget {
                   authCubit.logout();
                 },
               )
+            ],
+          ),
+          SettingsSection(
+            title: const Text('App Info'),
+            tiles: [
+              SettingsTile(
+                title: const Text('Version'),
+                trailing: Text(packageInfo.version),
+              ),
+              SettingsTile(
+                title: const Text('Build'),
+                trailing: Text(packageInfo.buildNumber),
+              ),
             ],
           ),
         ],
