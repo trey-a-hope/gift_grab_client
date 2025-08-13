@@ -1,11 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:gift_grab_client/util/utils.dart';
 import 'package:window_manager/window_manager.dart';
 
 class WindowManagerUtil {
   static Future<void> maximizeWindow() async {
-    if (Platform.isAndroid || Platform.isIOS) return;
+    if (PlatformUtil.isAndroid || PlatformUtil.isIOS) return;
 
     await windowManager.ensureInitialized();
 

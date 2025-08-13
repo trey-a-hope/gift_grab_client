@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_login/flutter_login.dart';
@@ -7,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gift_grab_client/data/constants/globals.dart';
 import 'package:gift_grab_client/data/enums/login_error_exclusions.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
+import 'package:gift_grab_client/util/utils.dart';
 import 'package:gift_grab_ui/ui.dart';
 
 class LoginPage extends StatelessWidget {
@@ -55,7 +54,7 @@ class LoginPage extends StatelessWidget {
             errorsToExcludeFromErrorMessage: [LoginErrorExclusions.CANCELED.id],
             callback: () async => await authCubit.loginGoogle(),
           ),
-          if (Platform.isIOS || Platform.isMacOS) ...[
+          if (PlatformUtil.isIOS || PlatformUtil.isMacOS) ...[
             LoginProvider(
               icon: FontAwesomeIcons.apple,
               label: 'Apple',

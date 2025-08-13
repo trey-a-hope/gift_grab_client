@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -7,13 +8,15 @@ import 'package:gift_grab_client/data/repositories/social_auth_repository.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/domain/services/social_auth_service.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
-import 'package:gift_grab_client/util/window_manager_util.dart';
+import 'package:gift_grab_client/util/utils.dart';
 import 'package:gift_grab_ui/ui.dart';
 import 'package:nakama/nakama.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await WindowManagerUtil.maximizeWindow();
+  if (!kIsWeb) {
+    await WindowManagerUtil.maximizeWindow();
+  }
 
   final _ = getNakamaClient(
     host: '24.144.85.68',
