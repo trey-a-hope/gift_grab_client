@@ -614,10 +614,10 @@ packages:
     dependency: "direct main"
     description:
       name: modal_util
-      sha256: "73730455a9ff29c93a8ee18c017fe3d61dce51a048f614e267326edba6ad5f34"
+      sha256: "56012f61354fc40b01ccd85b7baecf87babe07232256d69e7c6da21ff9fd4b90"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.5"
+    version: "0.0.6"
   nakama:
     dependency: "direct main"
     description:

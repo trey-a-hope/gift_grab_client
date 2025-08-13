@@ -1,6 +1,6 @@
 [
     {
         "language": "en-US",
-        "text": "Release notes go here..."
+        "text": "Update modal_util dependency version in pubspec.yaml to 0.0.6"
     }
 ]
