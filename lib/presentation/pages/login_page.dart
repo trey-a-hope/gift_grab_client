@@ -24,7 +24,7 @@ class LoginPage extends StatelessWidget {
       title: 'Login',
       canPop: false,
       child: FlutterLogin(
-        title: 'Gift Grab',
+        title: 'Gift Grabz',
         logo: Image.asset(Globals.giftAsset).image,
         savedEmail: _savedEmail,
         savedPassword: _savedPassword,
