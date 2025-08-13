@@ -25,6 +25,8 @@ void main() async {
   final _ = getNakamaClient(
     host: '24.144.85.68',
     serverKey: 'defaultkey',
+    httpPort: PlatformUtil.isWeb ? 443 : 7351, // HTTPS for web, HTTP for mobile
+    ssl: PlatformUtil.isWeb,
   );
 
   runApp(const MyAppPage());
