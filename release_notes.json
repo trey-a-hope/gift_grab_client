@@ -1,6 +1,6 @@
 [
     {
         "language": "en-US",
-        "text": "Update modal_util dependency version in pubspec.yaml to 0.0.6"
+        "text": "Changed the Nakama client host from a specific IP address to a domain name for improved clarity and maintainability."
     }
 ]

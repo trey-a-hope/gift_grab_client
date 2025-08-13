@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gift_grab_client/data/configuration/app_routes.dart';
+import 'package:gift_grab_client/data/constants/globals.dart';
 import 'package:gift_grab_client/data/repositories/session_repository.dart';
 import 'package:gift_grab_client/data/repositories/social_auth_repository.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
@@ -23,9 +24,9 @@ void main() async {
   }
 
   final _ = getNakamaClient(
-    host: '24.144.85.68',
-    serverKey: 'defaultkey',
-    httpPort: PlatformUtil.isWeb ? 443 : 7351, // HTTPS for web, HTTP for mobile
+    host: Globals.nakamaClientHost,
+    serverKey: Globals.nakamaClientServerKey,
+    httpPort: PlatformUtil.isWeb ? 443 : 7351,
     ssl: PlatformUtil.isWeb,
   );
 
