@@ -12,6 +12,7 @@ import 'package:gift_grab_client/util/utils.dart';
 import 'package:gift_grab_ui/ui.dart';
 import 'package:nakama/nakama.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 late PackageInfo packageInfo;
 void main() async {
@@ -19,15 +20,13 @@ void main() async {
 
   packageInfo = await PackageInfo.fromPlatform();
 
-  if (!PlatformUtil.isWeb) {
-    await WindowManagerUtil.maximizeWindow();
-  }
+  await WindowManagerUtil.maximizeWindow();
 
   final _ = getNakamaClient(
     host: Globals.nakamaClientHost,
     serverKey: Globals.nakamaClientServerKey,
-    httpPort: PlatformUtil.isWeb ? 443 : 7351,
-    ssl: PlatformUtil.isWeb,
+    httpPort: Globals.nakamaClientHttpPort,
+    ssl: UniversalPlatform.isWeb,
   );
 
   runApp(const MyAppPage());

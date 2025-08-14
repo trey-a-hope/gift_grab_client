@@ -49,12 +49,14 @@ class SettingsView extends StatelessWidget {
             title: const Text('App Info'),
             tiles: [
               SettingsTile(
-                title: const Text('Version'),
-                trailing: Text(packageInfo.version),
+                title: Text(packageInfo.version),
+                leading: const Icon(Icons.phone_android),
+                value: const Text('version'),
               ),
               SettingsTile(
-                title: const Text('Build'),
-                trailing: Text(packageInfo.buildNumber),
+                title: Text(packageInfo.buildNumber),
+                leading: const Icon(Icons.phone_iphone),
+                value: const Text('build'),
               ),
             ],
           ),

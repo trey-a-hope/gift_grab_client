@@ -5,8 +5,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gift_grab_client/data/constants/globals.dart';
 import 'package:gift_grab_client/data/enums/login_error_exclusions.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
-import 'package:gift_grab_client/util/utils.dart';
 import 'package:gift_grab_ui/ui.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 class LoginPage extends StatelessWidget {
   static const _savedEmail = 'trey.a.hope@gmail.com';
@@ -54,7 +54,7 @@ class LoginPage extends StatelessWidget {
             errorsToExcludeFromErrorMessage: [LoginErrorExclusions.CANCELED.id],
             callback: () async => await authCubit.loginGoogle(),
           ),
-          if (PlatformUtil.isIOS || PlatformUtil.isMacOS) ...[
+          if (UniversalPlatform.isIOS || UniversalPlatform.isMacOS) ...[
             LoginProvider(
               icon: FontAwesomeIcons.apple,
               label: 'Apple',

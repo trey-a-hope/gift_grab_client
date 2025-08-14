@@ -18,4 +18,5 @@ class Globals {
 
   static const String nakamaClientHost = 'gift-grab-server.app';
   static const String nakamaClientServerKey = 'defaultkey';
+  static const int nakamaClientHttpPort = 443;
 }
