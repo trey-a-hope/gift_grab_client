@@ -1,8 +1,6 @@
-part of 'globals.dart';
-
-class _TestDescriptions {
-  final event = _EventDescriptions();
-  final state = _StateDescriptions();
+class TestDescriptions {
+  static final event = _EventDescriptions();
+  static final state = _StateDescriptions();
 }
 
 class _EventDescriptions {

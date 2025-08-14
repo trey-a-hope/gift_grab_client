@@ -1,11 +1,9 @@
 part 'feedback_messages.dart';
-part 'test_descriptions.dart';
 
 class Globals {
   Globals._();
 
   static final feedbackMessages = _FeedbackMessages();
-  static final testDescriptions = _TestDescriptions();
 
   // Limits
   static const paginationLimit = 20;
