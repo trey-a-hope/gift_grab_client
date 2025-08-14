@@ -31,6 +31,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   package_info_plus: ^8.3.1
   universal_platform: ^1.1.0
+  mocktail: ^1.0.4
+  bloc_test: ^10.0.0
 
 dev_dependencies:
   flutter_test:
