@@ -14,7 +14,10 @@ class Globals {
 
   static const String giftAsset = 'assets/images/gift-sprite.png';
 
-  static const String nakamaClientHost = 'gift-grab-server.app';
+  static const bool isProd = false;
+
+  static const String nakamaClientHost =
+      isProd ? 'gift-grab-server.app' : '127.0.0.1';
   static const String nakamaClientServerKey = 'defaultkey';
   static const int nakamaClientHttpPort = 443;
 }
