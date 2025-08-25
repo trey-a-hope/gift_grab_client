@@ -7,6 +7,7 @@ import 'package:gift_grab_client/data/repositories/session_repository.dart';
 import 'package:gift_grab_client/data/repositories/social_auth_repository.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/domain/services/social_auth_service.dart';
+import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 import 'package:gift_grab_client/util/utils.dart';
 import 'package:gift_grab_ui/ui.dart';
@@ -55,24 +56,32 @@ class MyAppPage extends StatelessWidget {
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider<AuthCubit>(create: (context) {
-            final sessionService = context.read<SessionService>();
-            final socialAuthService = context.read<SocialAuthService>();
+          BlocProvider<AuthCubit>(
+            create: (context) {
+              final sessionService = context.read<SessionService>();
+              final socialAuthService = context.read<SocialAuthService>();
 
-            final authCubit = AuthCubit(
+              final authCubit = AuthCubit(
+                getNakamaClient(),
+                sessionService,
+                socialAuthService,
+              );
+
+              sessionService.setUnauthenticatedCallback(
+                () => authCubit.logout(),
+              );
+
+              authCubit.checkAuthStatus();
+
+              return authCubit;
+            },
+          ),
+          BlocProvider<AccountReadBloc>(
+            create: (context) => AccountReadBloc(
               getNakamaClient(),
-              sessionService,
-              socialAuthService,
-            );
-
-            sessionService.setUnauthenticatedCallback(
-              () => authCubit.logout(),
-            );
-
-            authCubit.checkAuthStatus();
-
-            return authCubit;
-          })
+              context.read<SessionService>(),
+            ),
+          )
         ],
         child: const MyAppView(),
       ),

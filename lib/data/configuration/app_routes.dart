@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
+import 'package:gift_grab_client/presentation/blocs/user_list/view/search_users_page.dart';
+import 'package:gift_grab_client/presentation/blocs/user_read/user_read.dart';
+import 'package:gift_grab_client/presentation/blocs/user_update/view/edit_profile_page.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 import 'package:gift_grab_client/presentation/pages/login_page.dart';
 import 'package:gift_grab_client/presentation/pages/main_menu_page.dart';
@@ -55,6 +58,27 @@ GoRouter appRouter(BuildContext context) {
             path: GoRoutes.SETTINGS.name,
             name: GoRoutes.SETTINGS.name,
             builder: (context, state) => const SettingsPage(),
+          ),
+          GoRoute(
+            path: GoRoutes.PROFILE.name + '/:uid',
+            name: GoRoutes.PROFILE.name,
+            builder: (context, state) {
+              final uid = state.pathParameters['uid'];
+              if (uid == null) throw Exception();
+              return ProfilePage(uid);
+            },
+            routes: [
+              GoRoute(
+                path: GoRoutes.EDIT_PROFILE.name,
+                name: GoRoutes.EDIT_PROFILE.name,
+                builder: (context, state) => const EditProfilePage(),
+              ),
+            ],
+          ),
+          GoRoute(
+            path: GoRoutes.SEARCH_USERS.name,
+            name: GoRoutes.SEARCH_USERS.name,
+            builder: (context, state) => const SearchUsersPage(),
           ),
         ],
       ),
