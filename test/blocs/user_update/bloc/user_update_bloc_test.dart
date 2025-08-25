@@ -46,7 +46,7 @@ void main() {
           seed: () => const UserUpdateState(),
           act: (bloc) => bloc.add(const Init()),
           expect: () => [
-            UserUpdateState(
+            const UserUpdateState(
               username: ShortText.dirty('testUser'),
               status: FormzSubmissionStatus.initial,
             ),
@@ -66,7 +66,7 @@ void main() {
           seed: () => const UserUpdateState(),
           act: (bloc) => bloc.add(const Init()),
           expect: () => [
-            UserUpdateState(
+            const UserUpdateState(
               username: ShortText.dirty(''),
               status: FormzSubmissionStatus.initial,
             ),
@@ -84,7 +84,7 @@ void main() {
           seed: () => const UserUpdateState(),
           act: (bloc) => bloc.add(const UsernameChange('newUsername')),
           expect: () => [
-            UserUpdateState(
+            const UserUpdateState(
               username: ShortText.dirty('newUsername'),
             ),
           ],
@@ -99,7 +99,7 @@ void main() {
           seed: () => const UserUpdateState(),
           act: (bloc) => bloc.add(const UsernameChange('')),
           expect: () => [
-            UserUpdateState(
+            const UserUpdateState(
               username: ShortText.dirty(''),
             ),
           ],
@@ -128,13 +128,13 @@ void main() {
             mockAccount,
             mockSessionService,
           ),
-          seed: () => UserUpdateState(
+          seed: () => const UserUpdateState(
             username: ShortText.dirty('existingUser'),
             status: FormzSubmissionStatus.initial,
           ),
           act: (bloc) => bloc.add(const SaveForm()),
           expect: () => [
-            UserUpdateState(
+            const UserUpdateState(
               username: ShortText.dirty('existingUser'),
               status: FormzSubmissionStatus.inProgress,
             ),

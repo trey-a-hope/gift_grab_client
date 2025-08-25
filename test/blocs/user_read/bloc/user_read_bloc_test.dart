@@ -136,7 +136,7 @@ void main() {
             ),
             // The error will be handled by runWithErrorHandling
             const UserReadState(
-              error: 'Exception: no users found',
+              error: 'Unexpected error: Exception: no users found',
               isLoading: false,
             ),
           ],
