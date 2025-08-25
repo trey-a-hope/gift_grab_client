@@ -7,6 +7,8 @@ class _EventDescriptions {
   String get valueEqual => 'supports value equality';
   String get propsEqual => 'props are correct';
   String get diffProps => 'different event props are not equal';
+  String get sealedClass => 'sealed class inheritance';
+  String get correctInstance => 'creates instances correctly';
 }
 
 class _StateDescriptions {

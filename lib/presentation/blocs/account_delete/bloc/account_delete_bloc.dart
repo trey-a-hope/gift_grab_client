@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:bloc_error_handler/bloc_error_handler.dart';
 import 'package:equatable/equatable.dart';
+import 'package:gift_grab_client/data/constants/feedback_messages.dart';
 import 'package:gift_grab_client/data/enums/rpc_functions.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/auth.dart';
@@ -37,7 +38,9 @@ class AccountDeleteBloc extends Bloc<AccountDeleteEvent, AccountDeleteState> {
           await authCubit.logout();
 
           emit(
-            state.copyWith(success: 'Account deleted successfully'),
+            state.copyWith(
+              success: FeedbackMessages.accountDeleteSuccess,
+            ),
           );
         },
         emit: emit,
