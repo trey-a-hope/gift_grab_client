@@ -11,6 +11,7 @@ import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_re
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 import 'package:gift_grab_client/util/utils.dart';
 import 'package:gift_grab_ui/ui.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nakama/nakama.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:universal_platform/universal_platform.dart';
@@ -51,6 +52,7 @@ class MyAppPage extends StatelessWidget {
         RepositoryProvider<SocialAuthService>(
           create: (context) => SocialAuthService(
             SocialAuthRepository(),
+            GoogleSignIn.instance,
           ),
         ),
       ],

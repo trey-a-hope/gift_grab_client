@@ -5,10 +5,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gift_grab_client/data/constants/globals.dart';
 import 'package:gift_grab_client/data/enums/login_error_exclusions.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
+import 'package:gift_grab_client/presentation/widgets/google_auth_helper.dart';
 import 'package:gift_grab_ui/ui.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:universal_platform/universal_platform.dart';
-import 'package:google_sign_in_web/web_only.dart' as web;
 
 class LoginPage extends StatelessWidget {
   static const _savedEmail = 'trey.a.hope@gmail.com';
@@ -33,11 +33,7 @@ class LoginPage extends StatelessWidget {
                   ? Column(
                       children: [
                         Center(
-                          child: web.renderButton(
-                            configuration: web.GSIButtonConfiguration(
-                                type: web.GSIButtonType.standard,
-                                theme: web.GSIButtonTheme.filledBlue),
-                          ),
+                          child: renderGoogleButton(),
                         ),
                         const Row(
                           children: [

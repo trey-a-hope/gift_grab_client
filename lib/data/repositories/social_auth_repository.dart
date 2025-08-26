@@ -1,12 +1,14 @@
+import 'dart:async';
+
 import 'package:gift_grab_client/domain/repositories/i_social_auth_repository.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class SocialAuthRepository implements ISocialAuthRepository {
   @override
-  Future<String?> getGoogleToken() async {
+  Future<String?> getGoogleToken(GoogleSignIn gsi) async {
     try {
-      final googleSignInAccount = await GoogleSignIn.instance.authenticate(
+      final googleSignInAccount = await gsi.authenticate(
         scopeHint: [
           'email',
           'https://www.googleapis.com/auth/contacts.readonly',
