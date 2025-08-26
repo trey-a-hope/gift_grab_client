@@ -12,6 +12,7 @@ import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
 import 'package:modal_util/modal_util.dart';
 import 'package:nakama/nakama.dart';
 import 'package:settings_ui/settings_ui.dart';
+import 'package:universal_platform/universal_platform.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -157,13 +158,16 @@ class SettingsView extends StatelessWidget {
                       leading: const Icon(FontAwesomeIcons.google),
                       title: const Text('Link to Google'),
                     ),
-                    SettingsTile.switchTile(
-                      initialValue: isAppleLinked,
-                      onToggle: (val) async => accountUpdateBloc
-                          .add(val ? const LinkApple() : const UnlinkApple()),
-                      leading: const Icon(FontAwesomeIcons.apple),
-                      title: const Text('Link to Apple'),
-                    )
+                    if (UniversalPlatform.isIOS ||
+                        UniversalPlatform.isMacOS) ...[
+                      SettingsTile.switchTile(
+                        initialValue: isAppleLinked,
+                        onToggle: (val) async => accountUpdateBloc
+                            .add(val ? const LinkApple() : const UnlinkApple()),
+                        leading: const Icon(FontAwesomeIcons.apple),
+                        title: const Text('Link to Apple'),
+                      ),
+                    ],
                   ],
                 ),
                 SettingsSection(
