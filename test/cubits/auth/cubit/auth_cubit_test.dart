@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -5,6 +7,7 @@ import 'package:gift_grab_client/data/enums/login_error_exclusions.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/domain/services/social_auth_service.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:nakama/nakama.dart';
 
@@ -16,6 +19,8 @@ class MockSocialAuthService extends Mock implements SocialAuthService {}
 
 class MockSession extends Mock implements Session {}
 
+class MockGoogleSignIn extends Mock implements GoogleSignIn {}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -23,6 +28,8 @@ void main() {
     late MockNakamaBaseClient mockNakamaBaseClient;
     late MockSessionService mockSessionService;
     late MockSocialAuthService mockSocialAuthService;
+    late MockGoogleSignIn mockGoogleSignIn;
+    late StreamController<GoogleSignInAuthenticationEvent> authEventsController;
 
     const mockEmail = 'johndoe@gmail.com';
     const mockPassword = 'password';
@@ -46,8 +53,22 @@ void main() {
       mockNakamaBaseClient = MockNakamaBaseClient();
       mockSessionService = MockSessionService();
       mockSocialAuthService = MockSocialAuthService();
+      mockGoogleSignIn = MockGoogleSignIn();
 
-      // Register fallback values for any() matchers
+      authEventsController =
+          StreamController<GoogleSignInAuthenticationEvent>();
+
+      when(() => mockSocialAuthService.googleSignIn)
+          .thenReturn(mockGoogleSignIn);
+
+      when(() => mockGoogleSignIn.authenticationEvents)
+          .thenAnswer((_) => authEventsController.stream);
+
+      when(() => mockGoogleSignIn.initialize(
+            clientId: any(named: 'clientId'),
+            serverClientId: any(named: 'serverClientId'),
+          )).thenAnswer((_) async => {});
+
       registerFallbackValue(mockSession);
     });
 
@@ -55,6 +76,17 @@ void main() {
       blocTest<AuthCubit, AuthState>(
         'should emit authenticated false when logout succeeds',
         setUp: () {
+          when(() => mockSocialAuthService.googleSignIn)
+              .thenReturn(mockGoogleSignIn);
+
+          when(() => mockGoogleSignIn.authenticationEvents)
+              .thenAnswer((_) => authEventsController.stream);
+
+          when(() => mockGoogleSignIn.initialize(
+                clientId: any(named: 'clientId'),
+                serverClientId: any(named: 'serverClientId'),
+              )).thenAnswer((_) async => {});
+
           when(() => mockSessionService.logout()).thenAnswer((_) async => true);
         },
         build: () => AuthCubit(

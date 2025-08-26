@@ -11,7 +11,6 @@ class SocialAuthService {
   GoogleSignIn get googleSignIn => _googleSignIn;
 
   SocialAuthService(this._iSocialAuthRepository, this._googleSignIn) {
-    // TODO (Trey) - Android auth failing - GoogleSignInException (GoogleSignInException(code GoogleSignInExceptionCode.canceled, [16] Account reauth failed., null))
     final clientId = UniversalPlatform.isAndroid
         ? Globals.googleClientIdAndroid
         : (UniversalPlatform.isIOS || UniversalPlatform.isMacOS)
