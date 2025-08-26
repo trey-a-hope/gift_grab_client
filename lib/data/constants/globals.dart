@@ -16,4 +16,7 @@ class Globals {
       isProd ? 'gift-grab-server.app' : '127.0.0.1';
   static const String nakamaClientServerKey = 'defaultkey';
   static const int nakamaClientHttpPort = 443;
+
+  static const String googleClientIdWeb =
+      '955072082839-j2utdj2h98rj5q54pev8o8mrmfot8qab.apps.googleusercontent.com';
 }

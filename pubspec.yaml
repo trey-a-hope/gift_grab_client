@@ -36,6 +36,7 @@ dependencies:
   formz: ^0.8.0
   animated_search_bar: ^2.8.0
   material_design_icons_flutter: ^7.0.7296
+  gap: ^3.0.1
 
 dev_dependencies:
   flutter_test:

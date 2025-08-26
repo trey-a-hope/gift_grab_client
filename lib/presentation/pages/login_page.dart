@@ -6,7 +6,9 @@ import 'package:gift_grab_client/data/constants/globals.dart';
 import 'package:gift_grab_client/data/enums/login_error_exclusions.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 import 'package:gift_grab_ui/ui.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:universal_platform/universal_platform.dart';
+import 'package:google_sign_in_web/web_only.dart' as web;
 
 class LoginPage extends StatelessWidget {
   static const _savedEmail = 'trey.a.hope@gmail.com';
@@ -23,63 +25,97 @@ class LoginPage extends StatelessWidget {
     return GGScaffoldWidget(
       title: 'Login',
       canPop: false,
-      child: FlutterLogin(
-        title: 'Gift Grab',
-        logo: Image.asset(Globals.giftAsset).image,
-        savedEmail: _savedEmail,
-        savedPassword: _savedPassword,
-        theme: LoginTheme(
-          primaryColor: Colors.blueAccent,
-          accentColor: Colors.white,
-        ),
-        termsOfService: [
-          TermOfService(
-            id: '_',
-            mandatory: true,
-            text: 'I understand that I will never score higher than trey.codes',
-          ),
-        ],
-        additionalSignupFields: const [
-          UserFormField(
-            keyName: _usernameField,
-            icon: Icon(
-              Icons.face,
-            ),
-          ),
-        ],
-        loginProviders: [
-          LoginProvider(
-            icon: FontAwesomeIcons.google,
-            label: 'Google',
-            errorsToExcludeFromErrorMessage: [LoginErrorExclusions.CANCELED.id],
-            callback: () async => await authCubit.loginGoogle(),
-          ),
-          if (UniversalPlatform.isIOS || UniversalPlatform.isMacOS) ...[
-            LoginProvider(
-              icon: FontAwesomeIcons.apple,
-              label: 'Apple',
-              errorsToExcludeFromErrorMessage: [
-                LoginErrorExclusions.CANCELED.id
+      child: Column(
+        children: [
+          Expanded(
+            child: FlutterLogin(
+              headerWidget: !GoogleSignIn.instance.supportsAuthenticate()
+                  ? Column(
+                      children: [
+                        Center(
+                          child: web.renderButton(
+                            configuration: web.GSIButtonConfiguration(
+                                type: web.GSIButtonType.standard,
+                                theme: web.GSIButtonTheme.filledBlue),
+                          ),
+                        ),
+                        const Row(
+                          children: [
+                            Flexible(child: Divider()),
+                            Padding(
+                              padding: EdgeInsetsGeometry.all(32),
+                              child: Text('or'),
+                            ),
+                            Flexible(child: Divider()),
+                          ],
+                        )
+                      ],
+                    )
+                  : null,
+              title: 'Gift Grab',
+              logo: Image.asset(Globals.giftAsset).image,
+              savedEmail: _savedEmail,
+              savedPassword: _savedPassword,
+              theme: LoginTheme(
+                primaryColor: Colors.blueAccent,
+                accentColor: Colors.white,
+              ),
+              termsOfService: [
+                TermOfService(
+                  id: '_',
+                  mandatory: true,
+                  text:
+                      'I understand that I will never score higher than trey.codes',
+                ),
               ],
-              callback: () async => await authCubit.loginApple(),
-            ),
-          ]
-        ],
-        onSignup: (data) async {
-          final error = _getFormError(data);
+              additionalSignupFields: const [
+                UserFormField(
+                  keyName: _usernameField,
+                  icon: Icon(
+                    Icons.face,
+                  ),
+                ),
+              ],
+              loginProviders: [
+                if (GoogleSignIn.instance.supportsAuthenticate()) ...[
+                  LoginProvider(
+                    icon: FontAwesomeIcons.google,
+                    label: 'Google',
+                    errorsToExcludeFromErrorMessage: [
+                      LoginErrorExclusions.CANCELED.id
+                    ],
+                    callback: () async => await authCubit.loginGoogle(),
+                  ),
+                ],
+                if (UniversalPlatform.isIOS || UniversalPlatform.isMacOS) ...[
+                  LoginProvider(
+                    icon: FontAwesomeIcons.apple,
+                    label: 'Apple',
+                    errorsToExcludeFromErrorMessage: [
+                      LoginErrorExclusions.CANCELED.id
+                    ],
+                    callback: () async => await authCubit.loginApple(),
+                  ),
+                ]
+              ],
+              onSignup: (data) async {
+                final error = _getFormError(data);
 
-          return error ??
-              await authCubit.signup(
-                data.name!,
-                data.password!,
-                data.additionalSignupData![_usernameField]!,
-              );
-        },
-        onLogin: (data) async => authCubit.loginEmail(
-          data.name,
-          data.password,
-        ),
-        onRecoverPassword: (val) => null,
+                return error ??
+                    await authCubit.signup(
+                      data.name!,
+                      data.password!,
+                      data.additionalSignupData![_usernameField]!,
+                    );
+              },
+              onLogin: (data) async => authCubit.loginEmail(
+                data.name,
+                data.password,
+              ),
+              onRecoverPassword: (val) => null,
+            ),
+          ),
+        ],
       ),
     );
   }
