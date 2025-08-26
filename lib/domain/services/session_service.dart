@@ -2,8 +2,6 @@ import 'package:gift_grab_client/domain/repositories/i_session_repository.dart';
 import 'package:nakama/nakama.dart';
 
 class SessionService {
-  static const _preemptiveRefreshDuration = Duration(hours: 1);
-
   void Function()? _onUnauthenticated;
 
   final ISessionRepository _iSessionRepository;
@@ -14,11 +12,7 @@ class SessionService {
     await _iSessionRepository.saveSession(session);
   }
 
-  bool shouldRefreshSession(Session session) =>
-      session.isExpired ||
-      session.hasExpired(
-        DateTime.now().add(_preemptiveRefreshDuration),
-      );
+  bool shouldRefreshSession(Session session) => session.isExpired;
 
   Future<Session> refreshSession(Session session) async {
     try {
