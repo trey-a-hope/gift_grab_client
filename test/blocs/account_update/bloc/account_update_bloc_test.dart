@@ -47,7 +47,7 @@ void main() {
         FlutterSecureStorage.setMockInitialValues({});
       });
 
-      group('UpdateAccount', () {
+      group(UpdateAccount, () {
         blocTest<AccountUpdateBloc, AccountUpdateState>(
           'emits loading state then success state when updating account',
           setUp: () {
@@ -80,7 +80,7 @@ void main() {
         );
       });
 
-      group('LinkEmail', () {
+      group(LinkEmail, () {
         blocTest<AccountUpdateBloc, AccountUpdateState>(
           'emits loading state then success state when linking email',
           setUp: () {
@@ -117,7 +117,7 @@ void main() {
         );
       });
 
-      group('UnlinkEmail', () {
+      group(UnlinkEmail, () {
         blocTest<AccountUpdateBloc, AccountUpdateState>(
           'emits loading state then success state when unlinking email',
           setUp: () {
@@ -181,7 +181,7 @@ void main() {
         );
       });
 
-      group('LinkGoogle', () {
+      group(LinkGoogle, () {
         blocTest<AccountUpdateBloc, AccountUpdateState>(
           'emits loading state then success state when linking Google',
           setUp: () {
@@ -245,7 +245,7 @@ void main() {
         );
       });
 
-      group('UnlinkGoogle', () {
+      group(UnlinkGoogle, () {
         blocTest<AccountUpdateBloc, AccountUpdateState>(
           'emits loading state then success state when unlinking Google',
           setUp: () {
@@ -309,7 +309,7 @@ void main() {
         );
       });
 
-      group('LinkApple', () {
+      group(LinkApple, () {
         blocTest<AccountUpdateBloc, AccountUpdateState>(
           'emits loading state then success state when linking Apple',
           setUp: () {
@@ -373,7 +373,7 @@ void main() {
         );
       });
 
-      group('UnlinkApple', () {
+      group(UnlinkApple, () {
         blocTest<AccountUpdateBloc, AccountUpdateState>(
           'emits loading state then success state when unlinking Apple',
           setUp: () {

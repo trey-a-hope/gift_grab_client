@@ -43,7 +43,7 @@ void main() {
         FlutterSecureStorage.setMockInitialValues({});
       });
 
-      group('SearchUser', () {
+      group(SearchUser, () {
         blocTest<UserListBloc, UserListState>(
           'emits loading state then success state with users when searching',
           setUp: () {
@@ -76,7 +76,7 @@ void main() {
         );
       });
 
-      group('ClearSearch', () {
+      group(ClearSearch, () {
         blocTest<UserListBloc, UserListState>(
           'clears query and users when clearing search',
           build: () => UserListBloc(

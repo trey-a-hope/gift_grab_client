@@ -3,8 +3,8 @@ import 'package:gift_grab_client/data/constants/test_descriptions.dart';
 import 'package:gift_grab_client/presentation/blocs/user_read/user_read.dart';
 
 void main() {
-  group('UserReadEvent', () {
-    group('ReadUser', () {
+  group(UserReadEvent, () {
+    group(ReadUser, () {
       test(TestDescriptions.event.valueEqual, () {
         expect(const ReadUser(), equals(const ReadUser()));
       });

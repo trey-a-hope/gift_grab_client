@@ -3,8 +3,8 @@ import 'package:gift_grab_client/data/constants/test_descriptions.dart';
 import 'package:gift_grab_client/presentation/blocs/account_update/account_update.dart';
 
 void main() {
-  group('AccountUpdateEvent', () {
-    group('UpdateAccount', () {
+  group(AccountUpdateEvent, () {
+    group(UpdateAccount, () {
       test(TestDescriptions.event.valueEqual, () {
         expect(
           const UpdateAccount('testUser'),
@@ -38,7 +38,7 @@ void main() {
       });
     });
 
-    group('LinkEmail', () {
+    group(LinkEmail, () {
       test(TestDescriptions.event.valueEqual, () {
         expect(
           const LinkEmail('test@example.com', 'password123'),
@@ -72,7 +72,7 @@ void main() {
       });
     });
 
-    group('UnlinkEmail', () {
+    group(UnlinkEmail, () {
       test(TestDescriptions.event.valueEqual, () {
         expect(const UnlinkEmail(), equals(const UnlinkEmail()));
       });
@@ -100,7 +100,7 @@ void main() {
       });
     });
 
-    group('LinkGoogle', () {
+    group(LinkGoogle, () {
       test(TestDescriptions.event.valueEqual, () {
         expect(const LinkGoogle(), equals(const LinkGoogle()));
       });
@@ -128,7 +128,7 @@ void main() {
       });
     });
 
-    group('UnlinkGoogle', () {
+    group(UnlinkGoogle, () {
       test(TestDescriptions.event.valueEqual, () {
         expect(const UnlinkGoogle(), equals(const UnlinkGoogle()));
       });
@@ -156,7 +156,7 @@ void main() {
       });
     });
 
-    group('LinkApple', () {
+    group(LinkApple, () {
       test(TestDescriptions.event.valueEqual, () {
         expect(const LinkApple(), equals(const LinkApple()));
       });
@@ -184,7 +184,7 @@ void main() {
       });
     });
 
-    group('UnlinkApple', () {
+    group(UnlinkApple, () {
       test(TestDescriptions.event.valueEqual, () {
         expect(const UnlinkApple(), equals(const UnlinkApple()));
       });

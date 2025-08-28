@@ -3,8 +3,8 @@ import 'package:gift_grab_client/data/constants/test_descriptions.dart';
 import 'package:gift_grab_client/presentation/blocs/user_list/user_list.dart';
 
 void main() {
-  group('UserListEvent', () {
-    group('SearchUser', () {
+  group(UserListEvent, () {
+    group(SearchUser, () {
       test(TestDescriptions.event.valueEqual, () {
         expect(
           const SearchUser('testUser'),
@@ -38,7 +38,7 @@ void main() {
       });
     });
 
-    group('ClearSearch', () {
+    group(ClearSearch, () {
       test(TestDescriptions.event.valueEqual, () {
         expect(const ClearSearch(), equals(const ClearSearch()));
       });

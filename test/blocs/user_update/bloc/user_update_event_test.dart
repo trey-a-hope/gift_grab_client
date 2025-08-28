@@ -3,8 +3,8 @@ import 'package:gift_grab_client/data/constants/test_descriptions.dart';
 import 'package:gift_grab_client/presentation/blocs/user_update/user_update.dart';
 
 void main() {
-  group('UserUpdateEvent', () {
-    group('Init', () {
+  group(UserUpdateEvent, () {
+    group(Init, () {
       test(TestDescriptions.event.valueEqual, () {
         expect(const Init(), equals(const Init()));
       });
@@ -32,7 +32,7 @@ void main() {
       });
     });
 
-    group('UsernameChange', () {
+    group(UsernameChange, () {
       test(TestDescriptions.event.valueEqual, () {
         expect(
           const UsernameChange('testUser'),
@@ -63,7 +63,7 @@ void main() {
       });
     });
 
-    group('SaveForm', () {
+    group(SaveForm, () {
       test(TestDescriptions.event.valueEqual, () {
         expect(const SaveForm(), equals(const SaveForm()));
       });

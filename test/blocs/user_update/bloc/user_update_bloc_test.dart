@@ -32,7 +32,7 @@ void main() {
         FlutterSecureStorage.setMockInitialValues({});
       });
 
-      group('Init', () {
+      group(Init, () {
         blocTest<UserUpdateBloc, UserUpdateState>(
           'emits state with username from account when username exists',
           setUp: () {
@@ -74,7 +74,7 @@ void main() {
         );
       });
 
-      group('UsernameChange', () {
+      group(UsernameChange, () {
         blocTest<UserUpdateBloc, UserUpdateState>(
           'emits state with updated username',
           build: () => UserUpdateBloc(
@@ -106,7 +106,7 @@ void main() {
         );
       });
 
-      group('SaveForm', () {
+      group(SaveForm, () {
         blocTest<UserUpdateBloc, UserUpdateState>(
           'emits state with inProgress status',
           build: () => UserUpdateBloc(

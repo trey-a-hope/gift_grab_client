@@ -44,7 +44,7 @@ void main() {
         FlutterSecureStorage.setMockInitialValues({});
       });
 
-      group('ReadUser', () {
+      group(ReadUser, () {
         blocTest<UserReadBloc, UserReadState>(
           'emits loading state then success state with user when reading user (not my profile)',
           setUp: () {
