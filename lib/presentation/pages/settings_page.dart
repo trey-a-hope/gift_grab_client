@@ -9,6 +9,7 @@ import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_re
 import 'package:gift_grab_client/presentation/blocs/account_update/account_update.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:modal_util/modal_util.dart';
 import 'package:nakama/nakama.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -94,41 +95,6 @@ class SettingsView extends StatelessWidget {
             child: SettingsList(
               sections: [
                 SettingsSection(
-                  title: const Text('Authentication'),
-                  tiles: [
-                    SettingsTile.navigation(
-                      leading: const Icon(Icons.logout),
-                      title: const Text('Logout'),
-                      onPressed: (context) async {
-                        final confirm = await ModalUtil.showConfirmation(
-                          context,
-                          title: 'Logout',
-                          message: 'Are you sure?',
-                        );
-
-                        if (confirm != true) return;
-
-                        authCubit.logout();
-                      },
-                    ),
-                    SettingsTile.navigation(
-                      leading: const Icon(Icons.delete),
-                      title: const Text('Delete Account'),
-                      onPressed: (context) async {
-                        final confirm = await ModalUtil.showConfirmation(
-                          context,
-                          title: 'Delete Account',
-                          message: 'Press yes to confirm',
-                        );
-
-                        if (confirm != true) return;
-
-                        accountDeleteBloc.add(const DeleteAccount());
-                      },
-                    )
-                  ],
-                ),
-                SettingsSection(
                   title: const Text('Connected Accounts'),
                   tiles: [
                     SettingsTile.switchTile(
@@ -173,16 +139,49 @@ class SettingsView extends StatelessWidget {
                 SettingsSection(
                   title: const Text('App Info'),
                   tiles: [
-                    SettingsTile(
-                      title: Text(packageInfo.version),
-                      leading: const Icon(Icons.phone_android),
-                      value: const Text('version'),
+                    SettingsTile.navigation(
+                      leading: Icon(MdiIcons.license),
+                      title: const Text('Licenses'),
+                      value: Text(
+                          'v ${packageInfo.version}.${packageInfo.buildNumber}'),
+                      onPressed: (context) async =>
+                          showLicensePage(context: context),
                     ),
-                    SettingsTile(
-                      title: Text(packageInfo.buildNumber),
-                      leading: const Icon(Icons.phone_iphone),
-                      value: const Text('build'),
+                  ],
+                ),
+                SettingsSection(
+                  title: const Text('Authentication'),
+                  tiles: [
+                    SettingsTile.navigation(
+                      leading: const Icon(Icons.logout),
+                      title: const Text('Logout'),
+                      onPressed: (context) async {
+                        final confirm = await ModalUtil.showConfirmation(
+                          context,
+                          title: 'Logout',
+                          message: 'Are you sure?',
+                        );
+
+                        if (confirm != true) return;
+
+                        authCubit.logout();
+                      },
                     ),
+                    SettingsTile.navigation(
+                      leading: const Icon(Icons.delete),
+                      title: const Text('Delete Account'),
+                      onPressed: (context) async {
+                        final confirm = await ModalUtil.showConfirmation(
+                          context,
+                          title: 'Delete Account',
+                          message: 'Press yes to confirm',
+                        );
+
+                        if (confirm != true) return;
+
+                        accountDeleteBloc.add(const DeleteAccount());
+                      },
+                    )
                   ],
                 ),
               ],
