@@ -28,15 +28,17 @@ class RecordListBloc extends Bloc<RecordListEvent, RecordListState> {
     InitialFetch event,
     Emitter<RecordListState> emit,
   ) async {
-    emit(state.copyWith(isLoading: true, cursor: null, entries: []));
+    emit(state.copyWith(isLoading: true, entries: []));
     add(const FetchRecords());
   }
 
   Future<void> _onFetchMore(
     FetchMore event,
     Emitter<RecordListState> emit,
-  ) async =>
-      add(const FetchRecords());
+  ) async {
+    emit(state.copyWith(isLoading: true, cursor: state.cursor));
+    add(const FetchRecords());
+  }
 
   Future<void> _onFetchRecords(
     FetchRecords event,

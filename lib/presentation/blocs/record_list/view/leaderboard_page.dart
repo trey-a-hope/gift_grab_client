@@ -58,44 +58,50 @@ class LeaderboardView extends StatelessWidget {
         builder: (context, state) {
           final entries = state.entries;
 
+          final displayEmpty = state.isLoading && entries.isEmpty;
+          final displayNoResults = !state.isLoading && entries.isEmpty;
+          final displayMoreButton =
+              state.cursor.nullIfEmpty != null && !state.isLoading;
+
           return GGScaffoldWidget(
             title: 'Leaderboard',
             child: SafeArea(
               child: Center(
-                child: state.isLoading
-                    ? const CircularProgressIndicator()
-                    : Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsetsGeometry.all(32),
-                            child: Text(
-                              'Records for ${DateTime.now().getMonthsDayRange()}',
-                              style: theme.textTheme.headlineMedium,
-                            ),
-                          ),
-                          Expanded(
-                            child: entries.isEmpty
-                                ? const NoResultsWidget(
-                                    NoResultsEnum.leaderboard)
-                                : ListView.builder(
-                                    itemCount: entries.length,
-                                    itemBuilder: (context, index) =>
-                                        RecordListTile(
-                                            account.user.id, entries[index]),
-                                  ),
-                          ),
-                          if (state.cursor.nullIfEmpty != null) ...[
-                            Padding(
-                              padding: const EdgeInsetsGeometry.all(16),
-                              child: ElevatedButton(
-                                onPressed: () =>
-                                    recordListBloc.add(const FetchMore()),
-                                child: const Text('More'),
-                              ),
-                            )
-                          ]
-                        ],
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsetsGeometry.all(32),
+                      child: Text(
+                        'Records for ${DateTime.now().getMonthsDayRange()}',
+                        style: theme.textTheme.headlineMedium,
                       ),
+                    ),
+                    Expanded(
+                      child: displayEmpty
+                          ? const SizedBox.shrink()
+                          : displayNoResults
+                              ? const NoResultsWidget(NoResultsEnum.leaderboard)
+                              : ListView.builder(
+                                  itemCount: entries.length,
+                                  itemBuilder: (context, index) =>
+                                      RecordListTile(
+                                    account.user.id,
+                                    entries[index],
+                                  ),
+                                ),
+                    ),
+                    if (displayMoreButton) ...[
+                      Padding(
+                        padding: const EdgeInsetsGeometry.all(16),
+                        child: ElevatedButton(
+                          onPressed: () =>
+                              recordListBloc.add(const FetchMore()),
+                          child: const Text('More'),
+                        ),
+                      )
+                    ]
+                  ],
+                ),
               ),
             ),
           );
