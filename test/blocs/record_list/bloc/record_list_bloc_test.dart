@@ -80,18 +80,10 @@ void main() {
             mockNakamaBaseClient,
             mockSessionService,
           ),
-          seed: () => RecordListState(
-            entries: [
-              LeaderboardEntry(record: mockLeaderboardRecord, user: mockUser)
-            ],
-            cursor: 'existing_cursor',
-            isLoading: false,
-          ),
           act: (bloc) => bloc.add(const InitialFetch()),
           expect: () => [
             const RecordListState(
               isLoading: true,
-              cursor: null,
               entries: [],
             ),
             RecordListState(
@@ -132,6 +124,10 @@ void main() {
           ),
           act: (bloc) => bloc.add(const FetchMore()),
           expect: () => [
+            const RecordListState(
+              isLoading: true,
+              entries: [],
+            ),
             RecordListState(
               entries: [
                 LeaderboardEntry(record: mockLeaderboardRecord, user: mockUser)
