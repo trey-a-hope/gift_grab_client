@@ -2,7 +2,7 @@ class Globals {
   Globals._();
 
   // Limits
-  static const paginationLimit = 20;
+  static const int recordListLimit = 10;
 
   // Image Paths
   static const String emptyProfile =

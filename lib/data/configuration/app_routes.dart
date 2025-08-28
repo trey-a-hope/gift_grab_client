@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
+import 'package:gift_grab_client/domain/services/session_service.dart';
+import 'package:gift_grab_client/presentation/blocs/record_create/bloc/record_create_bloc.dart';
+import 'package:gift_grab_client/presentation/blocs/record_list/view/leaderboard_page.dart';
 import 'package:gift_grab_client/presentation/blocs/user_list/view/search_users_page.dart';
 import 'package:gift_grab_client/presentation/blocs/user_read/user_read.dart';
 import 'package:gift_grab_client/presentation/blocs/user_update/view/edit_profile_page.dart';
@@ -12,6 +15,7 @@ import 'package:gift_grab_client/presentation/pages/main_menu_page.dart';
 import 'package:gift_grab_client/presentation/pages/settings_page.dart';
 import 'package:gift_grab_game/game/gift_grab_game_widget.dart';
 import 'package:go_router/go_router.dart';
+import 'package:nakama/nakama.dart';
 
 GoRouter appRouter(BuildContext context) {
   final authCubit = context.read<AuthCubit>();
@@ -48,11 +52,21 @@ GoRouter appRouter(BuildContext context) {
           GoRoute(
             path: GoRoutes.GAME.name,
             name: GoRoutes.GAME.name,
-            builder: (context, state) => GiftGrabGameWidget(
-              onEndGame: (score) {
-                debugPrint('Score: $score');
-              },
-            ),
+            builder: (context, state) {
+              final recordCreateBloc = RecordCreateBloc(
+                getNakamaClient(),
+                context.read<SessionService>(),
+              );
+
+              return BlocProvider(
+                create: (_) => recordCreateBloc,
+                child: GiftGrabGameWidget(
+                  onEndGame: (score) => recordCreateBloc.add(
+                    SubmitRecord(score),
+                  ),
+                ),
+              );
+            },
           ),
           GoRoute(
             path: GoRoutes.SETTINGS.name,
@@ -79,6 +93,11 @@ GoRouter appRouter(BuildContext context) {
             path: GoRoutes.SEARCH_USERS.name,
             name: GoRoutes.SEARCH_USERS.name,
             builder: (context, state) => const SearchUsersPage(),
+          ),
+          GoRoute(
+            path: GoRoutes.LEADERBOARD.name,
+            name: GoRoutes.LEADERBOARD.name,
+            builder: (context, state) => const LeaderboardPage(),
           ),
         ],
       ),

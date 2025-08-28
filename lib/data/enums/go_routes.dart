@@ -1,6 +1,7 @@
 enum GoRoutes {
   GAME('game'),
   LOGIN('login'),
+  LEADERBOARD('leaderboard'),
   MAIN('main'),
   PROFILE('profile'),
   EDIT_PROFILE('edit_profile'),
