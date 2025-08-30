@@ -1,7 +1,11 @@
 import 'package:gift_grab_client/domain/repositories/i_session_repository.dart';
+import 'package:gift_grab_client/main.dart';
+import 'package:gift_grab_client/presentation/extensions/session_extensions.dart';
 import 'package:nakama/nakama.dart';
 
 class SessionService {
+  static const _hasExpiredDuration = Duration(minutes: 5);
+
   void Function()? _onUnauthenticated;
 
   final ISessionRepository _iSessionRepository;
@@ -9,15 +13,19 @@ class SessionService {
   SessionService(this._iSessionRepository);
 
   Future<void> saveSession(Session session) async {
+    logger.d('saveSession:${session.print()}');
     await _iSessionRepository.saveSession(session);
   }
 
-  bool shouldRefreshSession(Session session) => session.isExpired;
+  bool shouldRefreshSession(Session session) =>
+      session.isExpired ||
+      session.hasExpired(DateTime.now().add(_hasExpiredDuration));
 
   Future<Session> refreshSession(Session session) async {
     try {
       final newSession = await _iSessionRepository.refreshSession(session);
-      await _iSessionRepository.saveSession(session);
+      await _iSessionRepository.saveSession(newSession);
+      logger.d('refreshSession:${session.print()}');
       return newSession;
     } catch (e) {
       _iSessionRepository.clearSession();
@@ -38,6 +46,8 @@ class SessionService {
         return await refreshSession(session);
       }
 
+      logger.d('getSession:${session.print()}');
+
       return session;
     } catch (e) {
       _iSessionRepository.clearSession();
@@ -54,6 +64,8 @@ class SessionService {
       }
 
       await _iSessionRepository.clearSession();
+
+      logger.d('logged out, see you later!');
 
       return true;
     } catch (e) {
