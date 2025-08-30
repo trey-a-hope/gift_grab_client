@@ -19,24 +19,26 @@ import 'package:universal_platform/universal_platform.dart';
 
 late PackageInfo packageInfo;
 
-final logger = Logger(
-  printer: PrefixPrinter(
-    PrettyPrinter(
-      methodCount: 0,
-      errorMethodCount: 8,
-      lineLength: 120,
-      colors: true,
-      printEmojis: true,
-      noBoxingByDefault: false,
-    ),
-  ),
-  output: null,
-);
+late Logger logger;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   packageInfo = await PackageInfo.fromPlatform();
+
+  logger = Logger(
+    printer: PrefixPrinter(
+      PrettyPrinter(
+        methodCount: 0,
+        errorMethodCount: 8,
+        lineLength: 120,
+        colors: true,
+        printEmojis: true,
+        noBoxingByDefault: false,
+      ),
+    ),
+    output: null,
+  );
 
   await WindowManagerUtil.maximizeWindow();
 
