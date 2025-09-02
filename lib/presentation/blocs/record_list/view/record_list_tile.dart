@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/domain/entities/leaderboard_entry.dart';
 import 'package:gift_grab_client/presentation/blocs/record_delete/record_delete.dart';
 import 'package:gift_grab_client/presentation/extensions/string_extensions.dart';
@@ -37,7 +38,7 @@ class RecordListTile extends StatelessWidget {
                       final confirm = await ModalUtil.showConfirmation(
                         context,
                         title: 'Delete record',
-                        message: 'Press yes to confirm',
+                        message: LabelText.confirm,
                       );
 
                       if (confirm != true) return;

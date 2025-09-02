@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/domain/services/social_auth_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/account_read.dart';
@@ -98,7 +99,7 @@ class EditProfileView extends StatelessWidget {
                                     await ModalUtil.showConfirmation(
                                   context,
                                   title: 'Save Profile?',
-                                  message: 'Press yes to confirm',
+                                  message: LabelText.confirm,
                                 );
 
                                 if (confirm != true) return;

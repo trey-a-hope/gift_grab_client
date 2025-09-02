@@ -3,6 +3,7 @@ class Globals {
 
   // Limits
   static const int recordListLimit = 10;
+  static const int friendListLimit = 15;
 
   // Image Paths
   static const String emptyProfile =
