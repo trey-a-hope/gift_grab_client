@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/account_read.dart';
 import 'package:gift_grab_client/presentation/extensions/build_context_extensions.dart';
@@ -33,12 +34,13 @@ class MainMenuView extends StatelessWidget {
           canPop: false,
           actions: [
             IconButton.filledTonal(
-              onPressed: () => context.pushNamed(
-                GoRoutes.SETTINGS.name,
-              ),
-              icon: const Icon(
-                Icons.settings,
-              ),
+              onPressed: () => context.pushNamed(GoRoutes.SEARCH_USERS.name),
+              icon: const Icon(Icons.search),
+            ),
+            const Gap(8),
+            IconButton.filledTonal(
+              onPressed: () => context.pushNamed(GoRoutes.SETTINGS.name),
+              icon: const Icon(Icons.settings),
             )
           ],
           child: Padding(
@@ -62,12 +64,6 @@ class MainMenuView extends StatelessWidget {
                             .pushNamed(GoRoutes.PROFILE.name, pathParameters: {
                           'uid': state.account!.user.id,
                         }),
-                      ),
-                      MenuButtonWidget(
-                        menuButton: MenuButton.searchUsers,
-                        onTap: () => context.pushNamed(
-                          GoRoutes.SEARCH_USERS.name,
-                        ),
                       ),
                       MenuButtonWidget(
                         menuButton: MenuButton.leaderboard,
