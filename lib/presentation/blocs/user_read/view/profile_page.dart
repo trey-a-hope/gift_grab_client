@@ -17,8 +17,8 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => UserReadBloc(
+    return BlocProvider<UserReadBloc>(
+      create: (context) => UserReadBloc(
         uid,
         getNakamaClient(),
         context.read<SessionService>(),

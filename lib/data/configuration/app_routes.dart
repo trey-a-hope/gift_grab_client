@@ -58,8 +58,8 @@ GoRouter appRouter(BuildContext context) {
                 context.read<SessionService>(),
               );
 
-              return BlocProvider(
-                create: (_) => recordCreateBloc,
+              return BlocProvider<RecordCreateBloc>(
+                create: (context) => recordCreateBloc,
                 child: GiftGrabGameWidget(
                   onEndGame: (score) => recordCreateBloc.add(
                     SubmitRecord(score),

@@ -19,14 +19,14 @@ class LeaderboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (_) => RecordListBloc(
+        BlocProvider<RecordListBloc>(
+          create: (context) => RecordListBloc(
             getNakamaClient(),
             context.read<SessionService>(),
           )..add(const InitialFetch()),
         ),
-        BlocProvider(
-          create: (_) => RecordDeleteBloc(
+        BlocProvider<RecordDeleteBloc>(
+          create: (context) => RecordDeleteBloc(
             getNakamaClient(),
             context.read<SessionService>(),
           ),

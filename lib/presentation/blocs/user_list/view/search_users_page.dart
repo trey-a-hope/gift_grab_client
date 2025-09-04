@@ -14,8 +14,8 @@ class SearchUsersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => UserListBloc(
+    return BlocProvider<UserListBloc>(
+      create: (context) => UserListBloc(
         getNakamaClient(),
         context.read<SessionService>(),
       ),

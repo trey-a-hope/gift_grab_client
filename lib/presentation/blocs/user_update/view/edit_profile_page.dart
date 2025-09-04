@@ -25,14 +25,14 @@ class EditProfilePage extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (_) => UserUpdateBloc(
+        BlocProvider<UserUpdateBloc>(
+          create: (context) => UserUpdateBloc(
             account,
             context.read<SessionService>(),
           )..add(const Init()),
         ),
-        BlocProvider(
-          create: (_) => AccountUpdateBloc(
+        BlocProvider<AccountUpdateBloc>(
+          create: (context) => AccountUpdateBloc(
             account,
             context.read<SessionService>(),
             getNakamaClient(),
