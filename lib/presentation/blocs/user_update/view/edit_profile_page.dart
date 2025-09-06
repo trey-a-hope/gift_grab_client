@@ -50,6 +50,9 @@ class EditProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userUpdateBloc = context.read<UserUpdateBloc>();
+    final accountUpdateBloc = context.read<AccountUpdateBloc>();
+
     return BlocListener<AccountUpdateBloc, AccountUpdateState>(
       listener: (context, state) {
         if (state.success != null) {
@@ -59,13 +62,18 @@ class EditProfileView extends StatelessWidget {
 
         if (state.error != null) {
           ModalUtil.showError(context, title: state.error!);
-          context.read<UserUpdateBloc>().add(const Init());
+          userUpdateBloc.add(const Init());
         }
       },
       child: BlocConsumer<UserUpdateBloc, UserUpdateState>(
+        listener: (context, state) {
+          if (state.status == FormzSubmissionStatus.inProgress) {
+            accountUpdateBloc.add(
+              UpdateAccount(state.username.value),
+            );
+          }
+        },
         builder: (context, state) {
-          final userUpdateBloc = context.read<UserUpdateBloc>();
-
           return GGScaffoldWidget(
             title: 'Edit Profile',
             child: Center(
@@ -112,13 +120,6 @@ class EditProfileView extends StatelessWidget {
                     ),
             ),
           );
-        },
-        listener: (context, state) {
-          if (state.status == FormzSubmissionStatus.inProgress) {
-            context.read<AccountUpdateBloc>().add(
-                  UpdateAccount(state.username.value),
-                );
-          }
         },
       ),
     );

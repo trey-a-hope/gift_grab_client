@@ -1,6 +1,6 @@
 [
     {
         "language": "en-US",
-        "text": "Introduced a new FriendsPage with tabs for managing friends, invites, requests, and blocked users."
+        "text": "Added profanity_api dependency to validate usernames during account updates."
     }
 ]

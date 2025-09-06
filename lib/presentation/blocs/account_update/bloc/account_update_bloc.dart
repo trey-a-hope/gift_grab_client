@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/domain/services/social_auth_service.dart';
 import 'package:nakama/nakama.dart';
+import 'package:profanity_api/profanity_api.dart';
 
 part 'account_update_event.dart';
 part 'account_update_state.dart';
@@ -38,6 +39,13 @@ class AccountUpdateBloc extends Bloc<AccountUpdateEvent, AccountUpdateState> {
           emit(state.copyWith(isLoading: true));
 
           final session = await sessionService.getSession();
+
+          final profanityResponse =
+              await ProfanityApi.instance.scan(event.username);
+
+          if (profanityResponse.isProfanity) {
+            throw Exception('Profanity and bad words are not welcomed here');
+          }
 
           await client.updateAccount(
             session: session,
