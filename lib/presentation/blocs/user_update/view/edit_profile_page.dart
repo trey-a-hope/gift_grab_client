@@ -11,6 +11,7 @@ import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:modal_util/modal_util.dart';
 import 'package:nakama/nakama.dart';
+import 'package:profanity_api/profanity_api.dart';
 
 import '../user_update.dart';
 
@@ -37,6 +38,7 @@ class EditProfilePage extends StatelessWidget {
             context.read<SessionService>(),
             getNakamaClient(),
             context.read<SocialAuthService>(),
+            ProfanityApi.instance,
           ),
         ),
       ],

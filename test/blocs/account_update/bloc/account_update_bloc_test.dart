@@ -6,6 +6,8 @@ import 'package:gift_grab_client/domain/services/social_auth_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_update/account_update.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:nakama/nakama.dart';
+import 'package:profanity_api/models/profanity_api_response/profanity_api_response.dart';
+import 'package:profanity_api/profanity_api.dart';
 
 class MockNakamaBaseClient extends Mock implements NakamaBaseClient {}
 
@@ -17,6 +19,8 @@ class MockSession extends Mock implements Session {}
 
 class MockAccount extends Mock implements Account {}
 
+class MockProfanityApi extends Mock implements ProfanityApi {}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -27,6 +31,7 @@ void main() {
       late MockNakamaBaseClient mockNakamaBaseClient;
       late MockSocialAuthService mockSocialAuthService;
       late MockAccount mockAccount;
+      late MockProfanityApi mockProfanityApi; // Add this
 
       final mockSession = Session(
         token: 'session_token',
@@ -38,21 +43,28 @@ void main() {
         refreshExpiresAt: DateTime.now().add(const Duration(days: 7)),
       );
 
+      const mockProfanityResponse =
+          ProfanityApiResponse(isProfanity: false, score: 0.93);
+
       setUp(() {
         mockSessionService = MockSessionService();
         mockNakamaBaseClient = MockNakamaBaseClient();
         mockSocialAuthService = MockSocialAuthService();
         mockAccount = MockAccount();
+        mockProfanityApi = MockProfanityApi(); // Initialize the mock
 
         FlutterSecureStorage.setMockInitialValues({});
       });
 
       group(UpdateAccount, () {
         blocTest<AccountUpdateBloc, AccountUpdateState>(
-          'emits loading state then success state when updating account',
+          'emits loading state then success state when updating account with clean username',
           setUp: () {
             when(() => mockSessionService.getSession())
                 .thenAnswer((_) async => mockSession);
+
+            when(() => mockProfanityApi.scan('newUsername'))
+                .thenAnswer((_) async => mockProfanityResponse);
 
             when(() => mockNakamaBaseClient.updateAccount(
                   session: mockSession,
@@ -64,6 +76,7 @@ void main() {
             mockSessionService,
             mockNakamaBaseClient,
             mockSocialAuthService,
+            mockProfanityApi, // Pass the mock here
           ),
           seed: () => const AccountUpdateState(),
           act: (bloc) => bloc.add(const UpdateAccount('newUsername')),
@@ -75,6 +88,36 @@ void main() {
               success: 'Account updated successfully',
               isLoading: false,
               error: null,
+            ),
+          ],
+        );
+
+        blocTest<AccountUpdateBloc, AccountUpdateState>(
+          'emits loading state then error state when username contains profanity',
+          setUp: () {
+            when(() => mockSessionService.getSession())
+                .thenAnswer((_) async => mockSession);
+
+            when(() => mockProfanityApi.scan('badword')).thenAnswer(
+                (_) async => mockProfanityResponse.copyWith(isProfanity: true));
+          },
+          build: () => AccountUpdateBloc(
+            mockAccount,
+            mockSessionService,
+            mockNakamaBaseClient,
+            mockSocialAuthService,
+            mockProfanityApi, // Pass the mock here
+          ),
+          seed: () => const AccountUpdateState(),
+          act: (bloc) => bloc.add(const UpdateAccount('badword')),
+          expect: () => [
+            const AccountUpdateState(
+              isLoading: true,
+            ),
+            const AccountUpdateState(
+              error:
+                  'Unexpected error: Exception: Profanity and bad words are not welcomed here',
+              isLoading: false,
             ),
           ],
         );
@@ -98,6 +141,7 @@ void main() {
             mockSessionService,
             mockNakamaBaseClient,
             mockSocialAuthService,
+            mockProfanityApi, // Don't forget to pass it to all bloc instantiations
           ),
           seed: () => const AccountUpdateState(),
           act: (bloc) => bloc.add(const LinkEmail(
@@ -137,6 +181,7 @@ void main() {
             mockSessionService,
             mockNakamaBaseClient,
             mockSocialAuthService,
+            mockProfanityApi,
           ),
           seed: () => const AccountUpdateState(),
           act: (bloc) => bloc.add(const UnlinkEmail()),
@@ -165,6 +210,7 @@ void main() {
             mockSessionService,
             mockNakamaBaseClient,
             mockSocialAuthService,
+            mockProfanityApi,
           ),
           seed: () => const AccountUpdateState(),
           act: (bloc) => bloc.add(const UnlinkEmail()),
@@ -172,7 +218,6 @@ void main() {
             const AccountUpdateState(
               isLoading: true,
             ),
-            // The error will be handled by runWithErrorHandling
             const AccountUpdateState(
               error: 'Unexpected error: Exception: Account email is null',
               isLoading: false,
@@ -201,6 +246,7 @@ void main() {
             mockSessionService,
             mockNakamaBaseClient,
             mockSocialAuthService,
+            mockProfanityApi,
           ),
           seed: () => const AccountUpdateState(),
           act: (bloc) => bloc.add(const LinkGoogle()),
@@ -230,6 +276,7 @@ void main() {
             mockSessionService,
             mockNakamaBaseClient,
             mockSocialAuthService,
+            mockProfanityApi,
           ),
           seed: () => const AccountUpdateState(),
           act: (bloc) => bloc.add(const LinkGoogle()),
@@ -265,6 +312,7 @@ void main() {
             mockSessionService,
             mockNakamaBaseClient,
             mockSocialAuthService,
+            mockProfanityApi,
           ),
           seed: () => const AccountUpdateState(),
           act: (bloc) => bloc.add(const UnlinkGoogle()),
@@ -294,6 +342,7 @@ void main() {
             mockSessionService,
             mockNakamaBaseClient,
             mockSocialAuthService,
+            mockProfanityApi,
           ),
           seed: () => const AccountUpdateState(),
           act: (bloc) => bloc.add(const UnlinkGoogle()),
@@ -329,6 +378,7 @@ void main() {
             mockSessionService,
             mockNakamaBaseClient,
             mockSocialAuthService,
+            mockProfanityApi,
           ),
           seed: () => const AccountUpdateState(),
           act: (bloc) => bloc.add(const LinkApple()),
@@ -358,6 +408,7 @@ void main() {
             mockSessionService,
             mockNakamaBaseClient,
             mockSocialAuthService,
+            mockProfanityApi,
           ),
           seed: () => const AccountUpdateState(),
           act: (bloc) => bloc.add(const LinkApple()),
@@ -393,6 +444,7 @@ void main() {
             mockSessionService,
             mockNakamaBaseClient,
             mockSocialAuthService,
+            mockProfanityApi,
           ),
           seed: () => const AccountUpdateState(),
           act: (bloc) => bloc.add(const UnlinkApple()),
@@ -422,6 +474,7 @@ void main() {
             mockSessionService,
             mockNakamaBaseClient,
             mockSocialAuthService,
+            mockProfanityApi,
           ),
           seed: () => const AccountUpdateState(),
           act: (bloc) => bloc.add(const UnlinkApple()),

@@ -13,6 +13,7 @@ import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:modal_util/modal_util.dart';
 import 'package:nakama/nakama.dart';
+import 'package:profanity_api/profanity_api.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:universal_platform/universal_platform.dart';
 
@@ -39,6 +40,7 @@ class SettingsPage extends StatelessWidget {
             context.read<SessionService>(),
             getNakamaClient(),
             context.read<SocialAuthService>(),
+            ProfanityApi.instance,
           ),
         ),
       ],

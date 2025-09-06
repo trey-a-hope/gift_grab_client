@@ -14,12 +14,14 @@ class AccountUpdateBloc extends Bloc<AccountUpdateEvent, AccountUpdateState> {
   final SessionService sessionService;
   final NakamaBaseClient client;
   final SocialAuthService socialAuthService;
+  final ProfanityApi profanityApi;
 
   AccountUpdateBloc(
     this.account,
     this.sessionService,
     this.client,
     this.socialAuthService,
+    this.profanityApi,
   ) : super(const AccountUpdateState()) {
     on<UpdateAccount>(_onUpdateAccount);
     on<LinkEmail>(_onLinkEmail);
@@ -40,8 +42,7 @@ class AccountUpdateBloc extends Bloc<AccountUpdateEvent, AccountUpdateState> {
 
           final session = await sessionService.getSession();
 
-          final profanityResponse =
-              await ProfanityApi.instance.scan(event.username);
+          final profanityResponse = await profanityApi.scan(event.username);
 
           if (profanityResponse.isProfanity) {
             throw Exception('Profanity and bad words are not welcomed here');
