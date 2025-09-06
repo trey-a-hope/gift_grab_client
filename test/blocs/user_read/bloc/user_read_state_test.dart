@@ -13,6 +13,7 @@ void main() {
 
           expect(state.user, isNull);
           expect(state.isMyProfile, false);
+          expect(state.friendshipState, null);
           expect(state.isLoading, false);
           expect(state.error, isNull);
         },
@@ -44,6 +45,7 @@ void main() {
           const originalState = UserReadState(
             user: null,
             isMyProfile: false,
+            friendshipState: null,
             isLoading: false,
             error: null,
           );
@@ -52,6 +54,7 @@ void main() {
 
           expect(newState.user, equals(null));
           expect(newState.isMyProfile, equals(false));
+          expect(newState.friendshipState, equals(null));
           expect(newState.isLoading, equals(false));
           expect(newState.error, equals(null));
         },
@@ -65,6 +68,7 @@ void main() {
           final newState = originalState.copyWith(
             user: null,
             isMyProfile: false,
+            friendshipState: null,
             isLoading: false,
             error: null,
           );
@@ -79,10 +83,11 @@ void main() {
         () {
           const state = UserReadState();
 
-          expect(state.props, hasLength(4));
+          expect(state.props, hasLength(5));
 
           expect(state.props, contains(state.user));
           expect(state.props, contains(state.isMyProfile));
+          expect(state.props, contains(state.friendshipState));
           expect(state.props, contains(state.isLoading));
           expect(state.props, contains(state.error));
         },

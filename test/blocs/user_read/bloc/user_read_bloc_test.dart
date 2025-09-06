@@ -37,6 +37,8 @@ void main() {
 
       final mockUser = MockUser();
 
+      const mockFriendshipState = FriendshipState.mutual;
+
       setUp(() {
         mockSessionService = MockSessionService();
         mockNakamaBaseClient = MockNakamaBaseClient();
@@ -50,6 +52,12 @@ void main() {
           setUp: () {
             when(() => mockSessionService.getSession())
                 .thenAnswer((_) async => mockSession);
+
+            when(() => mockNakamaBaseClient.rpc(
+                  session: mockSession,
+                  id: any(named: 'id'),
+                  payload: any(named: 'payload'),
+                )).thenAnswer((_) async => "0");
 
             when(() => mockNakamaBaseClient.getUsers(
                   session: mockSession,
@@ -71,7 +79,8 @@ void main() {
             ),
             UserReadState(
               user: mockUser,
-              isMyProfile: false, // session.userId != user.id
+              isMyProfile: false,
+              friendshipState: mockFriendshipState,
               isLoading: false,
               error: null,
             ),
@@ -81,6 +90,15 @@ void main() {
         blocTest<UserReadBloc, UserReadState>(
           'emits loading state then success state with user when reading user (is my profile)',
           setUp: () {
+            when(() => mockSessionService.getSession())
+                .thenAnswer((_) async => mockSession);
+
+            when(() => mockNakamaBaseClient.rpc(
+                  session: mockSession,
+                  id: any(named: 'id'),
+                  payload: any(named: 'payload'),
+                )).thenAnswer((_) async => "0");
+
             when(() => mockSessionService.getSession())
                 .thenAnswer((_) async => mockSession);
 
@@ -105,7 +123,8 @@ void main() {
             ),
             UserReadState(
               user: mockUser,
-              isMyProfile: true, // session.userId == user.id
+              isMyProfile: true,
+              friendshipState: mockFriendshipState,
               isLoading: false,
               error: null,
             ),
