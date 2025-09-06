@@ -5,6 +5,7 @@ import 'package:gift_grab_client/data/constants/globals.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/extensions/string_extensions.dart';
 import 'package:nakama/nakama.dart';
+import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 
 part 'friend_list_event.dart';
 part 'friend_list_state.dart';

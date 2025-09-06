@@ -14,7 +14,7 @@ class RecordCreateState extends Equatable implements ErrorState {
     String? error,
   }) =>
       RecordCreateState(
-        isLoading: isLoading == true ? true : false,
+        isLoading: isLoading.falseIfNull(),
         error: error,
       );
 

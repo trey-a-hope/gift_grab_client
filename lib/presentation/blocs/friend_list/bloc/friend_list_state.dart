@@ -25,7 +25,7 @@ class FriendListState extends Equatable implements ErrorState {
         this.friendshipState,
         friends: friends ?? this.friends,
         cursor: cursor,
-        isLoading: isLoading == true ? true : false,
+        isLoading: isLoading.falseIfNull(),
         error: error,
       );
 

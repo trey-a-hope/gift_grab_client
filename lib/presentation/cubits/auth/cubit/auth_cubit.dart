@@ -6,6 +6,7 @@ import 'package:gift_grab_client/data/enums/login_error_exclusions.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/domain/services/social_auth_service.dart';
 import 'package:gift_grab_client/main.dart';
+import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nakama/nakama.dart';
 

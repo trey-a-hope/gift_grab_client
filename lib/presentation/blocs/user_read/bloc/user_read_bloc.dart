@@ -6,6 +6,7 @@ import 'package:equatable/equatable.dart';
 import 'package:gift_grab_client/data/enums/rpc_functions.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:nakama/nakama.dart';
+import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 
 part 'user_read_event.dart';
 part 'user_read_state.dart';

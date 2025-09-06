@@ -18,7 +18,7 @@ class AccountUpdateState extends Equatable implements ErrorState {
   }) =>
       AccountUpdateState(
         success: success,
-        isLoading: isLoading == true ? true : false,
+        isLoading: isLoading.falseIfNull(),
         error: error,
       );
 

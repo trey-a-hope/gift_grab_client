@@ -3,6 +3,7 @@ import 'package:bloc_error_handler/bloc_error_handler.dart';
 import 'package:equatable/equatable.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:nakama/nakama.dart';
+import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 
 part 'user_list_event.dart';
 part 'user_list_state.dart';

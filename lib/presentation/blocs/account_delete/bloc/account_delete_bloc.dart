@@ -6,6 +6,7 @@ import 'package:gift_grab_client/data/enums/rpc_functions.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/auth.dart';
 import 'package:nakama/nakama.dart';
+import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 
 part 'account_delete_event.dart';
 part 'account_delete_state.dart';

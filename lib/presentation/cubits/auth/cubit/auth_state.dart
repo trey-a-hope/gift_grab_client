@@ -14,7 +14,7 @@ class AuthState extends Equatable {
   AuthState copyWith({bool? authenticated, bool? isLoading, String? error}) =>
       AuthState(
         authenticated: authenticated ?? this.authenticated,
-        isLoading: isLoading == true ? true : false,
+        isLoading: isLoading.falseIfNull(),
         error: error,
       );
 

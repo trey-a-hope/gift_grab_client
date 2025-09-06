@@ -18,7 +18,7 @@ class AccountDeleteState extends Equatable implements ErrorState {
   }) =>
       AccountDeleteState(
         success: success,
-        isLoading: isLoading == true ? true : false,
+        isLoading: isLoading.falseIfNull(),
         error: error,
       );
 

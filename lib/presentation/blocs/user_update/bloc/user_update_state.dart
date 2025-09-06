@@ -26,7 +26,7 @@ class UserUpdateState extends Equatable implements ErrorState {
         status: status ?? this.status,
         username: username ?? this.username,
         success: success,
-        isLoading: isLoading == true ? true : false,
+        isLoading: isLoading.falseIfNull(),
         error: error,
       );
 

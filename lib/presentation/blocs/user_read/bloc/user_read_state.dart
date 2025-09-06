@@ -29,7 +29,7 @@ class UserReadState extends Equatable implements ErrorState {
         friendshipState: clearFriendshipState
             ? null
             : (friendshipState ?? this.friendshipState),
-        isLoading: isLoading == true ? true : false,
+        isLoading: isLoading.falseIfNull(),
         error: error,
       );
 

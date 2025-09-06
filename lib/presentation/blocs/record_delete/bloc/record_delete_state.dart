@@ -18,7 +18,7 @@ class RecordDeleteState extends Equatable implements ErrorState {
   }) =>
       RecordDeleteState(
         success: success,
-        isLoading: isLoading == true ? true : false,
+        isLoading: isLoading.falseIfNull(),
         error: error,
       );
 

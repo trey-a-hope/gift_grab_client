@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:gift_grab_client/data/enums/leaderboards.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:nakama/nakama.dart';
+import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 
 part 'record_create_event.dart';
 part 'record_create_state.dart';

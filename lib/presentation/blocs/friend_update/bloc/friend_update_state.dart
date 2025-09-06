@@ -18,7 +18,7 @@ class FriendUpdateState extends Equatable implements ErrorState {
   }) =>
       FriendUpdateState(
         success: success,
-        isLoading: isLoading == true ? true : false,
+        isLoading: isLoading.falseIfNull(),
         error: error,
       );
 

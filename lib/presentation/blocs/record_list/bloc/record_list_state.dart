@@ -22,7 +22,7 @@ class RecordListState extends Equatable implements ErrorState {
       RecordListState(
         entries: entries ?? this.entries,
         cursor: cursor,
-        isLoading: isLoading == true ? true : false,
+        isLoading: isLoading.falseIfNull(),
         error: error,
       );
 

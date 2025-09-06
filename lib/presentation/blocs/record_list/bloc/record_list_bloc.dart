@@ -7,6 +7,7 @@ import 'package:gift_grab_client/domain/entities/leaderboard_entry.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/extensions/string_extensions.dart';
 import 'package:nakama/nakama.dart';
+import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 
 part 'record_list_event.dart';
 part 'record_list_state.dart';

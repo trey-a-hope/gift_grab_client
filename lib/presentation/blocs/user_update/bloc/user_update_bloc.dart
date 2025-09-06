@@ -5,6 +5,7 @@ import 'package:formz/formz.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_ui/ui.dart';
 import 'package:nakama/nakama.dart';
+import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 
 part 'user_update_event.dart';
 part 'user_update_state.dart';

@@ -1,6 +1,6 @@
 [
     {
         "language": "en-US",
-        "text": "Added profanity_api dependency to validate usernames during account updates."
+        "text": "Added bool_extensions.dart to various blocs to streamline loading state management."
     }
 ]

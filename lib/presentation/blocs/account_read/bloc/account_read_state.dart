@@ -18,7 +18,7 @@ class AccountReadState extends Equatable implements ErrorState {
   }) =>
       AccountReadState(
         account: account ?? this.account,
-        isLoading: isLoading == true ? true : false,
+        isLoading: isLoading.falseIfNull(),
         error: error,
       );
 

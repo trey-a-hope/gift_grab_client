@@ -22,7 +22,7 @@ class UserListState extends Equatable implements ErrorState {
       UserListState(
         query: query ?? this.query,
         users: users ?? this.users,
-        isLoading: isLoading == true ? true : false,
+        isLoading: isLoading.falseIfNull(),
         error: error,
       );
 
