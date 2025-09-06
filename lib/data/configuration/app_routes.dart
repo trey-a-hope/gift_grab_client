@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
+import 'package:gift_grab_client/presentation/blocs/friend_list/view/friends_page.dart';
 import 'package:gift_grab_client/presentation/blocs/record_create/bloc/record_create_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/record_list/view/leaderboard_page.dart';
 import 'package:gift_grab_client/presentation/blocs/user_list/view/search_users_page.dart';
@@ -98,6 +99,11 @@ GoRouter appRouter(BuildContext context) {
             path: GoRoutes.LEADERBOARD.name,
             name: GoRoutes.LEADERBOARD.name,
             builder: (context, state) => const LeaderboardPage(),
+          ),
+          GoRoute(
+            path: GoRoutes.FRIENDS.name,
+            name: GoRoutes.FRIENDS.name,
+            builder: (context, state) => const FriendsPage(),
           ),
         ],
       ),

@@ -1,6 +1,6 @@
 [
     {
         "language": "en-US",
-        "text": "Updated session refresh logic to save the new session instead of the old one."
+        "text": "Introduced a new FriendsPage with tabs for managing friends, invites, requests, and blocked users."
     }
 ]

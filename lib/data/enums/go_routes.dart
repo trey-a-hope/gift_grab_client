@@ -1,12 +1,13 @@
 enum GoRoutes {
+  EDIT_PROFILE('edit_profile'),
+  FRIENDS('friends'),
   GAME('game'),
-  LOGIN('login'),
   LEADERBOARD('leaderboard'),
+  LOGIN('login'),
   MAIN('main'),
   PROFILE('profile'),
-  EDIT_PROFILE('edit_profile'),
-  SETTINGS('settings'),
   SEARCH_USERS('search_users'),
+  SETTINGS('settings'),
   ;
 
   const GoRoutes(this.name);
