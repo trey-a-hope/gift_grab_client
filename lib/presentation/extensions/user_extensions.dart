@@ -8,7 +8,7 @@ extension UserExtensions on User {
       backgroundColor: Colors.grey[300],
       child: ClipOval(
         child: Image.network(
-          this.avatarUrl!,
+          this.avatarUrl ?? '',
           width: radius == null ? null : radius * 2,
           height: radius == null ? null : radius * 2,
           fit: BoxFit.cover,
