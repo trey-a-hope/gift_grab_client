@@ -7,6 +7,7 @@ import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/friend_update/bloc/friend_update_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/friend_update/view/friendship_state_button.dart';
+import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:gift_grab_client/presentation/extensions/user_extensions.dart';
 import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
 import 'package:go_router/go_router.dart';
@@ -97,7 +98,7 @@ class ProfileView extends StatelessWidget {
                       message: LabelText.confirm,
                     );
 
-                    if (confirm != true) return;
+                    if (!confirm.falseIfNull()) return;
 
                     friendUpdateBloc.add(isBlocked
                         ? UnblockFriend(user.id)

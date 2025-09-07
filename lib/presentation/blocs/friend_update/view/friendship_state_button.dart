@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/friend_update/bloc/friend_update_bloc.dart';
+import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:modal_util/modal_util.dart';
 import 'package:nakama/nakama.dart';
 
@@ -38,7 +39,7 @@ class FriendshipStateButton extends StatelessWidget {
               message: LabelText.confirm,
             );
 
-            if (confirm != true) return;
+            if (!confirm.falseIfNull()) return;
 
             friendUpdateBloc.add(DeleteFriend(uid));
           },
@@ -61,7 +62,7 @@ class FriendshipStateButton extends StatelessWidget {
                   message: LabelText.confirm,
                 );
 
-                if (confirm != true) return;
+                if (!confirm.falseIfNull()) return;
 
                 friendUpdateBloc.add(AcceptRequest(uid));
               },
@@ -76,7 +77,7 @@ class FriendshipStateButton extends StatelessWidget {
                   message: LabelText.confirm,
                 );
 
-                if (confirm != true) return;
+                if (!confirm.falseIfNull()) return;
 
                 friendUpdateBloc.add(RejectRequest(uid));
               },

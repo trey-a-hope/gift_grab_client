@@ -9,6 +9,7 @@ import 'package:gift_grab_client/presentation/blocs/account_delete/account_delet
 import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/account_update/account_update.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
+import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:modal_util/modal_util.dart';
@@ -165,7 +166,7 @@ class SettingsView extends StatelessWidget {
                           message: 'Are you sure?',
                         );
 
-                        if (confirm != true) return;
+                        if (!confirm.falseIfNull()) return;
 
                         authCubit.logout();
                       },
@@ -180,7 +181,7 @@ class SettingsView extends StatelessWidget {
                           message: LabelText.confirm,
                         );
 
-                        if (confirm != true) return;
+                        if (!confirm.falseIfNull()) return;
 
                         accountDeleteBloc.add(const DeleteAccount());
                       },

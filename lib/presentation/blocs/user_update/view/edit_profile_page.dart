@@ -6,6 +6,7 @@ import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/domain/services/social_auth_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/account_read.dart';
 import 'package:gift_grab_client/presentation/blocs/account_update/bloc/account_update_bloc.dart';
+import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:gift_grab_ui/formz_inputs/short_text/short_text_input.dart';
 import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
 import 'package:go_router/go_router.dart';
@@ -112,7 +113,7 @@ class EditProfileView extends StatelessWidget {
                                   message: LabelText.confirm,
                                 );
 
-                                if (confirm != true) return;
+                                if (!confirm.falseIfNull()) return;
 
                                 userUpdateBloc.add(const SaveForm());
                               },

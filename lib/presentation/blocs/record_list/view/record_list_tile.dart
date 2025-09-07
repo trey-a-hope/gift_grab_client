@@ -7,6 +7,7 @@ import 'package:gift_grab_client/presentation/blocs/record_delete/record_delete.
 import 'package:gift_grab_client/presentation/extensions/string_extensions.dart';
 import 'package:gift_grab_client/presentation/widgets/user_list_tile.dart';
 import 'package:modal_util/modal_util.dart';
+import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 
 class RecordListTile extends StatelessWidget {
   final String uid;
@@ -41,7 +42,7 @@ class RecordListTile extends StatelessWidget {
                         message: LabelText.confirm,
                       );
 
-                      if (confirm != true) return;
+                      if (!confirm.falseIfNull()) return;
 
                       recordDeleteBloc.add(const DeleteRecord());
                     },
