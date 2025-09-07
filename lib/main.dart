@@ -9,13 +9,13 @@ import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/domain/services/social_auth_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
-import 'package:gift_grab_client/util/utils.dart';
 import 'package:gift_grab_ui/ui.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
 import 'package:nakama/nakama.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:universal_platform/universal_platform.dart';
+import 'package:window_pain/window_pain.dart';
 
 late PackageInfo packageInfo;
 
@@ -40,7 +40,7 @@ void main() async {
     output: null,
   );
 
-  await WindowManagerUtil.maximizeWindow();
+  await WindowPain.maximizeWindow();
 
   final _ = getNakamaClient(
     host: Globals.nakamaClientHost,
