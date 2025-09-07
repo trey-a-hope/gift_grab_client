@@ -119,10 +119,9 @@ class ProfileView extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        CircleAvatar(
-                          radius: 100,
-                          backgroundImage: user?.getAvatar(),
-                        ),
+                        if (user != null) ...[
+                          user.getCircleAvatar(radius: 100),
+                        ],
                         if (isBlocked) ...[const BlockedContent()],
                         if (!isBlocked) ...[
                           UnblockedContent(user, state.friendshipState)

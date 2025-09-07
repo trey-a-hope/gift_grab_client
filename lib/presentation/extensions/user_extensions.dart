@@ -1,10 +1,37 @@
-import 'package:flutter/rendering.dart';
-import 'package:gift_grab_client/data/constants/globals.dart';
+import 'package:flutter/material.dart';
 import 'package:nakama/nakama.dart';
 
 extension UserExtensions on User {
-  NetworkImage getAvatar() {
-    final hasValidAvatar = avatarUrl != null && avatarUrl!.isNotEmpty;
-    return NetworkImage(hasValidAvatar ? avatarUrl! : Globals.emptyProfile);
+  CircleAvatar getCircleAvatar({double? radius}) {
+    return CircleAvatar(
+      radius: radius,
+      backgroundColor: Colors.grey[300],
+      child: ClipOval(
+        child: Image.network(
+          this.avatarUrl!,
+          width: radius == null ? null : radius * 2,
+          height: radius == null ? null : radius * 2,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Icon(
+              Icons.person,
+              size: radius,
+              color: Colors.grey[600],
+            );
+          },
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child;
+            return Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                        loadingProgress.expectedTotalBytes!
+                    : null,
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 }

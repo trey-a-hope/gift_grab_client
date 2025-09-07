@@ -21,9 +21,7 @@ class UserListTile extends StatelessWidget {
       onTap: () => context.pushNamed(GoRoutes.PROFILE.name, pathParameters: {
         'uid': user.id,
       }),
-      leading: CircleAvatar(
-        backgroundImage: user.getAvatar(),
-      ),
+      leading: user.getCircleAvatar(radius: 25),
     );
   }
 }

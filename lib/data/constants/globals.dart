@@ -5,10 +5,6 @@ class Globals {
   static const int recordListLimit = 10;
   static const int friendListLimit = 15;
 
-  // Image Paths
-  static const String emptyProfile =
-      'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png';
-
   static const String giftAsset = 'assets/images/gift-sprite.png';
 
   static const bool isProd = true;
