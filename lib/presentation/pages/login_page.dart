@@ -11,8 +11,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:universal_platform/universal_platform.dart';
 
 class LoginPage extends StatelessWidget {
-  static const _savedEmail = 'trey.a.hope@gmail.com';
-  static const _savedPassword = 'giftgrab';
+  static const _savedEmail = Globals.isProd ? '' : 'trey.a.hope@gmail.com';
+  static const _savedPassword = Globals.isProd ? '' : 'giftgrab';
 
   static const _usernameField = 'Username';
 
