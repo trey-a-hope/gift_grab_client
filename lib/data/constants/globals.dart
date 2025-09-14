@@ -4,6 +4,7 @@ class Globals {
   // Limits
   static const int recordListLimit = 10;
   static const int friendListLimit = 15;
+  static const int groupListLimit = 10;
 
   static const String giftAsset = 'assets/images/gift-sprite.png';
 
