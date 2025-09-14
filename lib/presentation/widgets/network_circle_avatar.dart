@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:nakama/nakama.dart';
 
-extension UserExtensions on User {
-  CircleAvatar getCircleAvatar({double? radius}) {
+class NetworkCircleAvatar extends StatelessWidget {
+  final String? imgUrl;
+  final double? radius;
+
+  const NetworkCircleAvatar({
+    this.imgUrl,
+    this.radius,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return CircleAvatar(
       radius: radius,
       backgroundColor: Colors.grey[300],
       child: ClipOval(
         child: Image.network(
-          this.avatarUrl ?? '',
-          width: radius == null ? null : radius * 2,
-          height: radius == null ? null : radius * 2,
+          imgUrl ?? '',
+          width: radius == null ? null : radius! * 2,
+          height: radius == null ? null : radius! * 2,
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
             return Icon(

@@ -98,6 +98,7 @@ class MyAppPage extends StatelessWidget {
           ),
           BlocProvider<AccountReadBloc>(
             create: (context) => AccountReadBloc(
+              context.read<AuthCubit>(),
               getNakamaClient(),
               context.read<SessionService>(),
             ),

@@ -3,8 +3,11 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/account_read.dart';
+import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:nakama/nakama.dart';
+
+class MockAuthCubit extends Mock implements AuthCubit {}
 
 class MockNakamaBaseClient extends Mock implements NakamaBaseClient {}
 
@@ -22,6 +25,7 @@ void main() {
     () {
       late MockSessionService mockSessionService;
       late MockNakamaBaseClient mockNakamaBaseClient;
+      late MockAuthCubit mockAuthCubit;
 
       final mockSession = Session(
         token: 'session_token',
@@ -38,6 +42,7 @@ void main() {
       setUp(() {
         mockSessionService = MockSessionService();
         mockNakamaBaseClient = MockNakamaBaseClient();
+        mockAuthCubit = MockAuthCubit();
 
         FlutterSecureStorage.setMockInitialValues({});
       });
@@ -53,6 +58,7 @@ void main() {
                 .thenAnswer((_) async => mockAccount);
           },
           build: () => AccountReadBloc(
+            mockAuthCubit,
             mockNakamaBaseClient,
             mockSessionService,
           ),

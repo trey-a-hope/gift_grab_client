@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
-import 'package:gift_grab_client/presentation/extensions/user_extensions.dart';
+import 'package:gift_grab_client/presentation/widgets/network_circle_avatar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nakama/nakama.dart';
 
@@ -18,10 +18,16 @@ class UserListTile extends StatelessWidget {
         user.username ?? 'No name',
         style: theme.textTheme.titleLarge,
       ),
-      onTap: () => context.pushNamed(GoRoutes.PROFILE.name, pathParameters: {
-        'uid': user.id,
-      }),
-      leading: user.getCircleAvatar(radius: 25),
+      onTap: () => context.pushNamed(
+        GoRoutes.PROFILE.name,
+        pathParameters: {
+          'uid': user.id,
+        },
+      ),
+      leading: NetworkCircleAvatar(
+        imgUrl: user.avatarUrl,
+        radius: 25,
+      ),
     );
   }
 }
