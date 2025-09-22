@@ -9,6 +9,7 @@ import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/domain/services/social_auth_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
+import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
 import 'package:gift_grab_ui/ui.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
@@ -102,7 +103,9 @@ class MyAppPage extends StatelessWidget {
               getNakamaClient(),
               context.read<SessionService>(),
             ),
-          )
+          ),
+          BlocProvider<GroupRefreshCubit>(
+              create: (context) => GroupRefreshCubit())
         ],
         child: const MyAppView(),
       ),

@@ -77,6 +77,12 @@ class MainMenuView extends StatelessWidget {
                           GoRoutes.FRIENDS.name,
                         ),
                       ),
+                      MenuButtonWidget(
+                        menuButton: MenuButton.groups,
+                        onTap: () => context.pushNamed(
+                          GoRoutes.GROUPS.name,
+                        ),
+                      ),
                     ],
                   ),
                 )

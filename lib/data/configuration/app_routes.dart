@@ -5,11 +5,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/friend_list/view/friends_page.dart';
+import 'package:gift_grab_client/presentation/blocs/group_create/view/group_create_page.dart';
+import 'package:gift_grab_client/presentation/blocs/group_list/view/groups_page.dart';
+import 'package:gift_grab_client/presentation/blocs/group_list/view/search_groups_page.dart';
+import 'package:gift_grab_client/presentation/blocs/group_read/view/group_details_page.dart';
+import 'package:gift_grab_client/presentation/blocs/group_update/view/edit_group_page.dart';
 import 'package:gift_grab_client/presentation/blocs/record_create/bloc/record_create_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/record_list/view/leaderboard_page.dart';
 import 'package:gift_grab_client/presentation/blocs/user_list/view/search_users_page.dart';
 import 'package:gift_grab_client/presentation/blocs/user_read/user_read.dart';
-import 'package:gift_grab_client/presentation/blocs/user_update/view/edit_profile_page.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 import 'package:gift_grab_client/presentation/pages/login_page.dart';
 import 'package:gift_grab_client/presentation/pages/main_menu_page.dart';
@@ -82,13 +86,6 @@ GoRouter appRouter(BuildContext context) {
               if (uid == null) throw Exception();
               return ProfilePage(uid);
             },
-            routes: [
-              GoRoute(
-                path: GoRoutes.EDIT_PROFILE.name,
-                name: GoRoutes.EDIT_PROFILE.name,
-                builder: (context, state) => const EditProfilePage(),
-              ),
-            ],
           ),
           GoRoute(
             path: GoRoutes.SEARCH_USERS.name,
@@ -104,6 +101,42 @@ GoRouter appRouter(BuildContext context) {
             path: GoRoutes.FRIENDS.name,
             name: GoRoutes.FRIENDS.name,
             builder: (context, state) => const FriendsPage(),
+          ),
+          GoRoute(
+            path: GoRoutes.GROUPS.name,
+            name: GoRoutes.GROUPS.name,
+            builder: (context, state) => const GroupsPage(),
+            routes: [
+              GoRoute(
+                path: GoRoutes.CREATE_GROUP.name,
+                name: GoRoutes.CREATE_GROUP.name,
+                builder: (context, state) => const GroupCreatePage(),
+              ),
+              GoRoute(
+                path: GoRoutes.GROUP_DETAILS.name + '/:group_id',
+                name: GoRoutes.GROUP_DETAILS.name,
+                builder: (context, state) {
+                  final groupId = state.pathParameters['group_id'];
+                  if (groupId == null) throw Exception('Group ID null');
+                  return GroupDetailsPage(groupId);
+                },
+                routes: [
+                  GoRoute(
+                    path: GoRoutes.EDIT_GROUP.name,
+                    name: GoRoutes.EDIT_GROUP.name,
+                    builder: (context, state) {
+                      final group = state.extra as Group;
+                      return EditGroupPage(group);
+                    },
+                  ),
+                ],
+              ),
+              GoRoute(
+                path: GoRoutes.SEARCH_GROUPS.name,
+                name: GoRoutes.SEARCH_GROUPS.name,
+                builder: (context, state) => const SearchGroupsPage(),
+              ),
+            ],
           ),
         ],
       ),

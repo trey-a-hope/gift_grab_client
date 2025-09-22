@@ -59,11 +59,13 @@ class FriendListBloc extends Bloc<FriendListEvent, FriendListState> {
           }
 
           final friends = friendList.friends!;
+          final cursor = friendList.cursor;
 
           emit(
             state.copyWith(
               friends: [...state.friends, ...friends],
               cursor: friendList.cursor.nullIfEmpty,
+              clearCursor: cursor.nullIfEmpty == null,
             ),
           );
         },

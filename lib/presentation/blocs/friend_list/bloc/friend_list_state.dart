@@ -18,13 +18,14 @@ class FriendListState extends Equatable implements ErrorState {
   FriendListState copyWith({
     List<Friend>? friends,
     String? cursor,
+    bool clearCursor = false,
     bool? isLoading,
     String? error,
   }) =>
       FriendListState(
         this.friendshipState,
         friends: friends ?? this.friends,
-        cursor: cursor,
+        cursor: clearCursor ? null : (cursor ?? this.cursor),
         isLoading: isLoading.falseIfNull(),
         error: error,
       );
