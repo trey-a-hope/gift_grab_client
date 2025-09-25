@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_error_handler/bloc_error_handler.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
+import 'package:gift_grab_client/data/constants/feedback_messages.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:gift_grab_ui/ui.dart';
@@ -67,10 +68,10 @@ class GroupCreateBloc extends Bloc<GroupCreateEvent, GroupCreateState> {
               await profanityApi.scan(state.description.value);
 
           if (nameRes.isProfanity || descriptionRes.isProfanity) {
-            throw Exception('Profanity and bad words are not welcomed here');
+            throw Exception(FeedbackMessages.profanity);
           }
 
-          final newGroup = await client.createGroup(
+          await client.createGroup(
             session: session,
             name: state.name.value,
             description: state.description.value,
@@ -80,7 +81,7 @@ class GroupCreateBloc extends Bloc<GroupCreateEvent, GroupCreateState> {
 
           emit(
             state.copyWith(
-              success: 'Group ${newGroup.name ?? ''} created',
+              success: FeedbackMessages.groupCreateSuccess,
               status: FormzSubmissionStatus.success,
             ),
           );

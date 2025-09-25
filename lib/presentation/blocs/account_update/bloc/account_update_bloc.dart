@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:bloc_error_handler/bloc_error_handler.dart';
 import 'package:equatable/equatable.dart';
+import 'package:gift_grab_client/data/constants/feedback_messages.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/domain/services/social_auth_service.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
@@ -46,7 +47,7 @@ class AccountUpdateBloc extends Bloc<AccountUpdateEvent, AccountUpdateState> {
           final profanityResponse = await profanityApi.scan(event.username);
 
           if (profanityResponse.isProfanity) {
-            throw Exception('Profanity and bad words are not welcomed here');
+            throw Exception(FeedbackMessages.profanity);
           }
 
           await client.updateAccount(

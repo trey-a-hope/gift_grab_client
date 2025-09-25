@@ -37,7 +37,7 @@ class GroupCreateState extends Equatable with FormzMixin implements ErrorState {
         maxCount: maxCount ?? this.maxCount,
         open: open ?? this.open,
         status: status ?? this.status,
-        success: success ?? this.success,
+        success: success,
         isLoading: isLoading.falseIfNull(),
         error: error,
       );

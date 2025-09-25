@@ -113,17 +113,14 @@ void main() {
           );
 
           final newState = originalState.copyWith(
-            cursor: null,
+            clearCursor: true,
             error: null,
           );
 
           expect(newState.friendshipState, equals(FriendshipState.mutual));
           expect(newState.friends, equals([]));
           expect(newState.cursor, isNull);
-          expect(
-              newState.isLoading,
-              equals(
-                  false)); // Note: current implementation always sets to false when null
+          expect(newState.isLoading, equals(false));
           expect(newState.error, isNull);
         },
       );

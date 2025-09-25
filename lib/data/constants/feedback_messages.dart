@@ -9,4 +9,8 @@ class FeedbackMessages {
       'Email account unlinked successfully';
   static const accountUnlinkGoogle = 'Google account unlinked successfully';
   static const accountUpdateSuccess = 'Username updated successfully';
+
+  static const groupCreateSuccess = 'Group created sucessfully';
+
+  static const profanity = 'Profanity and bad words are not welcomed here';
 }
