@@ -1,6 +1,6 @@
 [
     {
         "language": "en-US",
-        "text": "Refactored avatar handling in profile_page.dart to utilize a new getCircleAvatar method for improved clarity and consistency."
+        "text": "Group feature now available"
     }
 ]
