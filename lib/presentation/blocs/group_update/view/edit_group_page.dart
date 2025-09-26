@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:gift_grab_client/presentation/pages/group_form_page.dart';
@@ -51,34 +52,37 @@ class EditGroupView extends StatelessWidget {
       },
       builder: (context, state) {
         return GGScaffoldWidget(
-            title: 'Update Group',
-            child: SafeArea(
-                child: GroupFormPage(
-                    name: state.name,
-                    nameChanged: (val) => groupUpdateBloc.add(NameChanged(val)),
-                    description: state.description,
-                    descriptionChanged: (val) =>
-                        groupUpdateBloc.add(DescriptionChanged(val)),
-                    open: state.open,
-                    openChanged: (val) => groupUpdateBloc.add(OpenChanged(val)),
-                    submit: () async {
-                      final formValid = Formz.validate(state.inputs);
+          title: 'Update Group',
+          child: SafeArea(
+            child: GroupFormPage(
+              name: state.name,
+              nameChanged: (val) => groupUpdateBloc.add(NameChanged(val)),
+              description: state.description,
+              descriptionChanged: (val) =>
+                  groupUpdateBloc.add(DescriptionChanged(val)),
+              open: state.open,
+              openChanged: (val) => groupUpdateBloc.add(OpenChanged(val)),
+              submit: () async {
+                final formValid = Formz.validate(state.inputs);
 
-                      if (!formValid) {
-                        ModalUtil.showError(context, title: 'Form not valid');
-                        return;
-                      }
+                if (!formValid) {
+                  ModalUtil.showError(context, title: 'Form not valid');
+                  return;
+                }
 
-                      final confirm = await ModalUtil.showConfirmation(
-                        context,
-                        title: 'Update Group',
-                        message: 'Press yes to confirm',
-                      );
+                final confirm = await ModalUtil.showConfirmation(
+                  context,
+                  title: 'Update Group',
+                  message: LabelText.confirm,
+                );
 
-                      if (!confirm.falseIfNull()) return;
+                if (!confirm.falseIfNull()) return;
 
-                      groupUpdateBloc.add(SaveForm(group.id));
-                    })));
+                groupUpdateBloc.add(SaveForm(group.id));
+              },
+            ),
+          ),
+        );
       },
     );
   }

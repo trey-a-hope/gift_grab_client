@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/cubit/group_refresh_cubit.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
@@ -74,7 +75,7 @@ class GroupCreateView extends StatelessWidget {
                       final confirm = await ModalUtil.showConfirmation(
                         context,
                         title: 'Create Group',
-                        message: 'Press yes to confirm',
+                        message: LabelText.confirm,
                       );
 
                       if (!confirm.falseIfNull()) return;

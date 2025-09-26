@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
@@ -89,8 +90,11 @@ class GroupDetailsView extends StatelessWidget {
                 const Gap(8),
                 IconButton.filledTonal(
                   onPressed: () async {
-                    final confirm = await ModalUtil.showConfirmation(context,
-                        title: 'Delete Group', message: 'Press yes to confirm');
+                    final confirm = await ModalUtil.showConfirmation(
+                      context,
+                      title: 'Delete Group',
+                      message: LabelText.confirm,
+                    );
 
                     if (!confirm.falseIfNull()) return;
 
