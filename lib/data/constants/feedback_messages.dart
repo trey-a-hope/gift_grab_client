@@ -1,13 +1,16 @@
-part of 'globals.dart';
+class FeedbackMessages {
+  static const accountDeleteSuccess = 'Account deleted successfully';
+  static const accountEmailNull = 'Email is null';
+  static const accountLinkApple = 'Apple account linked successfully';
+  static const accountLinkEmailSuccess = 'Email account linked successfully';
+  static const accountLinkGoogle = 'Google account linked successfully';
+  static const accountUnlinkApple = 'Apple account unlinked successfully';
+  static const accountUnlinkEmailSuccess =
+      'Email account unlinked successfully';
+  static const accountUnlinkGoogle = 'Google account unlinked successfully';
+  static const accountUpdateSuccess = 'Username updated successfully';
 
-class _FeedbackMessages {
-  final accountDeleteSuccess = 'Account deleted successfully';
-  final accountEmailNull = 'Email is null';
-  final accountLinkApple = 'Apple account linked successfully';
-  final accountLinkEmailSuccess = 'Email account linked successfully';
-  final accountLinkGoogle = 'Google account linked successfully';
-  final accountUnlinkApple = 'Apple account unlinked successfully';
-  final accountUnlinkEmailSuccess = 'Email account unlinked successfully';
-  final accountUnlinkGoogle = 'Google account unlinked successfully';
-  final accountUpdateSuccess = 'Username updated successfully';
+  static const groupCreateSuccess = 'Group created sucessfully';
+
+  static const profanity = 'Profanity and bad words are not welcomed here';
 }

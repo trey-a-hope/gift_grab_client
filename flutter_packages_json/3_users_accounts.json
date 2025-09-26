@@ -1,0 +1,8 @@
+{
+  "packages": [
+    "formz",
+    "animated_search_bar",
+    "material_design_icons_flutter",
+    "gap"
+  ]
+}

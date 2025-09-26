@@ -14,12 +14,8 @@ class SessionRepository implements ISessionRepository {
   @override
   Future<void> clearSession() async {
     try {
-      await Future.wait(
-        [
-          storage.delete(key: _tokenKey),
-          storage.delete(key: _refreshTokenKey),
-        ],
-      );
+      await storage.delete(key: _tokenKey);
+      await storage.delete(key: _refreshTokenKey);
     } catch (e) {
       throw Exception('Failed to clear tokens: $e');
     }
@@ -28,13 +24,13 @@ class SessionRepository implements ISessionRepository {
   @override
   Future<Session?> getStoredSession() async {
     final token = await storage.read(key: _tokenKey);
-    final refreshTokenKey = await storage.read(key: _refreshTokenKey);
+    final refreshToken = await storage.read(key: _refreshTokenKey);
 
-    if (token == null || refreshTokenKey == null) return null;
+    if (token == null || refreshToken == null) return null;
 
     return Session.restore(
       token: token,
-      refreshToken: refreshTokenKey,
+      refreshToken: refreshToken,
     );
   }
 
@@ -52,17 +48,13 @@ class SessionRepository implements ISessionRepository {
     try {
       return await client.sessionRefresh(session: session);
     } catch (e) {
-      throw Exception('Failed to refresh token: $e');
+      throw Exception('Failed to refresh session: $e');
     }
   }
 
   @override
   Future<void> saveSession(Session session) async {
-    await Future.wait(
-      [
-        storage.write(key: _tokenKey, value: session.token),
-        storage.write(key: _refreshTokenKey, value: session.refreshToken),
-      ],
-    );
+    await storage.write(key: _tokenKey, value: session.token);
+    await storage.write(key: _refreshTokenKey, value: session.refreshToken);
   }
 }

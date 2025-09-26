@@ -1,0 +1,16 @@
+{
+  "packages": [
+    "flutter_secure_storage",
+    "equatable",
+    "flutter_login",
+    "go_router",
+    "flutter_bloc",
+    "sign_in_with_apple",
+    "settings_ui",
+    "google_sign_in",
+    "font_awesome_flutter",
+    "bloc_error_handler",
+    "modal_util",
+    "cupertino_icons"
+  ]
+}

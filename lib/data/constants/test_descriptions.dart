@@ -1,14 +1,14 @@
-part of 'globals.dart';
-
-class _TestDescriptions {
-  final event = _EventDescriptions();
-  final state = _StateDescriptions();
+class TestDescriptions {
+  static final event = _EventDescriptions();
+  static final state = _StateDescriptions();
 }
 
 class _EventDescriptions {
   String get valueEqual => 'supports value equality';
   String get propsEqual => 'props are correct';
   String get diffProps => 'different event props are not equal';
+  String get sealedClass => 'sealed class inheritance';
+  String get correctInstance => 'creates instances correctly';
 }
 
 class _StateDescriptions {
