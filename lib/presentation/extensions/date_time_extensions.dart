@@ -10,4 +10,8 @@ extension DateTimeExtensions on DateTime {
 
     return '$monthName 1st - ${lastDay.day.toString().ordinal}';
   }
+
+  String MMM_d_y_h_mm_a() => DateFormat('MMM d, y h:mm a').format(toLocal());
+  String MMM_d_y() => DateFormat('MMM d, y').format(toLocal());
+  String h_mm_a() => DateFormat('h:mm a').format(toLocal());
 }
