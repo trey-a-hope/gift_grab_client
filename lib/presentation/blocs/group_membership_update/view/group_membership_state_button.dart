@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gift_grab_client/domain/services/modal_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/group_membership_read/group_membership_read.dart';
 import 'package:gift_grab_client/presentation/blocs/group_membership_update/bloc/group_membership_update_bloc.dart';
@@ -37,11 +38,17 @@ class GroupMembershipStateButtonView extends StatelessWidget {
   Widget build(BuildContext context) {
     final groupMembershipReadBloc = context.read<GroupMembershipReadBloc>();
     final groupMembershipUpdateBloc = context.read<GroupMembershipUpdateBloc>();
+    final modalService = context.read<ModalService>();
 
     return BlocListener<GroupMembershipUpdateBloc, GroupMembershipUpdateState>(
       listener: (context, state) {
         if (state.success != null) {
+          modalService.shadToast(context, title: Text(state.success!));
           groupMembershipReadBloc.add(const ReadGroupMembershipState());
+        }
+
+        if (state.error != null) {
+          modalService.shadToastDestructive(context, title: Text(state.error!));
         }
       },
       child: BlocBuilder<GroupMembershipReadBloc, GroupMembershipReadState>(
@@ -55,19 +62,20 @@ class GroupMembershipStateButtonView extends StatelessWidget {
                 onPressed: () =>
                     groupMembershipUpdateBloc.add(const JoinGroup()),
               );
+            case GroupMembershipState.joinRequest:
+              return ShadButton.secondary(
+                child: const Text('Cancel request'),
+                onPressed: () =>
+                    groupMembershipUpdateBloc.add(const CancelRequest()),
+              );
             case GroupMembershipState.superadmin:
-              return const SizedBox.shrink();
             case GroupMembershipState.admin:
-              return const SizedBox.shrink();
-
             case GroupMembershipState.member:
-              return ShadButton(
+              return ShadButton.secondary(
                 child: const Text('Leave group'),
                 onPressed: () =>
                     groupMembershipUpdateBloc.add(const LeaveGroup()),
               );
-            case GroupMembershipState.joinRequest:
-              return const SizedBox.shrink();
           }
         },
       ),

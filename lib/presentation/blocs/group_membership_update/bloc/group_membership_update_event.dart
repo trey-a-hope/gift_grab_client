@@ -17,3 +17,19 @@ class LeaveGroup extends GroupMembershipUpdateEvent {
   @override
   List<Object?> get props => [];
 }
+
+class CancelRequest extends GroupMembershipUpdateEvent {
+  const CancelRequest();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class AddGroupUsers extends GroupMembershipUpdateEvent {
+  final List<String> uids;
+
+  const AddGroupUsers(this.uids);
+
+  @override
+  List<Object?> get props => [uids];
+}

@@ -11,7 +11,9 @@ class ModalService {
       ShadToaster.of(context).show(
         ShadToast(
           title: title,
-          action: ShadButton.outline(child: child, onPressed: onPressed),
+          action: child == null
+              ? null
+              : ShadButton.outline(child: child, onPressed: onPressed),
         ),
       );
 
