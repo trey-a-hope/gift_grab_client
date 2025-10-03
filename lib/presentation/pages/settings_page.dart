@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gift_grab_client/data/constants/label_text.dart';
+import 'package:gift_grab_client/domain/services/modal_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/domain/services/social_auth_service.dart';
 import 'package:gift_grab_client/main.dart';
@@ -12,7 +13,6 @@ import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart'
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:modal_util/modal_util.dart';
 import 'package:nakama/nakama.dart';
 import 'package:profanity_api/profanity_api.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -59,29 +59,32 @@ class SettingsView extends StatelessWidget {
     final accountDeleteBloc = context.read<AccountDeleteBloc>();
     final accountUpdateBloc = context.read<AccountUpdateBloc>();
     final accountReadBloc = context.read<AccountReadBloc>();
+    final modalService = context.read<ModalService>();
 
     return MultiBlocListener(
       listeners: [
         BlocListener<AccountDeleteBloc, AccountDeleteState>(
           listener: (context, state) {
             if (state.success != null) {
-              ModalUtil.showSuccess(context, title: state.success!);
+              modalService.shadToast(context, title: Text(state.success!));
             }
 
             if (state.error != null) {
-              ModalUtil.showError(context, title: state.error!);
+              modalService.shadToastDestructive(context,
+                  title: Text(state.error!));
             }
           },
         ),
         BlocListener<AccountUpdateBloc, AccountUpdateState>(
           listener: (context, state) {
             if (state.success != null) {
-              ModalUtil.showSuccess(context, title: state.success!);
+              modalService.shadToast(context, title: Text(state.success!));
               accountReadBloc.add(const ReadAccount());
             }
 
             if (state.error != null) {
-              ModalUtil.showError(context, title: state.error!);
+              modalService.shadToastDestructive(context,
+                  title: Text(state.error!));
             }
           },
         ),
@@ -104,19 +107,20 @@ class SettingsView extends StatelessWidget {
                     SettingsTile.switchTile(
                       initialValue: isEmailLinked,
                       onToggle: (val) async {
-                        if (val) {
-                          final result =
-                              await ModalUtil.showEmailPasswordDialog(context);
+                        // TODO (Trey) - Added showEmailPasswordDialog to modalService
+                        // if (val) {
+                        //   final result =
+                        //       await ModalUtil.showEmailPasswordDialog(context);
 
-                          if (result == null) return;
+                        //   if (result == null) return;
 
-                          final email = result.$1;
-                          final password = result.$2;
+                        //   final email = result.$1;
+                        //   final password = result.$2;
 
-                          accountUpdateBloc.add(LinkEmail(email, password));
-                        } else {
-                          accountUpdateBloc.add(const UnlinkEmail());
-                        }
+                        //   accountUpdateBloc.add(LinkEmail(email, password));
+                        // } else {
+                        //   accountUpdateBloc.add(const UnlinkEmail());
+                        // }
                       },
                       leading: const Icon(Icons.email),
                       title: const Text('Link to Email'),
@@ -160,10 +164,11 @@ class SettingsView extends StatelessWidget {
                       leading: const Icon(Icons.logout),
                       title: const Text('Logout'),
                       onPressed: (context) async {
-                        final confirm = await ModalUtil.showConfirmation(
+                        final confirm =
+                            await modalService.shadConfirmationDialog(
                           context,
-                          title: 'Logout',
-                          message: 'Are you sure?',
+                          title: const Text('Logout'),
+                          description: const Text(LabelText.confirm),
                         );
 
                         if (!confirm.falseIfNull()) return;
@@ -173,12 +178,13 @@ class SettingsView extends StatelessWidget {
                     ),
                     SettingsTile.navigation(
                       leading: const Icon(Icons.delete),
-                      title: const Text('Delete Account'),
+                      title: const Text('Delete account'),
                       onPressed: (context) async {
-                        final confirm = await ModalUtil.showConfirmation(
+                        final confirm =
+                            await modalService.shadConfirmationDialog(
                           context,
-                          title: 'Delete Account',
-                          message: LabelText.confirm,
+                          title: const Text('Delete reqaccountuest'),
+                          description: const Text(LabelText.confirm),
                         );
 
                         if (!confirm.falseIfNull()) return;

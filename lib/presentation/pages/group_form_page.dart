@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
+import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_ui/ui.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../../data/constants/label_text.dart';
 
@@ -43,7 +44,7 @@ class GroupFormPage extends StatelessWidget {
             labelText: 'Name',
             onChanged: nameChanged,
           ),
-          const Gap(32),
+          GapSizes.xlGap,
           LongTextInput(
             description,
             labelText: 'Description',
@@ -51,14 +52,14 @@ class GroupFormPage extends StatelessWidget {
                 'Describe your group (${description.value.length}/${LongText.max})',
             onChanged: descriptionChanged,
           ),
-          const Gap(32),
+          GapSizes.xlGap,
           if (maxCount != null && maxCountChanged != null) ...[
             RangeInput(
               maxCount!,
               title: 'Member Limit',
               onChanged: maxCountChanged!,
             ),
-            const Gap(32),
+            GapSizes.xlGap,
           ],
           ToggleInput(
             open,
@@ -68,7 +69,7 @@ class GroupFormPage extends StatelessWidget {
           ),
           const Spacer(),
           Center(
-            child: ElevatedButton(
+            child: ShadButton(
               onPressed: submit,
               child: const Text(LabelText.submit),
             ),

@@ -5,16 +5,17 @@ import 'package:gift_grab_client/data/configuration/app_routes.dart';
 import 'package:gift_grab_client/data/constants/globals.dart';
 import 'package:gift_grab_client/data/repositories/session_repository.dart';
 import 'package:gift_grab_client/data/repositories/social_auth_repository.dart';
+import 'package:gift_grab_client/domain/services/modal_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/domain/services/social_auth_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
-import 'package:gift_grab_ui/ui.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
 import 'package:nakama/nakama.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:universal_platform/universal_platform.dart';
 import 'package:window_pain/window_pain.dart';
 
@@ -74,6 +75,9 @@ class MyAppPage extends StatelessWidget {
             GoogleSignIn.instance,
           ),
         ),
+        RepositoryProvider<ModalService>(
+          create: (context) => ModalService(),
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -120,10 +124,16 @@ class MyAppView extends StatelessWidget {
   Widget build(BuildContext context) {
     final router = appRouter(context);
 
-    return MaterialApp.router(
+    return ShadApp.router(
       debugShowCheckedModeBanner: false,
-      theme: GiftGrabTheme.lightTheme,
-      darkTheme: GiftGrabTheme.darkTheme,
+      theme: ShadThemeData(
+        brightness: Brightness.light,
+        colorScheme: const ShadSlateColorScheme.light(),
+      ),
+      darkTheme: ShadThemeData(
+        brightness: Brightness.dark,
+        colorScheme: const ShadSlateColorScheme.dark(),
+      ),
       themeMode: ThemeMode.dark,
       title: 'Gift Grab',
       routeInformationParser: router.routeInformationParser,

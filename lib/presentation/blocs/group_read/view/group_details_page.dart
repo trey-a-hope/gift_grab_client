@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
+import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
+import 'package:gift_grab_client/domain/services/modal_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/group_delete/bloc/group_delete_bloc.dart';
+import 'package:gift_grab_client/presentation/blocs/group_membership_update/view/group_membership_state_button.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:gift_grab_client/presentation/extensions/date_time_extensions.dart';
 import 'package:gift_grab_client/presentation/widgets/network_circle_avatar.dart';
 import 'package:gift_grab_ui/ui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:modal_util/modal_util.dart';
 import 'package:nakama/nakama.dart';
 
 import '../group_read.dart';
@@ -54,15 +55,16 @@ class GroupDetailsView extends StatelessWidget {
     final groupReadBloc = context.read<GroupReadBloc>();
     final groupRefreshCubit = context.read<GroupRefreshCubit>();
     final groupDeleteBloc = context.read<GroupDeleteBloc>();
+    final modalService = context.read<ModalService>();
 
     return BlocListener<GroupDeleteBloc, GroupDeleteState>(
       listener: (context, state) {
         if (state.error != null) {
-          ModalUtil.showError(context, title: state.error!);
+          modalService.shadToastDestructive(context, title: Text(state.error!));
         }
 
         if (state.success != null) {
-          ModalUtil.showSuccess(context, title: state.success!);
+          modalService.shadToast(context, title: Text(state.success!));
           groupRefreshCubit.triggerRefresh();
           context.pop();
         }
@@ -90,13 +92,13 @@ class GroupDetailsView extends StatelessWidget {
                   },
                   icon: const Icon(Icons.edit),
                 ),
-                const Gap(8),
+                GapSizes.smallGap,
                 IconButton.filledTonal(
                   onPressed: () async {
-                    final confirm = await ModalUtil.showConfirmation(
+                    final confirm = await modalService.shadConfirmationDialog(
                       context,
-                      title: 'Delete Group',
-                      message: LabelText.confirm,
+                      title: const Text('Delete group'),
+                      description: const Text(LabelText.confirm),
                     );
 
                     if (!confirm.falseIfNull()) return;
@@ -120,7 +122,9 @@ class GroupDetailsView extends StatelessWidget {
                                 imgUrl: group.avatarUrl,
                                 radius: 100,
                               ),
-                              const Gap(8),
+                              GapSizes.largeGap,
+                              GroupMembershipStateButton(groupId: group.id),
+                              GapSizes.largeGap,
                               Expanded(
                                   child: Row(
                                 children: [

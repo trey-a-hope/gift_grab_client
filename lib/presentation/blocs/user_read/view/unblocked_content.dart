@@ -14,7 +14,7 @@ class UnblockedContent extends StatelessWidget {
         child: user != null
             ? Column(
                 children: [
-                  const Gap(32),
+                  GapSizes.xlGap,
                   FriendshipStateButton(
                     user!.id,
                     friendshipState,

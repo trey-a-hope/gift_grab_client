@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gift_grab_client/domain/services/modal_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/friend_update/friend_update.dart';
 import 'package:gift_grab_client/presentation/extensions/string_extensions.dart';
 import 'package:gift_grab_client/presentation/widgets/user_list_tile.dart';
 import 'package:gift_grab_ui/widgets/no_results_widget.dart';
-import 'package:modal_util/modal_util.dart';
 import 'package:nakama/nakama.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../friend_list.dart';
 
@@ -44,16 +45,17 @@ class FriendListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final friendListBloc = context.read<FriendListBloc>();
+    final modalService = context.read<ModalService>();
 
     return BlocListener<FriendUpdateBloc, FriendUpdateState>(
       listener: (context, state) {
         if (state.success != null) {
-          ModalUtil.showSuccess(context, title: state.success!);
+          modalService.shadToast(context, title: Text(state.success!));
           friendListBloc.add(const InitialFetch());
         }
 
         if (state.error != null) {
-          ModalUtil.showError(context, title: state.error!);
+          modalService.shadToastDestructive(context, title: Text(state.error!));
         }
       },
       child: BlocBuilder<FriendListBloc, FriendListState>(
@@ -96,12 +98,9 @@ class FriendListView extends StatelessWidget {
                             }),
               ),
               if (displayMoreButton) ...[
-                Padding(
-                  padding: const EdgeInsetsGeometry.all(16),
-                  child: ElevatedButton(
-                    onPressed: () => friendListBloc.add(const FetchMore()),
-                    child: const Text('More'),
-                  ),
+                ShadButton(
+                  child: const Text('More'),
+                  onPressed: () => friendListBloc.add(const FetchMore()),
                 )
               ]
             ],

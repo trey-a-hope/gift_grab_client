@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
+import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
+import 'package:gift_grab_client/domain/services/modal_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/friend_update/bloc/friend_update_bloc.dart';
@@ -12,7 +13,6 @@ import 'package:gift_grab_client/presentation/widgets/network_circle_avatar.dart
 import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:modal_util/modal_util.dart';
 import 'package:nakama/nakama.dart';
 
 import '../user_read.dart';
@@ -55,11 +55,12 @@ class ProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     final userReadBloc = context.read<UserReadBloc>();
     final friendUpdateBloc = context.read<FriendUpdateBloc>();
+    final modalService = context.read<ModalService>();
 
     return BlocListener<FriendUpdateBloc, FriendUpdateState>(
       listener: (context, state) {
         if (state.success != null) {
-          ModalUtil.showSuccess(context, title: state.success!);
+          modalService.shadToast(context, title: Text(state.success!));
           userReadBloc.add(const ReadUser());
         }
       },
@@ -92,10 +93,10 @@ class ProfileView extends StatelessWidget {
               if (!state.isMyProfile && user != null) ...[
                 IconButton.filledTonal(
                   onPressed: () async {
-                    final confirm = await ModalUtil.showConfirmation(
+                    final confirm = await modalService.shadConfirmationDialog(
                       context,
-                      title: '${isBlocked ? 'Unblock' : 'Block'}',
-                      message: LabelText.confirm,
+                      title: Text('${isBlocked ? 'Unblock' : 'Block'}'),
+                      description: const Text(LabelText.confirm),
                     );
 
                     if (!confirm.falseIfNull()) return;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gift_grab_client/domain/services/modal_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/account_read.dart';
 import 'package:gift_grab_client/presentation/blocs/record_delete/bloc/record_delete_bloc.dart';
@@ -7,8 +8,8 @@ import 'package:gift_grab_client/presentation/blocs/record_list/view/record_list
 import 'package:gift_grab_client/presentation/extensions/date_time_extensions.dart';
 import 'package:gift_grab_client/presentation/extensions/string_extensions.dart';
 import 'package:gift_grab_ui/ui.dart';
-import 'package:modal_util/modal_util.dart';
 import 'package:nakama/nakama.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../record_list.dart';
 
@@ -45,12 +46,14 @@ class LeaderboardView extends StatelessWidget {
     final theme = Theme.of(context);
     final recordListBloc = context.read<RecordListBloc>();
     final accountReadBloc = context.read<AccountReadBloc>();
+    final modalService = context.read<ModalService>();
+
     final account = accountReadBloc.state.account!;
 
     return BlocListener<RecordDeleteBloc, RecordDeleteState>(
       listener: (context, state) {
         if (state.success != null) {
-          ModalUtil.showSuccess(context, title: state.success!);
+          modalService.shadToast(context, title: Text(state.success!));
           recordListBloc.add(const InitialFetch());
         }
       },
@@ -93,7 +96,7 @@ class LeaderboardView extends StatelessWidget {
                     if (displayMoreButton) ...[
                       Padding(
                         padding: const EdgeInsetsGeometry.all(16),
-                        child: ElevatedButton(
+                        child: ShadButton(
                           onPressed: () =>
                               recordListBloc.add(const FetchMore()),
                           child: const Text('More'),

@@ -6,6 +6,7 @@ import 'package:gift_grab_client/presentation/extensions/string_extensions.dart'
 import 'package:gift_grab_client/presentation/widgets/group_list_tile.dart';
 import 'package:gift_grab_ui/widgets/no_results_widget.dart';
 import 'package:nakama/nakama.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 import '../group_list.dart';
 
@@ -64,7 +65,7 @@ class GroupListView extends StatelessWidget {
             if (displayMoreButton) ...[
               Padding(
                 padding: const EdgeInsetsGeometry.all(16),
-                child: ElevatedButton(
+                child: ShadButton(
                   onPressed: () => groupListBloc.add(const FetchMore()),
                   child: const Text('More'),
                 ),

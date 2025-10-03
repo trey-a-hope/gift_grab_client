@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
+import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
+import 'package:gift_grab_client/domain/services/modal_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/account_read.dart';
 import 'package:gift_grab_client/presentation/extensions/build_context_extensions.dart';
 import 'package:gift_grab_ui/ui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:modal_util/modal_util.dart';
 
 class MainMenuPage extends StatelessWidget {
   const MainMenuPage({super.key});
@@ -24,6 +24,7 @@ class MainMenuView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final modalService = context.read<ModalService>();
 
     return BlocConsumer<AccountReadBloc, AccountReadState>(
       builder: (context, state) {
@@ -37,7 +38,7 @@ class MainMenuView extends StatelessWidget {
               onPressed: () => context.pushNamed(GoRoutes.SEARCH_USERS.name),
               icon: const Icon(Icons.search),
             ),
-            const Gap(8),
+            GapSizes.smallGap,
             IconButton.filledTonal(
               onPressed: () => context.pushNamed(GoRoutes.SETTINGS.name),
               icon: const Icon(Icons.settings),
@@ -93,7 +94,7 @@ class MainMenuView extends StatelessWidget {
       },
       listener: (context, state) {
         if (state.error != null) {
-          ModalUtil.showError(context, title: state.error!);
+          modalService.shadToastDestructive(context, title: Text(state.error!));
         }
       },
       listenWhen: (prev, curr) => context.isOnPage(GoRoutes.MAIN.name),
