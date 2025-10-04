@@ -117,6 +117,7 @@ class GroupDetailsView extends StatelessWidget {
                       : Padding(
                           padding: const EdgeInsetsGeometry.all(32),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               NetworkCircleAvatar(
                                 imgUrl: group.avatarUrl,
