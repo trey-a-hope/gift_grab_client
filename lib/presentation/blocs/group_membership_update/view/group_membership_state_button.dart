@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gift_grab_client/domain/services/modal_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
+import 'package:gift_grab_client/presentation/blocs/group_membership_list/group_membership_list.dart';
 import 'package:gift_grab_client/presentation/blocs/group_membership_read/group_membership_read.dart';
 import 'package:gift_grab_client/presentation/blocs/group_membership_update/bloc/group_membership_update_bloc.dart';
 import 'package:nakama/nakama.dart';
@@ -38,6 +39,8 @@ class GroupMembershipStateButtonView extends StatelessWidget {
   Widget build(BuildContext context) {
     final groupMembershipReadBloc = context.read<GroupMembershipReadBloc>();
     final groupMembershipUpdateBloc = context.read<GroupMembershipUpdateBloc>();
+    final groupMembershipListBloc = context.read<GroupMembershipListBloc>();
+
     final modalService = context.read<ModalService>();
 
     return BlocListener<GroupMembershipUpdateBloc, GroupMembershipUpdateState>(
@@ -45,6 +48,7 @@ class GroupMembershipStateButtonView extends StatelessWidget {
         if (state.success != null) {
           modalService.shadToast(context, title: Text(state.success!));
           groupMembershipReadBloc.add(const ReadGroupMembershipState());
+          groupMembershipListBloc.add(const FetchUsers());
         }
 
         if (state.error != null) {

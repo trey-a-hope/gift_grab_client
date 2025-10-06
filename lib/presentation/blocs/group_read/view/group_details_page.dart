@@ -7,6 +7,7 @@ import 'package:gift_grab_client/domain/services/modal_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/group_delete/bloc/group_delete_bloc.dart';
+import 'package:gift_grab_client/presentation/blocs/group_membership_list/view/group_membership_list_page.dart';
 import 'package:gift_grab_client/presentation/blocs/group_membership_update/view/group_membership_state_button.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
@@ -15,7 +16,9 @@ import 'package:gift_grab_client/presentation/widgets/network_circle_avatar.dart
 import 'package:gift_grab_ui/ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nakama/nakama.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
+import '../../group_membership_list/bloc/group_membership_list_bloc.dart';
 import '../group_read.dart';
 
 class GroupDetailsPage extends StatelessWidget {
@@ -38,6 +41,14 @@ class GroupDetailsPage extends StatelessWidget {
           getNakamaClient(),
           context.read<SessionService>(),
         ),
+      ),
+      BlocProvider(
+        create: (_) => GroupMembershipListBloc(
+          groupId,
+          getNakamaClient(),
+          context.read<SessionService>(),
+        )..add(const FetchUsers()),
+        child: const GroupMembershipListView(),
       )
     ], child: const GroupDetailsView());
   }
@@ -49,6 +60,8 @@ class GroupDetailsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    final textTheme = ShadTheme.of(context).textTheme;
 
     final accountReadBloc = context.read<AccountReadBloc>();
     final account = accountReadBloc.state.account!;
@@ -127,81 +140,99 @@ class GroupDetailsView extends StatelessWidget {
                               GroupMembershipStateButton(groupId: group.id),
                               GapSizes.largeGap,
                               Expanded(
-                                  child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsetsGeometry.all(8),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          ListTile(
-                                            title: Text(
-                                              'Description',
-                                              style: theme.textTheme.bodyLarge!
-                                                  .copyWith(
-                                                      color: Colors.white),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsetsGeometry.all(8),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            ListTile(
+                                              title: Text(
+                                                'Description',
+                                                style: theme
+                                                    .textTheme.bodyLarge!
+                                                    .copyWith(
+                                                        color: Colors.white),
+                                              ),
+                                              subtitle: Text(
+                                                group.description ?? 'N/A',
+                                                style: theme
+                                                    .textTheme.headlineSmall,
+                                              ),
                                             ),
-                                            subtitle: Text(
-                                              group.description ?? 'N/A',
-                                              style:
-                                                  theme.textTheme.headlineSmall,
+                                            ListTile(
+                                              title: Text(
+                                                'Join Type',
+                                                style: theme
+                                                    .textTheme.bodyLarge!
+                                                    .copyWith(
+                                                        color: Colors.white),
+                                              ),
+                                              subtitle: Text(
+                                                group.open.falseIfNull()
+                                                    ? 'Public'
+                                                    : 'Private',
+                                                style: theme
+                                                    .textTheme.headlineSmall,
+                                              ),
                                             ),
-                                          ),
-                                          ListTile(
-                                            title: Text(
-                                              'Join Type',
-                                              style: theme.textTheme.bodyLarge!
-                                                  .copyWith(
-                                                      color: Colors.white),
+                                            ListTile(
+                                              title: Text(
+                                                'Group Created',
+                                                style: theme
+                                                    .textTheme.bodyLarge!
+                                                    .copyWith(
+                                                        color: Colors.white),
+                                              ),
+                                              subtitle: Text(
+                                                group.createTime?.MMM_d_y() ??
+                                                    'N/A',
+                                                style: theme
+                                                    .textTheme.headlineSmall,
+                                              ),
                                             ),
-                                            subtitle: Text(
-                                              group.open.falseIfNull()
-                                                  ? 'Public'
-                                                  : 'Private',
-                                              style:
-                                                  theme.textTheme.headlineSmall,
+                                            ListTile(
+                                              title: Text(
+                                                'Last Updated',
+                                                style: theme
+                                                    .textTheme.bodyLarge!
+                                                    .copyWith(
+                                                        color: Colors.white),
+                                              ),
+                                              subtitle: Text(
+                                                group.updateTime?.MMM_d_y() ??
+                                                    'N/A',
+                                                style: theme
+                                                    .textTheme.headlineSmall,
+                                              ),
                                             ),
-                                          ),
-                                          ListTile(
-                                            title: Text(
-                                              'Group Created',
-                                              style: theme.textTheme.bodyLarge!
-                                                  .copyWith(
-                                                      color: Colors.white),
-                                            ),
-                                            subtitle: Text(
-                                              group.createTime?.MMM_d_y() ??
-                                                  'N/A',
-                                              style:
-                                                  theme.textTheme.headlineSmall,
-                                            ),
-                                          ),
-                                          ListTile(
-                                            title: Text(
-                                              'Last Updated',
-                                              style: theme.textTheme.bodyLarge!
-                                                  .copyWith(
-                                                      color: Colors.white),
-                                            ),
-                                            subtitle: Text(
-                                              group.updateTime?.MMM_d_y() ??
-                                                  'N/A',
-                                              style:
-                                                  theme.textTheme.headlineSmall,
-                                            ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  const Expanded(
-                                      child: Placeholder(
-                                    color: Colors.green,
-                                  ))
-                                ],
-                              ))
+                                    Expanded(
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            'Members',
+                                            style: textTheme.h4,
+                                          ),
+                                          Expanded(
+                                            child: GroupMembershipListPage(
+                                              key: UniqueKey(),
+                                              group.id,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
                             ],
                           ),
                         ),
