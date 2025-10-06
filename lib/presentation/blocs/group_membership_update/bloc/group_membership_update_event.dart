@@ -25,11 +25,11 @@ class CancelRequest extends GroupMembershipUpdateEvent {
   List<Object?> get props => [];
 }
 
-class AddGroupUsers extends GroupMembershipUpdateEvent {
-  final List<String> uids;
+class AddGroupUser extends GroupMembershipUpdateEvent {
+  final String uid;
 
-  const AddGroupUsers(this.uids);
+  const AddGroupUser(this.uid);
 
   @override
-  List<Object?> get props => [uids];
+  List<Object?> get props => [uid];
 }

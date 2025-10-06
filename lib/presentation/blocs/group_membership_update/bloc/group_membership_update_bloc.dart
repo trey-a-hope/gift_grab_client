@@ -21,7 +21,7 @@ class GroupMembershipUpdateBloc
     on<JoinGroup>(_onJoinGroup);
     on<LeaveGroup>(_onLeaveGroup);
     on<CancelRequest>(_onCancelRequest);
-    on<AddGroupUsers>(_onAddGroupUsers);
+    on<AddGroupUser>(_onAddGroupUser);
   }
 
   Future<void> _onJoinGroup(
@@ -87,8 +87,8 @@ class GroupMembershipUpdateBloc
         state: state,
       );
 
-  Future<void> _onAddGroupUsers(
-    AddGroupUsers event,
+  Future<void> _onAddGroupUser(
+    AddGroupUser event,
     Emitter<GroupMembershipUpdateState> emit,
   ) async =>
       await runWithErrorHandling(
@@ -100,10 +100,10 @@ class GroupMembershipUpdateBloc
           await client.addGroupUsers(
             session: session,
             groupId: state.groupId,
-            userIds: event.uids,
+            userIds: [event.uid],
           );
 
-          emit(state.copyWith(success: 'Users add to group'));
+          emit(state.copyWith(success: 'Users added to group'));
         },
         emit: emit,
         state: state,
