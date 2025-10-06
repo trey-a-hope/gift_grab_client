@@ -11,6 +11,7 @@ import 'package:gift_grab_client/domain/services/social_auth_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
 import 'package:nakama/nakama.dart';
@@ -129,10 +130,12 @@ class MyAppView extends StatelessWidget {
       theme: ShadThemeData(
         brightness: Brightness.light,
         colorScheme: const ShadSlateColorScheme.light(),
+        textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.dmSerifText),
       ),
       darkTheme: ShadThemeData(
         brightness: Brightness.dark,
         colorScheme: const ShadSlateColorScheme.dark(),
+        textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.dmSerifText),
       ),
       themeMode: ThemeMode.dark,
       title: 'Gift Grab',

@@ -40,6 +40,7 @@ dependencies:
   universal_platform: ^1.1.0
   window_pain: ^0.0.2
   shadcn_ui: ^0.35.0
+  google_fonts: ^6.3.2
 
 dev_dependencies:
   flutter_test:
