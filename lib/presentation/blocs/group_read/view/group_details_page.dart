@@ -8,7 +8,8 @@ import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/group_delete/bloc/group_delete_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/group_membership_list/view/group_membership_list_page.dart';
-import 'package:gift_grab_client/presentation/blocs/group_membership_update/view/group_membership_state_button.dart';
+import 'package:gift_grab_client/presentation/blocs/group_membership_read/group_membership_read.dart';
+import 'package:gift_grab_client/presentation/blocs/group_membership_update/group_membership_update.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:gift_grab_client/presentation/extensions/date_time_extensions.dart';
@@ -27,6 +28,8 @@ class GroupDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final uid = context.read<AccountReadBloc>().state.account!.user.id;
+
     return MultiBlocProvider(providers: [
       BlocProvider<GroupReadBloc>(
         create: (context) => GroupReadBloc(
@@ -44,12 +47,26 @@ class GroupDetailsPage extends StatelessWidget {
       ),
       BlocProvider(
         create: (_) => GroupMembershipListBloc(
+          uid,
           groupId,
           getNakamaClient(),
           context.read<SessionService>(),
         )..add(const FetchUsers()),
-        child: const GroupMembershipListView(),
-      )
+      ),
+      BlocProvider<GroupMembershipUpdateBloc>(
+        create: (context) => GroupMembershipUpdateBloc(
+          groupId,
+          getNakamaClient(),
+          context.read<SessionService>(),
+        ),
+      ),
+      BlocProvider<GroupMembershipReadBloc>(
+        create: (context) => GroupMembershipReadBloc(
+          groupId,
+          getNakamaClient(),
+          context.read<SessionService>(),
+        ),
+      ),
     ], child: const GroupDetailsView());
   }
 }

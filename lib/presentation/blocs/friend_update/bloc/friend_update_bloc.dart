@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_error_handler/bloc_error_handler.dart';
 import 'package:equatable/equatable.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
+import 'package:gift_grab_client/main.dart';
 import 'package:nakama/nakama.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 
@@ -31,10 +32,14 @@ class FriendUpdateBloc extends Bloc<FriendUpdateEvent, FriendUpdateState> {
   ) async =>
       await _performFriendAction(
         'Friend request sent',
-        (session) => client.addFriends(
-          session: session,
-          ids: [event.uid],
-        ),
+        (session) async {
+          logger.i(
+              'User ${session.userId} sent a friend request to ${event.uid}');
+          await client.addFriends(
+            session: session,
+            ids: [event.uid],
+          );
+        },
         emit,
       );
 
@@ -44,10 +49,14 @@ class FriendUpdateBloc extends Bloc<FriendUpdateEvent, FriendUpdateState> {
   ) async =>
       await _performFriendAction(
         'Friend request canceled',
-        (session) => client.deleteFriends(
-          session: session,
-          ids: [event.uid],
-        ),
+        (session) async {
+          logger.i(
+              'User ${session.userId} canceled a friend request from ${event.uid}');
+          await client.deleteFriends(
+            session: session,
+            ids: [event.uid],
+          );
+        },
         emit,
       );
 
@@ -57,10 +66,14 @@ class FriendUpdateBloc extends Bloc<FriendUpdateEvent, FriendUpdateState> {
   ) async =>
       await _performFriendAction(
         'Friend request rejected',
-        (session) => client.deleteFriends(
-          session: session,
-          ids: [event.uid],
-        ),
+        (session) async {
+          logger.i(
+              'User ${session.userId} rejected a friend request from ${event.uid}');
+          await client.deleteFriends(
+            session: session,
+            ids: [event.uid],
+          );
+        },
         emit,
       );
 
@@ -70,10 +83,14 @@ class FriendUpdateBloc extends Bloc<FriendUpdateEvent, FriendUpdateState> {
   ) async =>
       await _performFriendAction(
         'Friend request accepted',
-        (session) => client.addFriends(
-          session: session,
-          ids: [event.uid],
-        ),
+        (session) async {
+          logger.i(
+              'User ${session.userId} accepted a friend request from ${event.uid}');
+          await client.addFriends(
+            session: session,
+            ids: [event.uid],
+          );
+        },
         emit,
       );
 
@@ -83,10 +100,13 @@ class FriendUpdateBloc extends Bloc<FriendUpdateEvent, FriendUpdateState> {
   ) async =>
       await _performFriendAction(
         'Friend deleted',
-        (session) => client.deleteFriends(
-          session: session,
-          ids: [event.uid],
-        ),
+        (session) async {
+          logger.i('User ${session.userId} deleted ${event.uid} as a friend');
+          await client.deleteFriends(
+            session: session,
+            ids: [event.uid],
+          );
+        },
         emit,
       );
 
@@ -96,10 +116,13 @@ class FriendUpdateBloc extends Bloc<FriendUpdateEvent, FriendUpdateState> {
   ) async =>
       await _performFriendAction(
         'User blocked',
-        (session) => client.blockFriends(
-          session: session,
-          ids: [event.uid],
-        ),
+        (session) async {
+          logger.i('User ${session.userId} blocked ${event.uid}');
+          await client.blockFriends(
+            session: session,
+            ids: [event.uid],
+          );
+        },
         emit,
       );
 
@@ -109,10 +132,13 @@ class FriendUpdateBloc extends Bloc<FriendUpdateEvent, FriendUpdateState> {
   ) async =>
       await _performFriendAction(
         'User unblocked',
-        (session) => client.deleteFriends(
-          session: session,
-          ids: [event.uid],
-        ),
+        (session) async {
+          logger.i('User ${session.userId} unblocked ${event.uid}');
+          await client.deleteFriends(
+            session: session,
+            ids: [event.uid],
+          );
+        },
         emit,
       );
 

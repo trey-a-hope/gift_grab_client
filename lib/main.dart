@@ -11,6 +11,7 @@ import 'package:gift_grab_client/domain/services/social_auth_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logger/logger.dart';
@@ -21,7 +22,6 @@ import 'package:universal_platform/universal_platform.dart';
 import 'package:window_pain/window_pain.dart';
 
 late PackageInfo packageInfo;
-
 late Logger logger;
 
 void main() async {
@@ -55,76 +55,105 @@ void main() async {
   runApp(const MyAppPage());
 }
 
-class MyAppPage extends StatelessWidget {
+class MyAppPage extends StatefulWidget {
   const MyAppPage({super.key});
 
   @override
+  State<MyAppPage> createState() => _MyAppPageState();
+}
+
+class _MyAppPageState extends State<MyAppPage> {
+  final _sessionService = SessionService(
+    SessionRepository(
+      const FlutterSecureStorage(),
+      getNakamaClient(),
+    ),
+  );
+
+  final _socialAuthService = SocialAuthService(
+    SocialAuthRepository(),
+    GoogleSignIn.instance,
+  );
+
+  final _modalService = ModalService();
+
+  AuthCubit? authCubit;
+  GoRouter? router;
+
+  @override
+  void initState() {
+    super.initState();
+
+    authCubit = AuthCubit(
+      getNakamaClient(),
+      _sessionService,
+      _socialAuthService,
+    );
+
+    _sessionService.setUnauthenticatedCallback(
+      () => authCubit!.logout(),
+    );
+
+    authCubit!.checkAuthStatus();
+
+    // Create router with the authCubit
+    router = appRouter(authCubit!);
+  }
+
+  @override
+  void dispose() {
+    authCubit?.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Guard clause: return loading widget if router isn't ready yet
+    // In practice, this should never show because initState runs before build
+    if (router == null || authCubit == null) {
+      return const MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      );
+    }
+
+    // Now we can safely use ! operator because we checked above
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<SessionService>(
-          create: (context) => SessionService(
-            SessionRepository(
-              const FlutterSecureStorage(),
-              getNakamaClient(),
-            ),
-          ),
-        ),
-        RepositoryProvider<SocialAuthService>(
-          create: (context) => SocialAuthService(
-            SocialAuthRepository(),
-            GoogleSignIn.instance,
-          ),
-        ),
-        RepositoryProvider<ModalService>(
-          create: (context) => ModalService(),
-        ),
+        RepositoryProvider<SessionService>.value(value: _sessionService),
+        RepositoryProvider<SocialAuthService>.value(value: _socialAuthService),
+        RepositoryProvider<ModalService>.value(value: _modalService),
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider<AuthCubit>(
-            create: (context) {
-              final sessionService = context.read<SessionService>();
-              final socialAuthService = context.read<SocialAuthService>();
-
-              final authCubit = AuthCubit(
-                getNakamaClient(),
-                sessionService,
-                socialAuthService,
-              );
-
-              sessionService.setUnauthenticatedCallback(
-                () => authCubit.logout(),
-              );
-
-              authCubit.checkAuthStatus();
-
-              return authCubit;
-            },
-          ),
+          BlocProvider<AuthCubit>.value(value: authCubit!),
           BlocProvider<AccountReadBloc>(
             create: (context) => AccountReadBloc(
-              context.read<AuthCubit>(),
+              authCubit!,
               getNakamaClient(),
-              context.read<SessionService>(),
+              _sessionService,
             ),
           ),
           BlocProvider<GroupRefreshCubit>(
-              create: (context) => GroupRefreshCubit())
+            create: (context) => GroupRefreshCubit(),
+          ),
         ],
-        child: const MyAppView(),
+        child: MyAppView(router!),
       ),
     );
   }
 }
 
 class MyAppView extends StatelessWidget {
-  const MyAppView({super.key});
+  final GoRouter router;
+
+  const MyAppView(this.router, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    final router = appRouter(context);
-
     return ShadApp.router(
       debugShowCheckedModeBanner: false,
       theme: ShadThemeData(

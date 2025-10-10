@@ -10,11 +10,13 @@ part 'group_membership_list_state.dart';
 
 class GroupMembershipListBloc
     extends Bloc<GroupMembershipListEvent, GroupMembershipListState> {
+  final String uid;
   final String groupId;
   final NakamaBaseClient client;
   final SessionService sessionService;
 
   GroupMembershipListBloc(
+    this.uid,
     this.groupId,
     this.client,
     this.sessionService,

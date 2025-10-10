@@ -16,16 +16,12 @@ class GroupMembershipStateButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final sessionService = context.read<SessionService>();
 
-    return MultiBlocListener(
-      listeners: [
-        BlocProvider<GroupMembershipUpdateBloc>(
-          create: (context) => GroupMembershipUpdateBloc(
-              groupId, getNakamaClient(), sessionService),
-        ),
+    return MultiBlocProvider(
+      providers: [
         BlocProvider<GroupMembershipReadBloc>(
             create: (context) => GroupMembershipReadBloc(
                 groupId, getNakamaClient(), sessionService)
-              ..add(const ReadGroupMembershipState())),
+              ..add(const ReadGroupMembership())),
       ],
       child: const GroupMembershipStateButtonView(),
     );
@@ -47,7 +43,7 @@ class GroupMembershipStateButtonView extends StatelessWidget {
       listener: (context, state) {
         if (state.success != null) {
           modalService.shadToast(context, title: Text(state.success!));
-          groupMembershipReadBloc.add(const ReadGroupMembershipState());
+          groupMembershipReadBloc.add(const ReadGroupMembership());
           groupMembershipListBloc.add(const FetchUsers());
         }
 

@@ -4,8 +4,8 @@ sealed class GroupMembershipReadEvent extends Equatable {
   const GroupMembershipReadEvent();
 }
 
-class ReadGroupMembershipState extends GroupMembershipReadEvent {
-  const ReadGroupMembershipState();
+class ReadGroupMembership extends GroupMembershipReadEvent {
+  const ReadGroupMembership();
 
   @override
   List<Object?> get props => [];

@@ -21,11 +21,11 @@ class GroupMembershipReadBloc
     this.client,
     this.sessionService,
   ) : super(GroupMembershipReadState(groupId)) {
-    on<ReadGroupMembershipState>(_onReadGroupMembershipState);
+    on<ReadGroupMembership>(_onReadGroupMembership);
   }
 
-  Future<void> _onReadGroupMembershipState(
-    ReadGroupMembershipState event,
+  Future<void> _onReadGroupMembership(
+    ReadGroupMembership event,
     Emitter<GroupMembershipReadState> emit,
   ) async =>
       await runWithErrorHandling(

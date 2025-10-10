@@ -33,3 +33,21 @@ class AddGroupUser extends GroupMembershipUpdateEvent {
   @override
   List<Object?> get props => [uid];
 }
+
+class KickGroupUser extends GroupMembershipUpdateEvent {
+  final String uid;
+
+  const KickGroupUser(this.uid);
+
+  @override
+  List<Object?> get props => [uid];
+}
+
+class DenyRequest extends GroupMembershipUpdateEvent {
+  final String uid;
+
+  const DenyRequest(this.uid);
+
+  @override
+  List<Object?> get props => [uid];
+}

@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_error_handler/bloc_error_handler.dart';
 import 'package:equatable/equatable.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
+import 'package:gift_grab_client/main.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:nakama/nakama.dart';
 
@@ -22,6 +23,8 @@ class GroupMembershipUpdateBloc
     on<LeaveGroup>(_onLeaveGroup);
     on<CancelRequest>(_onCancelRequest);
     on<AddGroupUser>(_onAddGroupUser);
+    on<KickGroupUser>(_onKickGroupUser);
+    on<DenyRequest>(_onDenyRequest);
   }
 
   Future<void> _onJoinGroup(
@@ -103,7 +106,60 @@ class GroupMembershipUpdateBloc
             userIds: [event.uid],
           );
 
-          emit(state.copyWith(success: 'Users added to group'));
+          emit(state.copyWith(success: 'User added to group'));
+        },
+        emit: emit,
+        state: state,
+      );
+
+  Future<void> _onKickGroupUser(
+    KickGroupUser event,
+    Emitter<GroupMembershipUpdateState> emit,
+  ) async =>
+      await _action(
+        'User kicked from group',
+        (session) async {
+          logger.i('User ${session.userId} kicked ${event.uid}');
+          await client.kickGroupUsers(
+            session: session,
+            groupId: state.groupId,
+            userIds: [event.uid],
+          );
+        },
+        emit,
+      );
+
+  Future<void> _onDenyRequest(
+    DenyRequest event,
+    Emitter<GroupMembershipUpdateState> emit,
+  ) async =>
+      await _action(
+        'User request denied',
+        (session) async {
+          logger.i('User ${session.userId} denied ${event.uid} request');
+          await client.kickGroupUsers(
+            session: session,
+            groupId: state.groupId,
+            userIds: [event.uid],
+          );
+        },
+        emit,
+      );
+
+  Future<void> _action(
+    String successMessage,
+    Future<void> Function(Session session) clientAction,
+    Emitter<GroupMembershipUpdateState> emit,
+  ) async =>
+      await runWithErrorHandling(
+        action: () async {
+          emit(state.copyWith(isLoading: true));
+
+          final session = await sessionService.getSession();
+
+          await clientAction(session);
+
+          emit(state.copyWith(success: successMessage));
         },
         emit: emit,
         state: state,

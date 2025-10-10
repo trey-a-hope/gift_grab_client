@@ -23,9 +23,7 @@ import 'package:gift_grab_game/game/gift_grab_game_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nakama/nakama.dart';
 
-GoRouter appRouter(BuildContext context) {
-  final authCubit = context.read<AuthCubit>();
-
+GoRouter appRouter(AuthCubit authCubit) {
   return GoRouter(
     initialLocation: '/${GoRoutes.LOGIN.name}',
     refreshListenable: _GoRouterRefreshStream(authCubit.stream),
