@@ -1,15 +1,17 @@
+import 'package:awesome_flutter_extensions/awesome_flutter_extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
+import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/domain/services/modal_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/account_read.dart';
 import 'package:gift_grab_client/presentation/blocs/group_membership_update/bloc/group_membership_update_bloc.dart';
-import 'package:gift_grab_client/presentation/blocs/group_read/bloc/group_read_bloc.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:gift_grab_client/presentation/extensions/group_membership_state_extensions.dart';
 import 'package:gift_grab_client/presentation/widgets/user_list_tile.dart';
 import 'package:nakama/nakama.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:collection/collection.dart';
 
 import '../group_membership_list.dart';
 
@@ -29,12 +31,16 @@ class GroupMembershipListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final group = context.read<GroupReadBloc>().state.group!;
+    final uid = context.read<AccountReadBloc>().state.account!.user.id;
 
     return BlocBuilder<GroupMembershipListBloc, GroupMembershipListState>(
       builder: (context, state) {
         final isLoading = state.isLoading;
         final groupUsers = state.groupUsers;
+
+        final me = groupUsers.firstWhereOrNull(
+          (groupUser) => groupUser.user.id == uid,
+        );
 
         return isLoading
             ? const Center(
@@ -58,8 +64,8 @@ class GroupMembershipListView extends StatelessWidget {
                         ),
                         GapSizes.smallGap,
                         AdminButtons(
-                          theirUid: groupUser.user.id,
-                          groupid: group.id,
+                          me: me,
+                          them: groupUser,
                         ),
                       ],
                     ),

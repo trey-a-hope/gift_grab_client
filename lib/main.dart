@@ -5,6 +5,7 @@ import 'package:gift_grab_client/data/configuration/app_routes.dart';
 import 'package:gift_grab_client/data/constants/globals.dart';
 import 'package:gift_grab_client/data/repositories/session_repository.dart';
 import 'package:gift_grab_client/data/repositories/social_auth_repository.dart';
+import 'package:gift_grab_client/domain/services/launch_service.dart';
 import 'package:gift_grab_client/domain/services/modal_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/domain/services/social_auth_service.dart';
@@ -77,6 +78,8 @@ class _MyAppPageState extends State<MyAppPage> {
 
   final _modalService = ModalService();
 
+  final _launchService = LaunchService();
+
   AuthCubit? authCubit;
   GoRouter? router;
 
@@ -126,6 +129,7 @@ class _MyAppPageState extends State<MyAppPage> {
         RepositoryProvider<SessionService>.value(value: _sessionService),
         RepositoryProvider<SocialAuthService>.value(value: _socialAuthService),
         RepositoryProvider<ModalService>.value(value: _modalService),
+        RepositoryProvider<LaunchService>.value(value: _launchService),
       ],
       child: MultiBlocProvider(
         providers: [

@@ -1,12 +1,12 @@
 part of 'group_membership_list_page.dart';
 
 class AdminButtons extends StatelessWidget {
-  final String theirUid;
-  final String groupid;
+  final GroupUser? me;
+  final GroupUser them;
 
   const AdminButtons({
-    required this.theirUid,
-    required this.groupid,
+    required this.me,
+    required this.them,
     super.key,
   });
 
@@ -16,147 +16,156 @@ class AdminButtons extends StatelessWidget {
 
     final groupMembershipUpdateBloc = context.read<GroupMembershipUpdateBloc>();
     final modalService = context.read<ModalService>();
-    final uid = context.read<AccountReadBloc>().state.account!.user.id;
 
-    return BlocBuilder<GroupMembershipListBloc, GroupMembershipListState>(
-      builder: (context, state) {
-        final groupUsers = state.groupUsers;
+    if (me == null || !me!.canPerformAdmin(them))
+      return const SizedBox.shrink();
 
-        final me = groupUsers.firstWhere((gu) => gu.user.id == uid);
-        final them = groupUsers.firstWhere((gu) => gu.user.id == theirUid);
-
-        // User cannot do anything to themselves
-        if (me.user.id == them.user.id) return const SizedBox.shrink();// TODO: Delete this
-
-        if (me.canKick(them)) {
-          if (them.state == GroupMembershipState.joinRequest) {
-            ShadButton.secondary(
-              onPressed: () async {
-                final confirm = await modalService.shadConfirmationDialog(
-                  context,
-                  title: Text(
-                    'Deny request',
-                    style: textTheme.p,
-                  ),
-                  description: Text(
-                    'Press continue to confirm',
-                    style: textTheme.p,
-                  ),
-                );
-
-                if (!confirm.falseIfNull()) {
-                  return;
-                }
-
-                groupMembershipUpdateBloc.add(DenyRequest(them.user.id));
-              },
-              child: const Text('Deny'),
+    if (them.state == GroupMembershipState.joinRequest) {
+      final joinReqButtons = [
+        ShadButton.secondary(
+          onPressed: () async {
+            final confirm = await modalService.shadConfirmationDialog(
+              context,
+              title: Text(
+                'Accept request',
+                style: textTheme.p,
+              ),
+              description: Text(
+                LabelText.confirm,
+                style: textTheme.p,
+              ),
             );
-          } else {
-            ShadButton.secondary(
-              onPressed: () async {
-                final confirm = await modalService.shadConfirmationDialog(
-                  context,
-                  title: Text(
-                    'Kick user',
-                    style: textTheme.p,
-                  ),
-                  description: Text(
-                    'Press continue to confirm',
-                    style: textTheme.p,
-                  ),
-                );
 
-                if (!confirm.falseIfNull()) {
-                  return;
-                }
+            if (!confirm.falseIfNull()) {
+              return;
+            }
 
-                groupMembershipUpdateBloc.add(KickGroupUser(them.user.id));
-              },
-              child: const Text('Deny'),
+            groupMembershipUpdateBloc.add(AcceptRequest(them.user.id));
+          },
+          child: const Text('Approve'),
+        ),
+        ShadButton.secondary(
+          onPressed: () async {
+            final confirm = await modalService.shadConfirmationDialog(
+              context,
+              title: Text(
+                'Deny request',
+                style: textTheme.p,
+              ),
+              description: Text(
+                LabelText.confirm,
+                style: textTheme.p,
+              ),
             );
-          }
-        }
 
-        if (me.state == GroupMembershipState.superadmin) {
-          if (them.state == GroupMembershipState.joinRequest) {
-            return Row(
-              children: [
-                ShadButton.secondary(
-                  onPressed: () async {
-                    final confirm = await modalService.shadConfirmationDialog(
-                      context,
-                      title: Text(
-                        'Accept request?',
-                        style: textTheme.p,
-                      ),
-                      description: Text(
-                        'Press continue to confirm',
-                        style: textTheme.p,
-                      ),
-                    );
+            if (!confirm.falseIfNull()) {
+              return;
+            }
 
-                    if (!confirm.falseIfNull()) {
-                      return;
-                    }
+            groupMembershipUpdateBloc.add(DenyRequest(them.user.id));
+          },
+          child: const Text('Deny'),
+        )
+      ];
 
-                    groupMembershipUpdateBloc.add(AddGroupUser(them.user.id));
-                  },
-                  child: const Text('Approve'),
-                ),
-                GapSizes.smallGap,
-                ShadButton.secondary(
-                  onPressed: () async {
-                    final confirm = await modalService.shadConfirmationDialog(
-                      context,
-                      title: Text(
-                        'Deny request?',
-                        style: textTheme.p,
-                      ),
-                      description: Text(
-                        'Press continue to confirm',
-                        style: textTheme.p,
-                      ),
-                    );
+      return Row(children: joinReqButtons.separatedBy(GapSizes.smallGap));
+    }
 
-                    if (!confirm.falseIfNull()) {
-                      return;
-                    }
-
-                    groupMembershipUpdateBloc.add(DenyRequest(them.user.id));
-                  },
-                  child: const Text('Deny'),
-                )
-              ],
-            );
-          }
-
-          return ShadButton.secondary(
-            onPressed: () async {
-              final confirm = await modalService.shadConfirmationDialog(
-                context,
-                title: Text(
-                  'Kick user',
-                  style: textTheme.p,
-                ),
-                description: Text(
-                  'Press continue to confirm',
-                  style: textTheme.p,
-                ),
-              );
-
-              if (!confirm.falseIfNull()) {
-                return;
-              }
-
-              groupMembershipUpdateBloc.add(KickGroupUser(them.user.id));
-            },
-            child: const Text('Kick user'),
+    final nonJoinReqButtons = [
+      ShadButton.secondary(
+        onPressed: () async {
+          final confirm = await modalService.shadConfirmationDialog(
+            context,
+            title: Text(
+              'Ban user',
+              style: textTheme.p,
+            ),
+            description: Text(
+              LabelText.confirm,
+              style: textTheme.p,
+            ),
           );
-        }
 
-        return const SizedBox.shrink();
-      },
-    );
+          if (!confirm.falseIfNull()) {
+            return;
+          }
+
+          groupMembershipUpdateBloc.add(BanUser(them.user.id));
+        },
+        child: const Text('Ban'),
+      ),
+      ShadButton.secondary(
+        onPressed: () async {
+          final confirm = await modalService.shadConfirmationDialog(
+            context,
+            title: Text(
+              'Kick user',
+              style: textTheme.p,
+            ),
+            description: Text(
+              LabelText.confirm,
+              style: textTheme.p,
+            ),
+          );
+
+          if (!confirm.falseIfNull()) {
+            return;
+          }
+
+          groupMembershipUpdateBloc.add(KickUser(them.user.id));
+        },
+        child: const Text('Kick'),
+      ),
+      if (them.state != GroupMembershipState.superadmin) ...[
+        ShadButton.secondary(
+          onPressed: () async {
+            final confirm = await modalService.shadConfirmationDialog(
+              context,
+              title: Text(
+                'Promote user',
+                style: textTheme.p,
+              ),
+              description: Text(
+                LabelText.confirm,
+                style: textTheme.p,
+              ),
+            );
+
+            if (!confirm.falseIfNull()) {
+              return;
+            }
+
+            groupMembershipUpdateBloc.add(PromoteUser(them.user.id));
+          },
+          child: const Text('Promote'),
+        )
+      ],
+      if (them.state != GroupMembershipState.member) ...[
+        ShadButton.secondary(
+          onPressed: () async {
+            final confirm = await modalService.shadConfirmationDialog(
+              context,
+              title: Text(
+                'Demote user',
+                style: textTheme.p,
+              ),
+              description: Text(
+                LabelText.confirm,
+                style: textTheme.p,
+              ),
+            );
+
+            if (!confirm.falseIfNull()) {
+              return;
+            }
+
+            groupMembershipUpdateBloc.add(DemoteUser(them.user.id));
+          },
+          child: const Text('Demote'),
+        )
+      ],
+    ];
+
+    return Row(children: nonJoinReqButtons.separatedBy(GapSizes.smallGap));
   }
 }

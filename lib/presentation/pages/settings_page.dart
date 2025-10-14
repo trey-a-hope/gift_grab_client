@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gift_grab_client/data/constants/globals.dart';
 import 'package:gift_grab_client/data/constants/label_text.dart';
+import 'package:gift_grab_client/domain/services/launch_service.dart';
 import 'package:gift_grab_client/domain/services/modal_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/domain/services/social_auth_service.dart';
@@ -60,6 +62,7 @@ class SettingsView extends StatelessWidget {
     final accountUpdateBloc = context.read<AccountUpdateBloc>();
     final accountReadBloc = context.read<AccountReadBloc>();
     final modalService = context.read<ModalService>();
+    final launchService = context.read<LaunchService>();
 
     return MultiBlocListener(
       listeners: [
@@ -108,6 +111,7 @@ class SettingsView extends StatelessWidget {
                       initialValue: isEmailLinked,
                       onToggle: (val) async {
                         // TODO (Trey) - Added showEmailPasswordDialog to modalService
+
                         // if (val) {
                         //   final result =
                         //       await ModalUtil.showEmailPasswordDialog(context);
@@ -154,6 +158,13 @@ class SettingsView extends StatelessWidget {
                           'v ${packageInfo.version}.${packageInfo.buildNumber}'),
                       onPressed: (context) async =>
                           showLicensePage(context: context),
+                    ),
+                    SettingsTile.navigation(
+                      leading: Icon(MdiIcons.movie),
+                      title: const Text('BTS'),
+                      value: const Text('See how the game was created'),
+                      onPressed: (context) async =>
+                          launchService.launch(Globals.youtubePlaylistUrl),
                     ),
                   ],
                 ),

@@ -25,19 +25,19 @@ class CancelRequest extends GroupMembershipUpdateEvent {
   List<Object?> get props => [];
 }
 
-class AddGroupUser extends GroupMembershipUpdateEvent {
+class AcceptRequest extends GroupMembershipUpdateEvent {
   final String uid;
 
-  const AddGroupUser(this.uid);
+  const AcceptRequest(this.uid);
 
   @override
   List<Object?> get props => [uid];
 }
 
-class KickGroupUser extends GroupMembershipUpdateEvent {
+class KickUser extends GroupMembershipUpdateEvent {
   final String uid;
 
-  const KickGroupUser(this.uid);
+  const KickUser(this.uid);
 
   @override
   List<Object?> get props => [uid];
@@ -47,6 +47,33 @@ class DenyRequest extends GroupMembershipUpdateEvent {
   final String uid;
 
   const DenyRequest(this.uid);
+
+  @override
+  List<Object?> get props => [uid];
+}
+
+class PromoteUser extends GroupMembershipUpdateEvent {
+  final String uid;
+
+  const PromoteUser(this.uid);
+
+  @override
+  List<Object?> get props => [uid];
+}
+
+class DemoteUser extends GroupMembershipUpdateEvent {
+  final String uid;
+
+  const DemoteUser(this.uid);
+
+  @override
+  List<Object?> get props => [uid];
+}
+
+class BanUser extends GroupMembershipUpdateEvent {
+  final String uid;
+
+  const BanUser(this.uid);
 
   @override
   List<Object?> get props => [uid];

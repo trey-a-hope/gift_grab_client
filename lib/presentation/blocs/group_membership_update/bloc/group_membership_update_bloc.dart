@@ -22,9 +22,12 @@ class GroupMembershipUpdateBloc
     on<JoinGroup>(_onJoinGroup);
     on<LeaveGroup>(_onLeaveGroup);
     on<CancelRequest>(_onCancelRequest);
-    on<AddGroupUser>(_onAddGroupUser);
-    on<KickGroupUser>(_onKickGroupUser);
+    on<AcceptRequest>(_onAcceptRequest);
+    on<KickUser>(_onKickUser);
     on<DenyRequest>(_onDenyRequest);
+    on<PromoteUser>(_onPromoteUser);
+    on<DemoteUser>(_onDemoteUser);
+    on<BanUser>(_onBanUser);
   }
 
   Future<void> _onJoinGroup(
@@ -90,8 +93,8 @@ class GroupMembershipUpdateBloc
         state: state,
       );
 
-  Future<void> _onAddGroupUser(
-    AddGroupUser event,
+  Future<void> _onAcceptRequest(
+    AcceptRequest event,
     Emitter<GroupMembershipUpdateState> emit,
   ) async =>
       await runWithErrorHandling(
@@ -112,8 +115,8 @@ class GroupMembershipUpdateBloc
         state: state,
       );
 
-  Future<void> _onKickGroupUser(
-    KickGroupUser event,
+  Future<void> _onKickUser(
+    KickUser event,
     Emitter<GroupMembershipUpdateState> emit,
   ) async =>
       await _action(
@@ -138,6 +141,57 @@ class GroupMembershipUpdateBloc
         (session) async {
           logger.i('User ${session.userId} denied ${event.uid} request');
           await client.kickGroupUsers(
+            session: session,
+            groupId: state.groupId,
+            userIds: [event.uid],
+          );
+        },
+        emit,
+      );
+
+  Future<void> _onPromoteUser(
+    PromoteUser event,
+    Emitter<GroupMembershipUpdateState> emit,
+  ) async =>
+      await _action(
+        'User promoted',
+        (session) async {
+          logger.i('User ${session.userId} promoted user ${event.uid}');
+          await client.promoteGroupUsers(
+            session: session,
+            groupId: state.groupId,
+            userIds: [event.uid],
+          );
+        },
+        emit,
+      );
+
+  Future<void> _onDemoteUser(
+    DemoteUser event,
+    Emitter<GroupMembershipUpdateState> emit,
+  ) async =>
+      await _action(
+        'User demoted',
+        (session) async {
+          logger.i('User ${session.userId} demoted user ${event.uid}');
+          await client.demoteGroupUsers(
+            session: session,
+            groupId: state.groupId,
+            userIds: [event.uid],
+          );
+        },
+        emit,
+      );
+
+  Future<void> _onBanUser(
+    BanUser event,
+    Emitter<GroupMembershipUpdateState> emit,
+  ) async =>
+      await _action(
+        'User banned',
+        (session) async {
+          logger.i('User ${session.userId} banned user ${event.uid}');
+          await client.banGroupUsers(
             session: session,
             groupId: state.groupId,
             userIds: [event.uid],

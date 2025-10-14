@@ -16,26 +16,11 @@ extension GroupMembershipStateExtensions on GroupMembershipState {
 }
 
 extension GroupUserExtensions on GroupUser {
-  bool canKick(GroupUser target) {
+  bool canPerformAdmin(GroupUser target) {
     if (user.id == target.user.id) return false;
 
     switch (state) {
       case GroupMembershipState.superadmin:
-        return true;
-      case GroupMembershipState.admin:
-        return target.state != GroupMembershipState.superadmin;
-      case GroupMembershipState.member:
-      case GroupMembershipState.joinRequest:
-        return false;
-    }
-  }
-
-  bool canAccept(GroupUser target) {
-    if (user.id == target.user.id) return false;
-
-    switch (state) {
-      case GroupMembershipState.superadmin:
-        return true;
       case GroupMembershipState.admin:
         return target.state != GroupMembershipState.superadmin;
       case GroupMembershipState.member:

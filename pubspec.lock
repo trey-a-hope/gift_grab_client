@@ -121,6 +121,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2.1"
+  awesome_flutter_extensions:
+    dependency: "direct main"
+    description:
+      name: awesome_flutter_extensions
+      sha256: e8e411a28462fc73c63c70d74b581a2903bc37794ef31acd2ad36c5b974f4255
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   bloc:
     dependency: transitive
     description:
