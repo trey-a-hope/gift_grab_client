@@ -15,7 +15,7 @@ import 'package:collection/collection.dart';
 
 import '../group_membership_list.dart';
 
-part 'admin_buttons.dart';
+part 'admin_popover.dart';
 
 class GroupMembershipListPage extends StatelessWidget {
   final String groupId;
@@ -63,7 +63,7 @@ class GroupMembershipListView extends StatelessWidget {
                           child: Text(groupUser.state.title),
                         ),
                         GapSizes.smallGap,
-                        AdminButtons(
+                        AdminPopover(
                           me: me,
                           them: groupUser,
                         ),
