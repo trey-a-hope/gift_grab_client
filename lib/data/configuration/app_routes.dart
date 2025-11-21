@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
@@ -66,9 +67,8 @@ GoRouter appRouter(BuildContext context) {
               return BlocProvider<RecordCreateBloc>(
                 create: (context) => recordCreateBloc,
                 child: GiftGrabGameWidget(
-                  onEndGame: (score) => recordCreateBloc.add(
-                    SubmitRecord(score),
-                  ),
+                  onEndGame: (score) =>
+                      recordCreateBloc.add(SubmitRecord(score)),
                 ),
               );
             },
@@ -149,9 +149,7 @@ class _GoRouterRefreshStream extends ChangeNotifier {
 
   _GoRouterRefreshStream(Stream<AuthState?> stream) {
     notifyListeners();
-    _subscription = stream.asBroadcastStream().listen(
-          (_) => notifyListeners(),
-        );
+    _subscription = stream.asBroadcastStream().listen((_) => notifyListeners());
   }
 
   @override

@@ -4,10 +4,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:gift_grab_client/data/enums/login_error_exclusions.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
-import 'package:gift_grab_client/domain/services/social_auth_service.dart';
 import 'package:gift_grab_client/main.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:nakama/nakama.dart';
 
 part 'auth_state.dart';
@@ -15,16 +13,38 @@ part 'auth_state.dart';
 class AuthCubit extends Cubit<AuthState> {
   final NakamaBaseClient client;
   final SessionService sessionService;
-  final SocialAuthService socialAuthService;
+  // final SocialAuthService socialAuthService;
 
-  StreamSubscription<GoogleSignInAuthenticationEvent>? _googleAuthSubscription;
+  // StreamSubscription<GoogleSignInAuthenticationEvent>? _googleAuthSubscription;
 
   AuthCubit(
     this.client,
     this.sessionService,
-    this.socialAuthService,
+    // this.socialAuthService,
   ) : super(const AuthState()) {
-    _initializeGoogleAuth();
+    // _initializeGoogleAuth();
+  }
+
+  Future<void> loginCustom({
+    required String id,
+    required String username,
+  }) async {
+    try {
+      emit(state.copyWith(isLoading: true));
+
+      final session = await client.authenticateCustom(
+        id: id,
+        create: false,
+        username: username,
+      );
+
+      await sessionService.saveSession(session);
+      logger.d('loginEmail: id - $id, username - $username');
+      emit(state.copyWith(authenticated: true));
+    } catch (e) {
+      logger.e(e.toString());
+      emit(state.copyWith(error: e.toString()));
+    }
   }
 
   Future<String?> loginEmail(String email, String password) async {
@@ -76,11 +96,7 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
-  Future<String?> signup(
-    String email,
-    String password,
-    String username,
-  ) async {
+  Future<String?> signup(String email, String password, String username) async {
     try {
       emit(state.copyWith(isLoading: true));
 
@@ -106,7 +122,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(state.copyWith(isLoading: true));
 
-      final idToken = await socialAuthService.getGoogleToken();
+      const idToken = null;
 
       if (idToken == null) {
         emit(state.copyWith());
@@ -128,7 +144,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(state.copyWith(isLoading: true));
 
-      final idToken = await socialAuthService.getAppleToken();
+      const idToken = null;
 
       if (idToken == null) {
         emit(state.copyWith());
@@ -148,48 +164,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   @override
   Future<void> close() {
-    _googleAuthSubscription?.cancel();
+    // _googleAuthSubscription?.cancel();
     return super.close();
-  }
-
-  // Note: For web only
-  void _initializeGoogleAuth() {
-    _googleAuthSubscription = socialAuthService
-        .googleSignIn.authenticationEvents
-        .listen(_handleAuthenticationEvent)
-      ..onError(_handleAuthenticationError);
-  }
-
-  Future<void> _handleAuthenticationEvent(
-    GoogleSignInAuthenticationEvent event,
-  ) async {
-    final GoogleSignInAccount? user = switch (event) {
-      GoogleSignInAuthenticationEventSignIn() => event.user,
-      GoogleSignInAuthenticationEventSignOut() => null,
-    };
-
-    final idToken = user?.authentication.idToken;
-
-    if (idToken == null) return;
-
-    final session = await client.authenticateGoogle(token: idToken);
-    await sessionService.saveSession(session);
-
-    emit(state.copyWith(authenticated: true));
-  }
-
-  Future<void> _handleAuthenticationError(Object e) async {
-    final errorMessage = e is GoogleSignInException
-        ? _errorMessageFromSignInException(e)
-        : 'Unknown error: $e';
-
-    emit(state.copyWith(error: errorMessage));
-  }
-
-  String _errorMessageFromSignInException(GoogleSignInException e) {
-    return switch (e.code) {
-      GoogleSignInExceptionCode.canceled => 'Sign in canceled',
-      _ => 'GoogleSignInException ${e.code}: ${e.description}',
-    };
   }
 }

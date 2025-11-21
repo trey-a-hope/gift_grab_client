@@ -28,10 +28,9 @@ class EditProfilePage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<UserUpdateBloc>(
-          create: (context) => UserUpdateBloc(
-            account,
-            context.read<SessionService>(),
-          )..add(const Init()),
+          create: (context) =>
+              UserUpdateBloc(account, context.read<SessionService>())
+                ..add(const Init()),
         ),
         BlocProvider<AccountUpdateBloc>(
           create: (context) => AccountUpdateBloc(
@@ -71,9 +70,7 @@ class EditProfileView extends StatelessWidget {
       child: BlocConsumer<UserUpdateBloc, UserUpdateState>(
         listener: (context, state) {
           if (state.status == FormzSubmissionStatus.inProgress) {
-            accountUpdateBloc.add(
-              UpdateAccount(state.username.value),
-            );
+            accountUpdateBloc.add(UpdateAccount(state.username.value));
           }
         },
         builder: (context, state) {
@@ -90,34 +87,35 @@ class EditProfileView extends StatelessWidget {
                           ShortTextInput(
                             state.username,
                             labelText: 'Username',
-                            onChanged: (name) => userUpdateBloc.add(
-                              UsernameChange(name),
-                            ),
+                            onChanged: (name) =>
+                                userUpdateBloc.add(UsernameChange(name)),
                           ),
                           ElevatedButton(
-                              onPressed: () async {
-                                final inputs = <FormzInput>[state.username];
+                            onPressed: () async {
+                              final inputs = <FormzInput>[state.username];
 
-                                final inputsValid = Formz.validate(inputs);
+                              final inputsValid = Formz.validate(inputs);
 
-                                if (!inputsValid) {
-                                  ModalUtil.showError(context,
-                                      title: 'Form not valid');
-                                  return;
-                                }
-
-                                final confirm =
-                                    await ModalUtil.showConfirmation(
+                              if (!inputsValid) {
+                                ModalUtil.showError(
                                   context,
-                                  title: 'Save Profile?',
-                                  message: LabelText.confirm,
+                                  title: 'Form not valid',
                                 );
+                                return;
+                              }
 
-                                if (!confirm.falseIfNull()) return;
+                              final confirm = await ModalUtil.showConfirmation(
+                                context,
+                                title: 'Save Profile?',
+                                message: LabelText.confirm,
+                              );
 
-                                userUpdateBloc.add(const SaveForm());
-                              },
-                              child: const Text('Save')),
+                              if (!confirm.falseIfNull()) return;
+
+                              userUpdateBloc.add(const SaveForm());
+                            },
+                            child: const Text('Save'),
+                          ),
                         ],
                       ),
                     ),

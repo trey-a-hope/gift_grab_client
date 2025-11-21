@@ -37,181 +37,164 @@ class AccountUpdateBloc extends Bloc<AccountUpdateEvent, AccountUpdateState> {
   Future<void> _onUpdateAccount(
     UpdateAccount event,
     Emitter<AccountUpdateState> emit,
-  ) async =>
-      await runWithErrorHandling(
-        action: () async {
-          emit(state.copyWith(isLoading: true));
+  ) async => await runWithErrorHandling(
+    action: () async {
+      emit(state.copyWith(isLoading: true));
 
-          final session = await sessionService.getSession();
+      final session = await sessionService.getSession();
 
-          final profanityResponse = await profanityApi.scan(event.username);
+      final profanityResponse = await profanityApi.scan(event.username);
 
-          if (profanityResponse.isProfanity) {
-            throw Exception(FeedbackMessages.profanity);
-          }
+      if (profanityResponse.isProfanity) {
+        throw Exception(FeedbackMessages.profanity);
+      }
 
-          await client.updateAccount(
-            session: session,
-            username: event.username,
-          );
+      await client.updateAccount(session: session, username: event.username);
 
-          emit(state.copyWith(success: 'Account updated successfully'));
-        },
-        emit: emit,
-        state: state,
-      );
+      emit(state.copyWith(success: 'Account updated successfully'));
+    },
+    emit: emit,
+    state: state,
+  );
 
   Future<void> _onLinkEmail(
     LinkEmail event,
     Emitter<AccountUpdateState> emit,
-  ) async =>
-      await runWithErrorHandling(
-        action: () async {
-          emit(state.copyWith(isLoading: true));
+  ) async => await runWithErrorHandling(
+    action: () async {
+      emit(state.copyWith(isLoading: true));
 
-          final session = await sessionService.getSession();
+      final session = await sessionService.getSession();
 
-          await client.linkEmail(
-            session: session,
-            email: event.email,
-            password: event.password,
-          );
-
-          emit(
-            state.copyWith(success: 'Email linked successfully'),
-          );
-        },
-        emit: emit,
-        state: state,
+      await client.linkEmail(
+        session: session,
+        email: event.email,
+        password: event.password,
       );
+
+      emit(state.copyWith(success: 'Email linked successfully'));
+    },
+    emit: emit,
+    state: state,
+  );
 
   Future<void> _onUnlinkEmail(
     UnlinkEmail event,
     Emitter<AccountUpdateState> emit,
-  ) async =>
-      await runWithErrorHandling(
-        action: () async {
-          emit(state.copyWith(isLoading: true));
+  ) async => await runWithErrorHandling(
+    action: () async {
+      emit(state.copyWith(isLoading: true));
 
-          final session = await sessionService.getSession();
+      final session = await sessionService.getSession();
 
-          final email = account.email;
+      final email = account.email;
 
-          if (email == null) {
-            throw Exception('Account email is null');
-          }
+      if (email == null) {
+        throw Exception('Account email is null');
+      }
 
-          await client.unlinkEmail(
-            session: session,
-            email: email,
-            password: '',
-          );
+      await client.unlinkEmail(session: session, email: email, password: '');
 
-          emit(
-            state.copyWith(success: 'Email unlinked successfully'),
-          );
-        },
-        emit: emit,
-        state: state,
-      );
+      emit(state.copyWith(success: 'Email unlinked successfully'));
+    },
+    emit: emit,
+    state: state,
+  );
 
   Future<void> _onLinkGoogle(
     LinkGoogle event,
     Emitter<AccountUpdateState> emit,
-  ) async =>
-      await runWithErrorHandling(
-        action: () async {
-          emit(state.copyWith(isLoading: true));
+  ) async => await runWithErrorHandling(
+    action: () async {
+      emit(state.copyWith(isLoading: true));
 
-          final session = await sessionService.getSession();
+      final session = await sessionService.getSession();
 
-          final idToken = await socialAuthService.getGoogleToken();
+      // final idToken = await socialAuthService.getGoogleToken();
+      const idToken = null;
 
-          if (idToken == null) {
-            emit(state.copyWith());
-            return;
-          }
+      if (idToken == null) {
+        emit(state.copyWith());
+        return;
+      }
 
-          await client.linkGoogle(session: session, token: idToken);
+      await client.linkGoogle(session: session, token: idToken);
 
-          emit(state.copyWith(success: 'Google account linked successfully'));
-        },
-        emit: emit,
-        state: state,
-      );
+      emit(state.copyWith(success: 'Google account linked successfully'));
+    },
+    emit: emit,
+    state: state,
+  );
 
   Future<void> _onUnlinkGoogle(
     UnlinkGoogle event,
     Emitter<AccountUpdateState> emit,
-  ) async =>
-      await runWithErrorHandling(
-        action: () async {
-          emit(state.copyWith(isLoading: true));
+  ) async => await runWithErrorHandling(
+    action: () async {
+      emit(state.copyWith(isLoading: true));
 
-          final session = await sessionService.getSession();
+      final session = await sessionService.getSession();
 
-          final idToken = await socialAuthService.getGoogleToken();
+      const idToken = null;
 
-          if (idToken == null) {
-            emit(state.copyWith());
-            return;
-          }
+      if (idToken == null) {
+        emit(state.copyWith());
+        return;
+      }
 
-          await client.unlinkGoogle(session: session, token: idToken);
+      await client.unlinkGoogle(session: session, token: idToken);
 
-          emit(state.copyWith(success: 'Google account unlinked successfully'));
-        },
-        emit: emit,
-        state: state,
-      );
+      emit(state.copyWith(success: 'Google account unlinked successfully'));
+    },
+    emit: emit,
+    state: state,
+  );
 
   Future<void> _onLinkApple(
     LinkApple event,
     Emitter<AccountUpdateState> emit,
-  ) async =>
-      await runWithErrorHandling(
-        action: () async {
-          emit(state.copyWith(isLoading: true));
+  ) async => await runWithErrorHandling(
+    action: () async {
+      emit(state.copyWith(isLoading: true));
 
-          final session = await sessionService.getSession();
+      final session = await sessionService.getSession();
 
-          final idToken = await socialAuthService.getAppleToken();
+      const idToken = null;
 
-          if (idToken == null) {
-            emit(state.copyWith());
-            return;
-          }
+      if (idToken == null) {
+        emit(state.copyWith());
+        return;
+      }
 
-          await client.linkApple(session: session, token: idToken);
+      await client.linkApple(session: session, token: idToken);
 
-          emit(state.copyWith(success: 'Apple account linked successfully'));
-        },
-        emit: emit,
-        state: state,
-      );
+      emit(state.copyWith(success: 'Apple account linked successfully'));
+    },
+    emit: emit,
+    state: state,
+  );
 
   Future<void> _onUnlinkApple(
     UnlinkApple event,
     Emitter<AccountUpdateState> emit,
-  ) async =>
-      await runWithErrorHandling(
-        action: () async {
-          emit(state.copyWith(isLoading: true));
+  ) async => await runWithErrorHandling(
+    action: () async {
+      emit(state.copyWith(isLoading: true));
 
-          final session = await sessionService.getSession();
+      final session = await sessionService.getSession();
 
-          final idToken = await socialAuthService.getAppleToken();
+      const idToken = null;
 
-          if (idToken == null) {
-            emit(state.copyWith());
-            return;
-          }
+      if (idToken == null) {
+        emit(state.copyWith());
+        return;
+      }
 
-          await client.unlinkApple(session: session, token: idToken);
+      await client.unlinkApple(session: session, token: idToken);
 
-          emit(state.copyWith(success: 'Apple account unlinked successfully'));
-        },
-        emit: emit,
-        state: state,
-      );
+      emit(state.copyWith(success: 'Apple account unlinked successfully'));
+    },
+    emit: emit,
+    state: state,
+  );
 }

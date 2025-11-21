@@ -4,7 +4,7 @@ publish_to: "none"
 version: 25.9.7+69
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: '>=3.10.0 <4.0.0' 
   flutter: ">=3.0.0"
 
 dependencies:
@@ -19,6 +19,7 @@ dependencies:
   flutter_bloc: ^9.1.1
   flutter_login: ^5.1.0
   flutter_secure_storage: ^9.2.4
+  fluo: ^3.3.2
   font_awesome_flutter: ^10.9.0
   formz: ^0.8.0
   gap: ^3.0.1
@@ -27,7 +28,7 @@ dependencies:
   gift_grab_ui:
     git: https://github.com/trey-a-hope/gift_grab_ui.git
   go_router: ^16.1.0
-  google_sign_in: ^7.1.1
+  google_sign_in: ^6.3.0
   intl: ^0.20.2
   logger: ^2.6.1
   material_design_icons_flutter: ^7.0.7296
@@ -40,6 +41,9 @@ dependencies:
   sign_in_with_apple: ^7.0.1
   universal_platform: ^1.1.0
   window_pain: ^0.0.2
+  shadcn_ui: ^0.39.7
+  lottie: ^3.3.2
+  google_fonts: ^6.3.2
 
 dev_dependencies:
   flutter_test:

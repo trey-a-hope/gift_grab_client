@@ -16,28 +16,19 @@ class UserReadBloc extends Bloc<UserReadEvent, UserReadState> {
   final NakamaBaseClient client;
   final SessionService sessionService;
 
-  UserReadBloc(
-    this.uid,
-    this.client,
-    this.sessionService,
-  ) : super(const UserReadState()) {
+  UserReadBloc(this.uid, this.client, this.sessionService)
+    : super(const UserReadState()) {
     on<ReadUser>(_onReadUser);
   }
 
-  Future<void> _onReadUser(
-    ReadUser event,
-    Emitter<UserReadState> emit,
-  ) async =>
+  Future<void> _onReadUser(ReadUser event, Emitter<UserReadState> emit) async =>
       await runWithErrorHandling(
         action: () async {
           emit(state.copyWith(isLoading: true));
 
           final session = await sessionService.getSession();
 
-          final users = await client.getUsers(
-            session: session,
-            ids: [uid],
-          );
+          final users = await client.getUsers(session: session, ids: [uid]);
 
           if (users.isEmpty) {
             throw Exception('no users found');
@@ -63,16 +54,16 @@ class UserReadBloc extends Bloc<UserReadEvent, UserReadState> {
       );
 
   Future<FriendshipState?> _getFriendshipState(
-      Session session, String uid) async {
-    final _ = await client.rpc(
+    Session session,
+    String uid,
+  ) async {
+    final a = await client.rpc(
       session: session,
       id: RpcFunctions.GET_FRIENDSHIP_STATE.id,
-      payload: jsonEncode(
-        {"destination_id": uid},
-      ),
+      payload: jsonEncode({"destination_id": uid}),
     );
 
-    switch (_) {
+    switch (a) {
       case "0":
         return FriendshipState.mutual;
       case "1":

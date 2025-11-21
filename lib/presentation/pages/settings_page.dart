@@ -123,8 +123,9 @@ class SettingsView extends StatelessWidget {
                     ),
                     SettingsTile.switchTile(
                       initialValue: isGoogleLinked,
-                      onToggle: (val) async => accountUpdateBloc
-                          .add(val ? const LinkGoogle() : const UnlinkGoogle()),
+                      onToggle: (val) async => accountUpdateBloc.add(
+                        val ? const LinkGoogle() : const UnlinkGoogle(),
+                      ),
                       leading: const Icon(FontAwesomeIcons.google),
                       title: const Text('Link to Google'),
                     ),
@@ -132,8 +133,9 @@ class SettingsView extends StatelessWidget {
                         UniversalPlatform.isMacOS) ...[
                       SettingsTile.switchTile(
                         initialValue: isAppleLinked,
-                        onToggle: (val) async => accountUpdateBloc
-                            .add(val ? const LinkApple() : const UnlinkApple()),
+                        onToggle: (val) async => accountUpdateBloc.add(
+                          val ? const LinkApple() : const UnlinkApple(),
+                        ),
                         leading: const Icon(FontAwesomeIcons.apple),
                         title: const Text('Link to Apple'),
                       ),
@@ -147,7 +149,8 @@ class SettingsView extends StatelessWidget {
                       leading: Icon(MdiIcons.license),
                       title: const Text('Licenses'),
                       value: Text(
-                          'v ${packageInfo.version}.${packageInfo.buildNumber}'),
+                        'v ${packageInfo.version}.${packageInfo.buildNumber}',
+                      ),
                       onPressed: (context) async =>
                           showLicensePage(context: context),
                     ),
@@ -185,7 +188,7 @@ class SettingsView extends StatelessWidget {
 
                         accountDeleteBloc.add(const DeleteAccount());
                       },
-                    )
+                    ),
                   ],
                 ),
               ],
