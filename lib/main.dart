@@ -149,7 +149,7 @@ class MyAppView extends StatelessWidget {
         colorScheme: const ShadNeutralColorScheme.dark(),
         textTheme: ShadTextTheme.fromGoogleFont(GoogleFonts.aBeeZee),
       ),
-      themeMode: ThemeMode.light,
+      themeMode: ThemeMode.dark,
       title: 'Gift Grab',
       routeInformationParser: router.routeInformationParser,
       routeInformationProvider: router.routeInformationProvider,

@@ -107,7 +107,7 @@ shorebird preview
 
 **Domain Layer** (`lib/domain/`)
 - Contains abstract repository interfaces (prefix: `I`)
-- Business logic services (`SessionService`, `SocialAuthService`)
+- Business logic services (`SessionService`)
 - Domain entities (`LeaderboardEntry`)
 - No Flutter/framework dependencies
 
@@ -229,11 +229,7 @@ final client = getNakamaClient(
 ```dart
 MultiRepositoryProvider(
   providers: [
-    RepositoryProvider<NakamaBaseClient>(create: (_) => client),
-    RepositoryProvider<ISessionRepository>(create: (_) => SessionRepository(...)),
-    RepositoryProvider<ISocialAuthRepository>(create: (_) => SocialAuthRepository(...)),
     RepositoryProvider<SessionService>(create: (_) => SessionService(...)),
-    RepositoryProvider<SocialAuthService>(create: (_) => SocialAuthService(...)),
   ],
   child: MultiBlocProvider(
     providers: [
@@ -355,7 +351,6 @@ Enforces:
 
 ### Modifying Authentication
 - Authentication logic in `AuthCubit` (`lib/presentation/cubits/auth/`)
-- OAuth providers in `SocialAuthRepository` (`lib/data/repositories/social_auth_repository.dart`)
 - Session management in `SessionService` (`lib/domain/services/session_service.dart`)
 - Secure storage via `flutter_secure_storage` in `SessionRepository`
 

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:fluo/fluo.dart';
 import 'package:gift_grab_client/data/enums/login_error_exclusions.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/main.dart';
@@ -13,17 +14,8 @@ part 'auth_state.dart';
 class AuthCubit extends Cubit<AuthState> {
   final NakamaBaseClient client;
   final SessionService sessionService;
-  // final SocialAuthService socialAuthService;
 
-  // StreamSubscription<GoogleSignInAuthenticationEvent>? _googleAuthSubscription;
-
-  AuthCubit(
-    this.client,
-    this.sessionService,
-    // this.socialAuthService,
-  ) : super(const AuthState()) {
-    // _initializeGoogleAuth();
-  }
+  AuthCubit(this.client, this.sessionService) : super(const AuthState());
 
   Future<void> loginCustom({
     required String id,
@@ -34,7 +26,7 @@ class AuthCubit extends Cubit<AuthState> {
 
       final session = await client.authenticateCustom(
         id: id,
-        create: false,
+        create: true,
         username: username,
       );
 
@@ -74,6 +66,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(state.copyWith(isLoading: true));
       await sessionService.logout();
+      await Fluo.instance.clearSession();
       emit(state.copyWith(authenticated: false));
     } catch (e) {
       emit(state.copyWith(error: e.toString()));
@@ -160,11 +153,5 @@ class AuthCubit extends Cubit<AuthState> {
       emit(state.copyWith(error: e.toString()));
       return e.toString();
     }
-  }
-
-  @override
-  Future<void> close() {
-    // _googleAuthSubscription?.cancel();
-    return super.close();
   }
 }

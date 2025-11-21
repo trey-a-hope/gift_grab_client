@@ -2,7 +2,6 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
-import 'package:gift_grab_client/domain/services/social_auth_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_update/account_update.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:nakama/nakama.dart';
@@ -12,8 +11,6 @@ import 'package:profanity_api/profanity_api.dart';
 class MockNakamaBaseClient extends Mock implements NakamaBaseClient {}
 
 class MockSessionService extends Mock implements SessionService {}
-
-class MockSocialAuthService extends Mock implements SocialAuthService {}
 
 class MockSession extends Mock implements Session {}
 
@@ -27,7 +24,6 @@ void main() {
   group(AccountUpdateBloc, () {
     late MockSessionService mockSessionService;
     late MockNakamaBaseClient mockNakamaBaseClient;
-    late MockSocialAuthService mockSocialAuthService;
     late MockAccount mockAccount;
     late MockProfanityApi mockProfanityApi; // Add this
 
@@ -49,7 +45,6 @@ void main() {
     setUp(() {
       mockSessionService = MockSessionService();
       mockNakamaBaseClient = MockNakamaBaseClient();
-      mockSocialAuthService = MockSocialAuthService();
       mockAccount = MockAccount();
       mockProfanityApi = MockProfanityApi(); // Initialize the mock
 
@@ -79,7 +74,6 @@ void main() {
           mockAccount,
           mockSessionService,
           mockNakamaBaseClient,
-          mockSocialAuthService,
           mockProfanityApi, // Pass the mock here
         ),
         seed: () => const AccountUpdateState(),
@@ -109,7 +103,6 @@ void main() {
           mockAccount,
           mockSessionService,
           mockNakamaBaseClient,
-          mockSocialAuthService,
           mockProfanityApi, // Pass the mock here
         ),
         seed: () => const AccountUpdateState(),
@@ -145,8 +138,7 @@ void main() {
           mockAccount,
           mockSessionService,
           mockNakamaBaseClient,
-          mockSocialAuthService,
-          mockProfanityApi, // Don't forget to pass it to all bloc instantiations
+          mockProfanityApi,
         ),
         seed: () => const AccountUpdateState(),
         act: (bloc) =>
@@ -184,7 +176,6 @@ void main() {
           mockAccount,
           mockSessionService,
           mockNakamaBaseClient,
-          mockSocialAuthService,
           mockProfanityApi,
         ),
         seed: () => const AccountUpdateState(),
@@ -212,7 +203,6 @@ void main() {
           mockAccount,
           mockSessionService,
           mockNakamaBaseClient,
-          mockSocialAuthService,
           mockProfanityApi,
         ),
         seed: () => const AccountUpdateState(),
@@ -229,58 +219,16 @@ void main() {
 
     group(LinkGoogle, () {
       blocTest<AccountUpdateBloc, AccountUpdateState>(
-        'emits loading state then success state when linking Google',
-        setUp: () {
-          when(
-            () => mockSessionService.getSession(),
-          ).thenAnswer((_) async => mockSession);
-
-          when(
-            () => mockSocialAuthService.getGoogleToken(),
-          ).thenAnswer((_) async => 'google_token');
-
-          when(
-            () => mockNakamaBaseClient.linkGoogle(
-              session: mockSession,
-              token: 'google_token',
-            ),
-          ).thenAnswer((_) async {});
-        },
-        build: () => AccountUpdateBloc(
-          mockAccount,
-          mockSessionService,
-          mockNakamaBaseClient,
-          mockSocialAuthService,
-          mockProfanityApi,
-        ),
-        seed: () => const AccountUpdateState(),
-        act: (bloc) => bloc.add(const LinkGoogle()),
-        expect: () => [
-          const AccountUpdateState(isLoading: true),
-          const AccountUpdateState(
-            success: 'Google account linked successfully',
-            isLoading: false,
-            error: null,
-          ),
-        ],
-      );
-
-      blocTest<AccountUpdateBloc, AccountUpdateState>(
         'emits loading state then resets when Google token is null',
         setUp: () {
           when(
             () => mockSessionService.getSession(),
           ).thenAnswer((_) async => mockSession);
-
-          when(
-            () => mockSocialAuthService.getGoogleToken(),
-          ).thenAnswer((_) async => null);
         },
         build: () => AccountUpdateBloc(
           mockAccount,
           mockSessionService,
           mockNakamaBaseClient,
-          mockSocialAuthService,
           mockProfanityApi,
         ),
         seed: () => const AccountUpdateState(),
@@ -294,58 +242,16 @@ void main() {
 
     group(UnlinkGoogle, () {
       blocTest<AccountUpdateBloc, AccountUpdateState>(
-        'emits loading state then success state when unlinking Google',
-        setUp: () {
-          when(
-            () => mockSessionService.getSession(),
-          ).thenAnswer((_) async => mockSession);
-
-          when(
-            () => mockSocialAuthService.getGoogleToken(),
-          ).thenAnswer((_) async => 'google_token');
-
-          when(
-            () => mockNakamaBaseClient.unlinkGoogle(
-              session: mockSession,
-              token: 'google_token',
-            ),
-          ).thenAnswer((_) async {});
-        },
-        build: () => AccountUpdateBloc(
-          mockAccount,
-          mockSessionService,
-          mockNakamaBaseClient,
-          mockSocialAuthService,
-          mockProfanityApi,
-        ),
-        seed: () => const AccountUpdateState(),
-        act: (bloc) => bloc.add(const UnlinkGoogle()),
-        expect: () => [
-          const AccountUpdateState(isLoading: true),
-          const AccountUpdateState(
-            success: 'Google account unlinked successfully',
-            isLoading: false,
-            error: null,
-          ),
-        ],
-      );
-
-      blocTest<AccountUpdateBloc, AccountUpdateState>(
         'emits loading state then resets when Google token is null',
         setUp: () {
           when(
             () => mockSessionService.getSession(),
           ).thenAnswer((_) async => mockSession);
-
-          when(
-            () => mockSocialAuthService.getGoogleToken(),
-          ).thenAnswer((_) async => null);
         },
         build: () => AccountUpdateBloc(
           mockAccount,
           mockSessionService,
           mockNakamaBaseClient,
-          mockSocialAuthService,
           mockProfanityApi,
         ),
         seed: () => const AccountUpdateState(),
@@ -359,58 +265,16 @@ void main() {
 
     group(LinkApple, () {
       blocTest<AccountUpdateBloc, AccountUpdateState>(
-        'emits loading state then success state when linking Apple',
-        setUp: () {
-          when(
-            () => mockSessionService.getSession(),
-          ).thenAnswer((_) async => mockSession);
-
-          when(
-            () => mockSocialAuthService.getAppleToken(),
-          ).thenAnswer((_) async => 'apple_token');
-
-          when(
-            () => mockNakamaBaseClient.linkApple(
-              session: mockSession,
-              token: 'apple_token',
-            ),
-          ).thenAnswer((_) async {});
-        },
-        build: () => AccountUpdateBloc(
-          mockAccount,
-          mockSessionService,
-          mockNakamaBaseClient,
-          mockSocialAuthService,
-          mockProfanityApi,
-        ),
-        seed: () => const AccountUpdateState(),
-        act: (bloc) => bloc.add(const LinkApple()),
-        expect: () => [
-          const AccountUpdateState(isLoading: true),
-          const AccountUpdateState(
-            success: 'Apple account linked successfully',
-            isLoading: false,
-            error: null,
-          ),
-        ],
-      );
-
-      blocTest<AccountUpdateBloc, AccountUpdateState>(
         'emits loading state then resets when Apple token is null',
         setUp: () {
           when(
             () => mockSessionService.getSession(),
           ).thenAnswer((_) async => mockSession);
-
-          when(
-            () => mockSocialAuthService.getAppleToken(),
-          ).thenAnswer((_) async => null);
         },
         build: () => AccountUpdateBloc(
           mockAccount,
           mockSessionService,
           mockNakamaBaseClient,
-          mockSocialAuthService,
           mockProfanityApi,
         ),
         seed: () => const AccountUpdateState(),
@@ -424,58 +288,16 @@ void main() {
 
     group(UnlinkApple, () {
       blocTest<AccountUpdateBloc, AccountUpdateState>(
-        'emits loading state then success state when unlinking Apple',
-        setUp: () {
-          when(
-            () => mockSessionService.getSession(),
-          ).thenAnswer((_) async => mockSession);
-
-          when(
-            () => mockSocialAuthService.getAppleToken(),
-          ).thenAnswer((_) async => 'apple_token');
-
-          when(
-            () => mockNakamaBaseClient.unlinkApple(
-              session: mockSession,
-              token: 'apple_token',
-            ),
-          ).thenAnswer((_) async {});
-        },
-        build: () => AccountUpdateBloc(
-          mockAccount,
-          mockSessionService,
-          mockNakamaBaseClient,
-          mockSocialAuthService,
-          mockProfanityApi,
-        ),
-        seed: () => const AccountUpdateState(),
-        act: (bloc) => bloc.add(const UnlinkApple()),
-        expect: () => [
-          const AccountUpdateState(isLoading: true),
-          const AccountUpdateState(
-            success: 'Apple account unlinked successfully',
-            isLoading: false,
-            error: null,
-          ),
-        ],
-      );
-
-      blocTest<AccountUpdateBloc, AccountUpdateState>(
         'emits loading state then resets when Apple token is null',
         setUp: () {
           when(
             () => mockSessionService.getSession(),
           ).thenAnswer((_) async => mockSession);
-
-          when(
-            () => mockSocialAuthService.getAppleToken(),
-          ).thenAnswer((_) async => null);
         },
         build: () => AccountUpdateBloc(
           mockAccount,
           mockSessionService,
           mockNakamaBaseClient,
-          mockSocialAuthService,
           mockProfanityApi,
         ),
         seed: () => const AccountUpdateState(),

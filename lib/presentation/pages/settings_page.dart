@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
-import 'package:gift_grab_client/domain/services/social_auth_service.dart';
 import 'package:gift_grab_client/main.dart';
 import 'package:gift_grab_client/presentation/blocs/account_delete/account_delete.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
@@ -40,7 +39,6 @@ class SettingsPage extends StatelessWidget {
             account,
             context.read<SessionService>(),
             getNakamaClient(),
-            context.read<SocialAuthService>(),
             ProfanityApi.instance,
           ),
         ),

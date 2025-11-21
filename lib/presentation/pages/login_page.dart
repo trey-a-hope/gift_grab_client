@@ -38,14 +38,14 @@ class LoginPage extends StatelessWidget {
         return FluoOnboarding(
           fluoTheme: FluoTheme.web(),
           onUserReady: () async {
-            final session = Fluo.instance.session!;
+            final user = Fluo.instance.session!.user;
 
-            final id = session.id;
-            final username = session.user.firstName ?? 'NOUSERNAME';
+            final id = user.id;
+            final username = user.firstName ?? 'NOUSERNAME';
 
             authCubit.loginCustom(id: id, username: username);
 
-            logger.i('Welcome back, ${session.user.firstName} 👋🏾');
+            logger.i('Welcome back, ${user.firstName} 👋🏾');
           },
           introBuilder: (context, bottomContainerHeight) {
             return Container(

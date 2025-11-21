@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
-import 'package:gift_grab_client/domain/services/social_auth_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/account_read.dart';
 import 'package:gift_grab_client/presentation/blocs/account_update/bloc/account_update_bloc.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
@@ -37,7 +36,6 @@ class EditProfilePage extends StatelessWidget {
             account,
             context.read<SessionService>(),
             getNakamaClient(),
-            context.read<SocialAuthService>(),
             ProfanityApi.instance,
           ),
         ),

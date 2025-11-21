@@ -3,7 +3,6 @@ import 'package:bloc_error_handler/bloc_error_handler.dart';
 import 'package:equatable/equatable.dart';
 import 'package:gift_grab_client/data/constants/feedback_messages.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
-import 'package:gift_grab_client/domain/services/social_auth_service.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:nakama/nakama.dart';
 import 'package:profanity_api/profanity_api.dart';
@@ -15,14 +14,12 @@ class AccountUpdateBloc extends Bloc<AccountUpdateEvent, AccountUpdateState> {
   final Account account;
   final SessionService sessionService;
   final NakamaBaseClient client;
-  final SocialAuthService socialAuthService;
   final ProfanityApi profanityApi;
 
   AccountUpdateBloc(
     this.account,
     this.sessionService,
     this.client,
-    this.socialAuthService,
     this.profanityApi,
   ) : super(const AccountUpdateState()) {
     on<UpdateAccount>(_onUpdateAccount);

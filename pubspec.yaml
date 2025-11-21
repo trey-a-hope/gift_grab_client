@@ -1,7 +1,7 @@
 name: gift_grab_client
 description: A game made using Flame where users grab presents to increase their scores.
 publish_to: "none"
-version: 25.9.7+69
+version: 25.11.1+70
 
 environment:
   sdk: '>=3.10.0 <4.0.0' 
@@ -28,9 +28,11 @@ dependencies:
   gift_grab_ui:
     git: https://github.com/trey-a-hope/gift_grab_ui.git
   go_router: ^16.1.0
+  google_fonts: ^6.3.2
   google_sign_in: ^6.3.0
   intl: ^0.20.2
   logger: ^2.6.1
+  lottie: ^3.3.2
   material_design_icons_flutter: ^7.0.7296
   modal_util: ^0.0.7
   mocktail: ^1.0.4
@@ -38,12 +40,10 @@ dependencies:
   package_info_plus: ^8.3.1
   profanity_api: ^0.0.1
   settings_ui: ^2.0.2
+  shadcn_ui: ^0.39.7
   sign_in_with_apple: ^7.0.1
   universal_platform: ^1.1.0
   window_pain: ^0.0.2
-  shadcn_ui: ^0.39.7
-  lottie: ^3.3.2
-  google_fonts: ^6.3.2
 
 dev_dependencies:
   flutter_test:
