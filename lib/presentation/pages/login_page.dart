@@ -40,45 +40,7 @@ class LoginPage extends StatelessWidget {
         return FluoOnboarding(
           fluoTheme: FluoTheme.web(
             primaryColor: colorScheme.foreground,
-            continueButtonStyle: ButtonStyle(
-              splashFactory: NoSplash.splashFactory,
-              elevation: WidgetStateProperty.all(0),
-              backgroundColor: WidgetStateProperty.resolveWith((states) {
-                return states.contains(WidgetState.disabled)
-                    ? Colors.grey.shade100
-                    : Colors.white;
-              }),
-              foregroundColor: WidgetStateProperty.resolveWith((states) {
-                return states.contains(WidgetState.disabled)
-                    ? Colors.black.withAlpha(255 ~/ 4)
-                    : Colors.black;
-              }),
-              minimumSize: WidgetStateProperty.all(const Size.fromHeight(50)),
-              mouseCursor: WidgetStateProperty.all(SystemMouseCursors.click),
-              textStyle: WidgetStateProperty.all(
-                const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-              ),
-              overlayColor: WidgetStateProperty.resolveWith<Color?>((
-                Set<WidgetState> states,
-              ) {
-                return states.contains(WidgetState.hovered)
-                    ? Colors.grey.shade50
-                    : null;
-              }),
-              shape: WidgetStateProperty.resolveWith<OutlinedBorder>((
-                Set<WidgetState> states,
-              ) {
-                return RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                  side: BorderSide(
-                    color: states.contains(WidgetState.hovered)
-                        ? Colors.grey.shade600
-                        : const Color(0xffdadce0),
-                    width: 1.0,
-                  ),
-                );
-              }),
-            ),
+            continueButtonStyle: continueButtonStyle,
           ),
           onUserReady: () async {
             final user = Fluo.instance.session!.user;
@@ -129,3 +91,40 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
+
+// Custom continue button style, just to get the black title text.
+final continueButtonStyle = ButtonStyle(
+  splashFactory: NoSplash.splashFactory,
+  elevation: WidgetStateProperty.all(0),
+  backgroundColor: WidgetStateProperty.resolveWith(
+    (states) => states.contains(WidgetState.disabled)
+        ? Colors.grey.shade100
+        : Colors.white,
+  ),
+  // Here...
+  foregroundColor: WidgetStateProperty.resolveWith(
+    (states) => states.contains(WidgetState.disabled)
+        ? Colors.black.withAlpha(255 ~/ 4)
+        : Colors.black,
+  ),
+  minimumSize: WidgetStateProperty.all(const Size.fromHeight(50)),
+  mouseCursor: WidgetStateProperty.all(SystemMouseCursors.click),
+  textStyle: WidgetStateProperty.all(
+    const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+  ),
+  overlayColor: WidgetStateProperty.resolveWith<Color?>(
+    (Set<WidgetState> states) =>
+        states.contains(WidgetState.hovered) ? Colors.grey.shade50 : null,
+  ),
+  shape: WidgetStateProperty.resolveWith<OutlinedBorder>(
+    (Set<WidgetState> states) => RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(4),
+      side: BorderSide(
+        color: states.contains(WidgetState.hovered)
+            ? Colors.grey.shade600
+            : const Color(0xffdadce0),
+        width: 1.0,
+      ),
+    ),
+  ),
+);
