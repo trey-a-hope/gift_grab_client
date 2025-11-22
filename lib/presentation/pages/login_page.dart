@@ -46,8 +46,11 @@ class LoginPage extends StatelessWidget {
             final user = Fluo.instance.session!.user;
 
             final id = user.id;
-            final username = user.firstName ?? 'NOUSERNAME';
 
+            // The username will be the user's email
+            final username = user.email ?? 'NOUSERNAME';
+
+            // Login using custom auth via Nakama
             authCubit.loginCustom(id: id, username: username);
 
             logger.i('Welcome back, ${user.firstName} 👋🏾');
@@ -58,30 +61,15 @@ class LoginPage extends StatelessWidget {
               canPop: false,
               child: SizedBox(
                 width: double.infinity,
-                child: SafeArea(
-                  child: Padding(
-                    padding: EdgeInsetsGeometry.only(
-                      bottom: bottomContainerHeight,
+                child: Column(
+                  children: [
+                    GapSizes.xlGap,
+                    Text('Gift Grab', style: textTheme.h1),
+                    Lottie.network(
+                      height: 300,
+                      'https://lottie.host/a470a89f-73ab-4c17-9c93-f41cba57289c/Cs3tJzRAcQ.json',
                     ),
-                    child: Column(
-                      crossAxisAlignment: .center,
-                      mainAxisAlignment: .center,
-                      children: [
-                        GapSizes.xlGap,
-                        Text('Gift Grab', style: textTheme.h1),
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsetsGeometry.symmetric(
-                              horizontal: GapSizes.xlGap.mainAxisExtent,
-                            ),
-                            child: Lottie.network(
-                              'https://lottie.host/a470a89f-73ab-4c17-9c93-f41cba57289c/Cs3tJzRAcQ.json',
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  ],
                 ),
               ),
             );
