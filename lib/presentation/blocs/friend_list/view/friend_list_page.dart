@@ -31,7 +31,7 @@ class FriendListPage extends StatelessWidget {
             getNakamaClient(),
             context.read<SessionService>(),
           ),
-        )
+        ),
       ],
       child: const FriendListView(),
     );
@@ -71,29 +71,30 @@ class FriendListView extends StatelessWidget {
                 child: displayEmpty
                     ? const SizedBox.shrink()
                     : displayNoResults
-                        ? _buildNoResults(state.friendshipState)
-                        : ListView.builder(
-                            itemCount: friends.length,
-                            itemBuilder: (context, index) {
-                              final friend = friends[index];
-                              return Padding(
-                                padding: const EdgeInsetsGeometry.fromLTRB(
-                                  8,
-                                  8,
-                                  8,
-                                  16,
+                    ? _buildNoResults(state.friendshipState)
+                    : ListView.builder(
+                        itemCount: friends.length,
+                        itemBuilder: (context, index) {
+                          final friend = friends[index];
+                          return Padding(
+                            padding: const EdgeInsetsGeometry.fromLTRB(
+                              8,
+                              8,
+                              8,
+                              16,
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(child: UserListTile(friend.user)),
+                                FriendshipStateButton(
+                                  friend.user.id,
+                                  friend.state,
                                 ),
-                                child: Row(
-                                  children: [
-                                    Expanded(child: UserListTile(friend.user)),
-                                    FriendshipStateButton(
-                                      friend.user.id,
-                                      friend.state,
-                                    ),
-                                  ],
-                                ),
-                              );
-                            }),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
               ),
               if (displayMoreButton) ...[
                 Padding(
@@ -102,8 +103,8 @@ class FriendListView extends StatelessWidget {
                     onPressed: () => friendListBloc.add(const FetchMore()),
                     child: const Text('More'),
                   ),
-                )
-              ]
+                ),
+              ],
             ],
           );
         },
@@ -112,11 +113,13 @@ class FriendListView extends StatelessWidget {
   }
 
   Widget _buildNoResults(FriendshipState state) => switch (state) {
-        FriendshipState.mutual => const NoResultsWidget(NoResultsEnum.mutual),
-        FriendshipState.outgoingRequest =>
-          const NoResultsWidget(NoResultsEnum.outgoingRequest),
-        FriendshipState.incomingRequest =>
-          const NoResultsWidget(NoResultsEnum.incomingRequest),
-        FriendshipState.blocked => const NoResultsWidget(NoResultsEnum.blocked),
-      };
+    FriendshipState.mutual => const NoResultsWidget(NoResultsEnum.mutual),
+    FriendshipState.outgoingRequest => const NoResultsWidget(
+      NoResultsEnum.outgoingRequest,
+    ),
+    FriendshipState.incomingRequest => const NoResultsWidget(
+      NoResultsEnum.incomingRequest,
+    ),
+    FriendshipState.blocked => const NoResultsWidget(NoResultsEnum.blocked),
+  };
 }
