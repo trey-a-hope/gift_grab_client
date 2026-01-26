@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
+import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
 import 'package:gift_grab_client/presentation/widgets/network_circle_avatar.dart';
 import 'package:go_router/go_router.dart';
@@ -29,7 +29,7 @@ class GroupListTile extends StatelessWidget {
               imgUrl: group.avatarUrl,
               radius: 25,
             ),
-            const Gap(16),
+            GapSizes.mediumGap,
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -46,7 +46,7 @@ class GroupListTile extends StatelessWidget {
               ],
             ),
             const Spacer(),
-            const Gap(16),
+            GapSizes.mediumGap,
             CircleAvatar(
               child: Text(
                 '${group.edgeCount}/${group.maxCount}',

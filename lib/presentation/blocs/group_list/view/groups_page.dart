@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
+import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
 import 'package:gift_grab_client/presentation/blocs/group_list/view/view.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/cubit/group_refresh_cubit.dart';
@@ -32,7 +32,7 @@ class GroupsPage extends StatelessWidget {
             onPressed: () => context.pushNamed(GoRoutes.CREATE_GROUP.name),
             icon: const Icon(Icons.add),
           ),
-          const Gap(8),
+          GapSizes.smallGap,
           IconButton.filledTonal(
             onPressed: () => context.pushNamed(GoRoutes.SEARCH_GROUPS.name),
             icon: const Icon(Icons.search),

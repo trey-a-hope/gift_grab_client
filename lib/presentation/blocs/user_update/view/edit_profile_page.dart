@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/account_read.dart';
 import 'package:gift_grab_client/presentation/blocs/account_update/bloc/account_update_bloc.dart';
-import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:gift_grab_ui/formz_inputs/short_text/short_text_input.dart';
 import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
 import 'package:go_router/go_router.dart';
-import 'package:modal_util/modal_util.dart';
 import 'package:nakama/nakama.dart';
 import 'package:profanity_api/profanity_api.dart';
 
@@ -56,12 +53,12 @@ class EditProfileView extends StatelessWidget {
     return BlocListener<AccountUpdateBloc, AccountUpdateState>(
       listener: (context, state) {
         if (state.success != null) {
-          ModalUtil.showSuccess(context, title: state.success!);
+          // ModalUtil.showSuccess(context, title: state.success!);
           context.pop(true);
         }
 
         if (state.error != null) {
-          ModalUtil.showError(context, title: state.error!);
+          // ModalUtil.showError(context, title: state.error!);
           userUpdateBloc.add(const Init());
         }
       },
@@ -95,20 +92,20 @@ class EditProfileView extends StatelessWidget {
                               final inputsValid = Formz.validate(inputs);
 
                               if (!inputsValid) {
-                                ModalUtil.showError(
-                                  context,
-                                  title: 'Form not valid',
-                                );
+                                // ModalUtil.showError(
+                                //   context,
+                                //   title: 'Form not valid',
+                                // );
                                 return;
                               }
 
-                              final confirm = await ModalUtil.showConfirmation(
-                                context,
-                                title: 'Save Profile?',
-                                message: LabelText.confirm,
-                              );
+                              // final confirm = await ModalUtil.showConfirmation(
+                              //   context,
+                              //   title: 'Save Profile?',
+                              //   message: LabelText.confirm,
+                              // );
 
-                              if (!confirm.falseIfNull()) return;
+                              // if (!confirm.falseIfNull()) return;
 
                               userUpdateBloc.add(const SaveForm());
                             },

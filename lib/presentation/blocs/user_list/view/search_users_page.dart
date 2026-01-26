@@ -1,10 +1,10 @@
 import 'package:animated_search_bar/animated_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gift_grab_client/domain/services/modal_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/widgets/user_list_tile.dart';
 import 'package:gift_grab_ui/ui.dart';
-import 'package:modal_util/modal_util.dart';
 import 'package:nakama/nakama.dart';
 
 import '../user_list.dart';
@@ -32,6 +32,7 @@ class SearchUsersView extends StatelessWidget {
     final theme = Theme.of(context);
     final controller = TextEditingController();
     final userListBloc = context.read<UserListBloc>();
+    final modalService = context.read<ModalService>();
 
     return GGScaffoldWidget(
       title: 'Search Users',
@@ -76,7 +77,12 @@ class SearchUsersView extends StatelessWidget {
               },
               listener: (context, state) {
                 if (state.error != null) {
-                  ModalUtil.showError(context, title: state.error!);
+                  modalService.shadToastDestructive(
+                    context,
+                    title: Text(
+                      state.error!,
+                    ),
+                  );
                 }
               },
             ),

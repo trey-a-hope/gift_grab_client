@@ -1,6 +1,7 @@
 import 'package:gap/gap.dart';
 
 /// A utility class providing predefined, const Gap widgets for consistent spacing.
+/// Usage: Use in Columns, Rows, or other Flex layouts, e.g., GapSizes.smallGap.
 class GapSizes {
   // Private constructor to prevent instantiation.
   const GapSizes._();

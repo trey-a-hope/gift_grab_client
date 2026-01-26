@@ -237,10 +237,10 @@ packages:
     dependency: transitive
     description:
       name: country_flags
-      sha256: "457c545369eaddcaa47dc351ea97f00dbe2ee74ee7b487a805b86c10d1dfd880"
+      sha256: f022d18337f3861f1f4e319b936cb53920de9259f38cb09e169eace9942e2b79
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.1"
+    version: "4.1.2"
   country_pickers:
     dependency: transitive
     description:
@@ -775,14 +775,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
-  iconsax_flutter:
-    dependency: transitive
-    description:
-      name: iconsax_flutter
-      sha256: d14b4cec8586025ac15276bdd40f6eea308cb85748135965bb6255f14beb2564
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
   intl:
     dependency: "direct main"
     description:
@@ -959,14 +951,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
-  modal_util:
-    dependency: "direct main"
-    description:
-      name: modal_util
-      sha256: ce92ee8de2089f1d0581cb320745e1e6eacd90054d3554610f555702c5b00f96
-      url: "https://pub.dev"
-    source: hosted
-    version: "25.9.1"
   nakama:
     dependency: "direct main"
     description:
@@ -1103,14 +1087,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
-  pausable_timer:
-    dependency: transitive
-    description:
-      name: pausable_timer
-      sha256: "6ef1a95441ec3439de6fb63f39a011b67e693198e7dae14e20675c3c00e86074"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.0+3"
   petitparser:
     dependency: transitive
     description:
@@ -1468,14 +1444,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.1.0"
-  toastification:
-    dependency: transitive
-    description:
-      name: toastification
-      sha256: "69db2bff425b484007409650d8bcd5ed1ce2e9666293ece74dcd917dacf23112"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.3"
   two_dimensional_scrollables:
     dependency: transitive
     description:
