@@ -5,7 +5,7 @@ import 'package:gift_grab_client/presentation/blocs/friend_update/friend_update.
 import 'package:gift_grab_client/presentation/extensions/string_extensions.dart';
 import 'package:gift_grab_client/presentation/widgets/user_list_tile.dart';
 import 'package:gift_grab_ui/widgets/no_results_widget.dart';
-import 'package:modal_util/modal_util.dart';
+// import 'package:modal_util/modal_util.dart';
 import 'package:nakama/nakama.dart';
 
 import '../friend_list.dart';
@@ -48,12 +48,12 @@ class FriendListView extends StatelessWidget {
     return BlocListener<FriendUpdateBloc, FriendUpdateState>(
       listener: (context, state) {
         if (state.success != null) {
-          ModalUtil.showSuccess(context, title: state.success!);
+          // ModalUtil.showSuccess(context, title: state.success!);
           friendListBloc.add(const InitialFetch());
         }
 
         if (state.error != null) {
-          ModalUtil.showError(context, title: state.error!);
+          // ModalUtil.showError(context, title: state.error!);
         }
       },
       child: BlocBuilder<FriendListBloc, FriendListState>(

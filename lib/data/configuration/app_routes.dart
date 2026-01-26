@@ -91,11 +91,7 @@ GoRouter appRouter(BuildContext context) {
               GoRoute(
                 path: GoRoutes.EDIT_PROFILE.name,
                 name: GoRoutes.EDIT_PROFILE.name,
-                builder: (context, state) {
-                  final uid = state.pathParameters['uid'];
-                  if (uid == null) throw Exception();
-                  return const EditProfilePage();
-                },
+                builder: (context, state) => const EditProfilePage(),
               ),
             ],
           ),

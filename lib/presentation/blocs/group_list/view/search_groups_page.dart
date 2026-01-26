@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/group_list/group_list.dart';
+import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_client/presentation/widgets/group_list_tile.dart';
 import 'package:gift_grab_ui/ui.dart';
-import 'package:modal_util/modal_util.dart';
 import 'package:nakama/nakama.dart';
 
 class SearchGroupsPage extends StatelessWidget {
@@ -32,6 +32,7 @@ class SearchGroupsView extends StatelessWidget {
     final theme = Theme.of(context);
     final controller = TextEditingController();
     final groupListBloc = context.read<GroupListBloc>();
+    final modalService = context.read<ModalService>();
 
     return GGScaffoldWidget(
       title: 'Search Groups',
@@ -45,9 +46,8 @@ class SearchGroupsView extends StatelessWidget {
               label: 'Enter name',
               labelStyle: theme.textTheme.headlineSmall!,
               searchStyle: theme.textTheme.headlineSmall!,
-              onFieldSubmitted: (query) => groupListBloc.add(
-                SearchGroup(query),
-              ),
+              onFieldSubmitted: (query) =>
+                  groupListBloc.add(SearchGroup(query)),
               onChanged: (query) {
                 if (query.isEmpty) groupListBloc.add(const ClearSearch());
               },
@@ -60,25 +60,26 @@ class SearchGroupsView extends StatelessWidget {
                 final groups = state.groups;
 
                 return state.isLoading
-                    ? const Center(
-                        child: CircularProgressIndicator(),
-                      )
+                    ? const Center(child: CircularProgressIndicator())
                     : state.query.isEmpty
-                        ? const SizedBox.shrink()
-                        : groups.isEmpty
-                            ? const NoResultsWidget(NoResultsEnum.myGroups)
-                            : ListView.builder(
-                                itemCount: groups.length,
-                                itemBuilder: (_, index) =>
-                                    GroupListTile(groups[index]));
+                    ? const SizedBox.shrink()
+                    : groups.isEmpty
+                    ? const NoResultsWidget(NoResultsEnum.myGroups)
+                    : ListView.builder(
+                        itemCount: groups.length,
+                        itemBuilder: (_, index) => GroupListTile(groups[index]),
+                      );
               },
               listener: (context, state) {
                 if (state.error != null) {
-                  ModalUtil.showError(context, title: state.error!);
+                  modalService.shadToastDestructive(
+                    context,
+                    title: Text(state.error!),
+                  );
                 }
               },
             ),
-          )
+          ),
         ],
       ),
     );
