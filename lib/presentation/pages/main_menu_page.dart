@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
-import 'package:gift_grab_client/domain/services/modal_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/account_read.dart';
 import 'package:gift_grab_client/presentation/extensions/build_context_extensions.dart';
+import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_ui/ui.dart';
 import 'package:go_router/go_router.dart';
 
@@ -42,7 +42,7 @@ class MainMenuView extends StatelessWidget {
             IconButton.filledTonal(
               onPressed: () => context.pushNamed(GoRoutes.SETTINGS.name),
               icon: const Icon(Icons.settings),
-            )
+            ),
           ],
           child: Padding(
             padding: const EdgeInsets.all(32),
@@ -61,32 +61,27 @@ class MainMenuView extends StatelessWidget {
                       ),
                       MenuButtonWidget(
                         menuButton: MenuButton.profile,
-                        onTap: () => context
-                            .pushNamed(GoRoutes.PROFILE.name, pathParameters: {
-                          'uid': state.account!.user.id,
-                        }),
+                        onTap: () => context.pushNamed(
+                          GoRoutes.PROFILE.name,
+                          pathParameters: {'uid': state.account!.user.id},
+                        ),
                       ),
                       MenuButtonWidget(
                         menuButton: MenuButton.leaderboard,
-                        onTap: () => context.pushNamed(
-                          GoRoutes.LEADERBOARD.name,
-                        ),
+                        onTap: () =>
+                            context.pushNamed(GoRoutes.LEADERBOARD.name),
                       ),
                       MenuButtonWidget(
                         menuButton: MenuButton.friends,
-                        onTap: () => context.pushNamed(
-                          GoRoutes.FRIENDS.name,
-                        ),
+                        onTap: () => context.pushNamed(GoRoutes.FRIENDS.name),
                       ),
                       MenuButtonWidget(
                         menuButton: MenuButton.groups,
-                        onTap: () => context.pushNamed(
-                          GoRoutes.GROUPS.name,
-                        ),
+                        onTap: () => context.pushNamed(GoRoutes.GROUPS.name),
                       ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),

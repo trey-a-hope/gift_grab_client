@@ -2,10 +2,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:gift_grab_client/data/constants/label_text.dart';
-import 'package:gift_grab_client/domain/services/modal_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:gift_grab_client/presentation/pages/group_form_page.dart';
+import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nakama/nakama.dart';
@@ -22,9 +22,11 @@ class EditGroupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => GroupUpdateBloc(getNakamaClient(),
-          context.read<SessionService>(), ProfanityApi.instance)
-        ..add(InitForm(group)),
+      create: (_) => GroupUpdateBloc(
+        getNakamaClient(),
+        context.read<SessionService>(),
+        ProfanityApi.instance,
+      )..add(InitForm(group)),
       child: EditGroupView(group),
     );
   }
@@ -67,8 +69,10 @@ class EditGroupView extends StatelessWidget {
                 final formValid = Formz.validate(state.inputs);
 
                 if (!formValid) {
-                  modalService.shadToastDestructive(context,
-                      title: const Text('Form not valid'));
+                  modalService.shadToastDestructive(
+                    context,
+                    title: const Text('Form not valid'),
+                  );
                   return;
                 }
 

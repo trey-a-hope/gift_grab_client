@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/constants/label_text.dart';
-import 'package:gift_grab_client/domain/services/modal_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/friend_update/bloc/friend_update_bloc.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
+import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:nakama/nakama.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 

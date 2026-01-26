@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gift_grab_client/data/constants/label_text.dart';
-import 'package:gift_grab_client/domain/services/modal_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/main.dart';
 import 'package:gift_grab_client/presentation/blocs/account_delete/account_delete.dart';
@@ -10,6 +9,7 @@ import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_re
 import 'package:gift_grab_client/presentation/blocs/account_update/account_update.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
+import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nakama/nakama.dart';

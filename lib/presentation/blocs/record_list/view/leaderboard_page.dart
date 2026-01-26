@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gift_grab_client/domain/services/modal_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/account_read.dart';
 import 'package:gift_grab_client/presentation/blocs/record_delete/bloc/record_delete_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/record_list/view/record_list_tile.dart';
 import 'package:gift_grab_client/presentation/extensions/date_time_extensions.dart';
 import 'package:gift_grab_client/presentation/extensions/string_extensions.dart';
+import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_ui/ui.dart';
 import 'package:nakama/nakama.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
@@ -21,17 +21,16 @@ class LeaderboardPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<RecordListBloc>(
-          create: (context) => RecordListBloc(
-            getNakamaClient(),
-            context.read<SessionService>(),
-          )..add(const InitialFetch()),
+          create: (context) =>
+              RecordListBloc(getNakamaClient(), context.read<SessionService>())
+                ..add(const InitialFetch()),
         ),
         BlocProvider<RecordDeleteBloc>(
           create: (context) => RecordDeleteBloc(
             getNakamaClient(),
             context.read<SessionService>(),
           ),
-        )
+        ),
       ],
       child: const LeaderboardView(),
     );
@@ -83,15 +82,14 @@ class LeaderboardView extends StatelessWidget {
                       child: displayEmpty
                           ? const SizedBox.shrink()
                           : displayNoResults
-                              ? const NoResultsWidget(NoResultsEnum.leaderboard)
-                              : ListView.builder(
-                                  itemCount: entries.length,
-                                  itemBuilder: (context, index) =>
-                                      RecordListTile(
-                                    account.user.id,
-                                    entries[index],
-                                  ),
-                                ),
+                          ? const NoResultsWidget(NoResultsEnum.leaderboard)
+                          : ListView.builder(
+                              itemCount: entries.length,
+                              itemBuilder: (context, index) => RecordListTile(
+                                account.user.id,
+                                entries[index],
+                              ),
+                            ),
                     ),
                     if (displayMoreButton) ...[
                       Padding(
@@ -101,8 +99,8 @@ class LeaderboardView extends StatelessWidget {
                               recordListBloc.add(const FetchMore()),
                           child: const Text('More'),
                         ),
-                      )
-                    ]
+                      ),
+                    ],
                   ],
                 ),
               ),

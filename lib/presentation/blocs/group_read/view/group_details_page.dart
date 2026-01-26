@@ -3,13 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
-import 'package:gift_grab_client/domain/services/modal_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/group_delete/bloc/group_delete_bloc.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:gift_grab_client/presentation/extensions/date_time_extensions.dart';
+import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_client/presentation/widgets/network_circle_avatar.dart';
 import 'package:gift_grab_ui/ui.dart';
 import 'package:go_router/go_router.dart';
@@ -23,22 +23,25 @@ class GroupDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(providers: [
-      BlocProvider<GroupReadBloc>(
-        create: (context) => GroupReadBloc(
-          groupId,
-          getNakamaClient(),
-          context.read<SessionService>(),
-        )..add(const ReadGroup()),
-      ),
-      BlocProvider<GroupDeleteBloc>(
-        create: (context) => GroupDeleteBloc(
-          groupId,
-          getNakamaClient(),
-          context.read<SessionService>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<GroupReadBloc>(
+          create: (context) => GroupReadBloc(
+            groupId,
+            getNakamaClient(),
+            context.read<SessionService>(),
+          )..add(const ReadGroup()),
         ),
-      )
-    ], child: const GroupDetailsView());
+        BlocProvider<GroupDeleteBloc>(
+          create: (context) => GroupDeleteBloc(
+            groupId,
+            getNakamaClient(),
+            context.read<SessionService>(),
+          ),
+        ),
+      ],
+      child: const GroupDetailsView(),
+    );
   }
 }
 
@@ -106,103 +109,99 @@ class GroupDetailsView extends StatelessWidget {
                   },
                   icon: const Icon(Icons.delete),
                 ),
-              ]
+              ],
             ],
             child: SafeArea(
               child: isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : group == null
-                      ? const NoResultsWidget(NoResultsEnum.allGroups)
-                      : Padding(
-                          padding: const EdgeInsetsGeometry.all(32),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              NetworkCircleAvatar(
-                                imgUrl: group.avatarUrl,
-                                radius: 100,
-                              ),
-                              GapSizes.largeGap,
-                              GapSizes.largeGap,
-                              Expanded(
-                                  child: Row(
-                                children: [
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsetsGeometry.all(8),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          ListTile(
-                                            title: Text(
-                                              'Description',
-                                              style: theme.textTheme.bodyLarge!
-                                                  .copyWith(
-                                                      color: Colors.white),
-                                            ),
-                                            subtitle: Text(
-                                              group.description ?? 'N/A',
-                                              style:
-                                                  theme.textTheme.headlineSmall,
-                                            ),
+                  ? const NoResultsWidget(NoResultsEnum.allGroups)
+                  : Padding(
+                      padding: const EdgeInsetsGeometry.all(32),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          NetworkCircleAvatar(
+                            imgUrl: group.avatarUrl,
+                            radius: 100,
+                          ),
+                          GapSizes.largeGap,
+                          GapSizes.largeGap,
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsetsGeometry.all(8),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        ListTile(
+                                          title: Text(
+                                            'Description',
+                                            style: theme.textTheme.bodyLarge!
+                                                .copyWith(color: Colors.white),
                                           ),
-                                          ListTile(
-                                            title: Text(
-                                              'Join Type',
-                                              style: theme.textTheme.bodyLarge!
-                                                  .copyWith(
-                                                      color: Colors.white),
-                                            ),
-                                            subtitle: Text(
-                                              group.open.falseIfNull()
-                                                  ? 'Public'
-                                                  : 'Private',
-                                              style:
-                                                  theme.textTheme.headlineSmall,
-                                            ),
+                                          subtitle: Text(
+                                            group.description ?? 'N/A',
+                                            style:
+                                                theme.textTheme.headlineSmall,
                                           ),
-                                          ListTile(
-                                            title: Text(
-                                              'Group Created',
-                                              style: theme.textTheme.bodyLarge!
-                                                  .copyWith(
-                                                      color: Colors.white),
-                                            ),
-                                            subtitle: Text(
-                                              group.createTime?.MMM_d_y() ??
-                                                  'N/A',
-                                              style:
-                                                  theme.textTheme.headlineSmall,
-                                            ),
+                                        ),
+                                        ListTile(
+                                          title: Text(
+                                            'Join Type',
+                                            style: theme.textTheme.bodyLarge!
+                                                .copyWith(color: Colors.white),
                                           ),
-                                          ListTile(
-                                            title: Text(
-                                              'Last Updated',
-                                              style: theme.textTheme.bodyLarge!
-                                                  .copyWith(
-                                                      color: Colors.white),
-                                            ),
-                                            subtitle: Text(
-                                              group.updateTime?.MMM_d_y() ??
-                                                  'N/A',
-                                              style:
-                                                  theme.textTheme.headlineSmall,
-                                            ),
+                                          subtitle: Text(
+                                            group.open.falseIfNull()
+                                                ? 'Public'
+                                                : 'Private',
+                                            style:
+                                                theme.textTheme.headlineSmall,
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                        ListTile(
+                                          title: Text(
+                                            'Group Created',
+                                            style: theme.textTheme.bodyLarge!
+                                                .copyWith(color: Colors.white),
+                                          ),
+                                          subtitle: Text(
+                                            group.createTime?.MMM_d_y() ??
+                                                'N/A',
+                                            style:
+                                                theme.textTheme.headlineSmall,
+                                          ),
+                                        ),
+                                        ListTile(
+                                          title: Text(
+                                            'Last Updated',
+                                            style: theme.textTheme.bodyLarge!
+                                                .copyWith(color: Colors.white),
+                                          ),
+                                          subtitle: Text(
+                                            group.updateTime?.MMM_d_y() ??
+                                                'N/A',
+                                            style:
+                                                theme.textTheme.headlineSmall,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  const Expanded(
-                                      child: Placeholder(
-                                    color: Colors.green,
-                                  ))
-                                ],
-                              ))
-                            ],
+                                ),
+                                const Expanded(
+                                  child: Placeholder(color: Colors.green),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
+                        ],
+                      ),
+                    ),
             ),
           );
         },

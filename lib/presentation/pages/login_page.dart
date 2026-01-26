@@ -6,9 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/main.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
+import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
 import 'package:lottie/lottie.dart';
-import 'package:modal_util/modal_util.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class LoginPage extends StatelessWidget {
@@ -20,6 +20,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final authCubit = context.read<AuthCubit>();
+    final modalService = context.read<ModalService>();
 
     final textTheme = ShadTheme.of(context).textTheme;
     final colorScheme = ShadTheme.of(context).colorScheme;
@@ -28,7 +29,7 @@ class LoginPage extends StatelessWidget {
       listenWhen: _newError,
       listener: (context, state) {
         if (state.error != null) {
-          ModalUtil.showError(context, title: state.error!);
+          modalService.shadToastDestructive(context, title: Text(state.error!));
           Fluo.instance.clearSession();
         }
       },
