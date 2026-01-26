@@ -1,7 +1,7 @@
 name: gift_grab_client
 description: A game made using Flame where users grab presents to increase their scores.
 publish_to: "none"
-version: 26.1.2+73
+version: 26.1.3+74
 
 environment:
   sdk: ">=3.10.0 <4.0.0"
