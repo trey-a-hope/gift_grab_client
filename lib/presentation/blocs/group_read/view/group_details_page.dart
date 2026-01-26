@@ -6,6 +6,7 @@ import 'package:gift_grab_client/data/enums/go_routes.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/group_delete/bloc/group_delete_bloc.dart';
+import 'package:gift_grab_client/presentation/blocs/group_membership_update/view/group_membership_state_button.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:gift_grab_client/presentation/extensions/date_time_extensions.dart';
@@ -126,6 +127,7 @@ class GroupDetailsView extends StatelessWidget {
                             radius: 100,
                           ),
                           GapSizes.largeGap,
+                          GroupMembershipStateButton(groupId: group.id),
                           GapSizes.largeGap,
                           Expanded(
                             child: Row(
