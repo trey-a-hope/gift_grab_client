@@ -14,6 +14,7 @@ import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_re
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
+import 'package:gift_grab_client/util/window_manager_util.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:logger/logger.dart';
 import 'package:lottie/lottie.dart';
@@ -21,7 +22,6 @@ import 'package:nakama/nakama.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:universal_platform/universal_platform.dart';
-import 'package:window_pain/window_pain.dart';
 
 late PackageInfo packageInfo;
 
@@ -46,7 +46,7 @@ void main() async {
     output: null,
   );
 
-  await WindowPain.maximizeWindow();
+  await WindowManagerUtil.init();
 
   final _ = getNakamaClient(
     host: Globals.nakamaClientHost,
