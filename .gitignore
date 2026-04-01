@@ -49,3 +49,4 @@ app.*.map.json
 /.vscode/
 
 /env/prod.json
+/macos/scripts/.env
