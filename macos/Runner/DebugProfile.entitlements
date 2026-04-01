@@ -12,7 +12,7 @@
 	<true/>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)$(CFBundleIdentifier)</string>
+    	<string>AYXEVPG9Z5.com.tr3umphantdesigns.giftgrab</string>
 	</array>
 	<key>com.apple.developer.applesignin</key>
 	<array>
