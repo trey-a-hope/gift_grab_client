@@ -77,7 +77,7 @@ class EditProfileView extends StatelessWidget {
                   : Padding(
                       padding: const EdgeInsetsGeometry.all(32),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: .center,
                         children: [
                           ShortTextInput(
                             state.username,

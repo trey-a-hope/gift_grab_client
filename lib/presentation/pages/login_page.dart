@@ -3,6 +3,7 @@ import 'package:fluo/fluo_onboarding.dart';
 import 'package:fluo/fluo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
@@ -42,8 +43,9 @@ class LoginPage extends StatelessWidget {
           title: 'Login',
           canPop: false,
           child: SizedBox(
-            width: double.infinity,
+            width: .infinity,
             child: Column(
+              mainAxisAlignment: .center,
               children: [
                 GapSizes.xlGap,
                 Text('Gift Grab', style: textTheme.h1),
@@ -53,12 +55,27 @@ class LoginPage extends StatelessWidget {
                 ),
 
                 ShadButton(
-                  child: const Text('Sign In with Google'),
-                  onPressed: () {
-                    Fluo.instance.signInWithGoogle(
+                  leading: const FaIcon(FontAwesomeIcons.apple),
+                  child: const Text('Sign In with Apple'),
+                  onPressed: () async {
+                    await Fluo.instance.signInWithApple(
                       context: context,
                       onBeforeSessionCreation: () {},
-                      onUserReady: () {},
+                      onUserReady: () => _onUserReady(authCubit),
+                    );
+                  },
+                ),
+
+                GapSizes.mediumGap,
+
+                ShadButton(
+                  leading: const FaIcon(FontAwesomeIcons.google),
+                  child: const Text('Sign In with Google'),
+                  onPressed: () async {
+                    await Fluo.instance.signInWithGoogle(
+                      context: context,
+                      onBeforeSessionCreation: () {},
+                      onUserReady: () => _onUserReady(authCubit),
                     );
                   },
                 ),
@@ -66,48 +83,23 @@ class LoginPage extends StatelessWidget {
             ),
           ),
         );
-
-        // return FluoOnboarding(
-        //   fluoTheme: FluoTheme.web(
-        //     primaryColor: colorScheme.foreground,
-        //     continueButtonStyle: continueButtonStyle,
-        //   ),
-        //   onUserReady: () async {
-        //     final user = Fluo.instance.session!.user;
-
-        //     final id = user.id;
-
-        //     // The username will be the user's email
-        //     final username = user.email ?? 'NOUSERNAME';
-
-        //     // Login using custom auth via Nakama
-        //     authCubit.loginCustom(id: id, username: username);
-
-        //     logger.i('Welcome back, ${user.firstName} 👋🏾');
-        //   },
-        //   introBuilder: (context, bottomContainerHeight) {
-        //     return GGScaffoldWidget(
-        //       title: 'Login',
-        //       canPop: false,
-        //       child: SizedBox(
-        //         width: double.infinity,
-        //         child: Column(
-        //           children: [
-        //             GapSizes.xlGap,
-        //             Text('Gift Grab', style: textTheme.h1),
-        //             Lottie.network(
-        //               height: 300,
-        //               'https://lottie.host/a470a89f-73ab-4c17-9c93-f41cba57289c/Cs3tJzRAcQ.json',
-        //             ),
-        //           ],
-        //         ),
-        //       ),
-        //     );
-        //   },
-        // );
       },
     );
   }
+}
+
+void _onUserReady(AuthCubit authCubit) {
+  final user = Fluo.instance.session!.user;
+
+  final id = user.id;
+
+  // The username will be the user's email
+  final username = user.email ?? 'NOUSERNAME';
+
+  // Login using custom auth via Nakama
+  authCubit.loginCustom(id: id, username: username);
+
+  logger.i('Welcome back, ${user.firstName} 👋🏾');
 }
 
 // Custom continue button style, just to get the black title text.
