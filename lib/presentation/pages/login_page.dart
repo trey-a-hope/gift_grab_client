@@ -4,12 +4,12 @@ import 'package:fluo/fluo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
-import 'package:gift_grab_client/main.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:gift_grab_client/core/logging.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -38,44 +38,73 @@ class LoginPage extends StatelessWidget {
         if (state.isLoading)
           return const Center(child: CircularProgressIndicator());
 
-        return FluoOnboarding(
-          fluoTheme: FluoTheme.web(
-            primaryColor: colorScheme.foreground,
-            continueButtonStyle: continueButtonStyle,
-          ),
-          onUserReady: () async {
-            final user = Fluo.instance.session!.user;
-
-            final id = user.id;
-
-            // The username will be the user's email
-            final username = user.email ?? 'NOUSERNAME';
-
-            // Login using custom auth via Nakama
-            authCubit.loginCustom(id: id, username: username);
-
-            logger.i('Welcome back, ${user.firstName} 👋🏾');
-          },
-          introBuilder: (context, bottomContainerHeight) {
-            return GGScaffoldWidget(
-              title: 'Login',
-              canPop: false,
-              child: SizedBox(
-                width: double.infinity,
-                child: Column(
-                  children: [
-                    GapSizes.xlGap,
-                    Text('Gift Grab', style: textTheme.h1),
-                    Lottie.network(
-                      height: 300,
-                      'https://lottie.host/a470a89f-73ab-4c17-9c93-f41cba57289c/Cs3tJzRAcQ.json',
-                    ),
-                  ],
+        return GGScaffoldWidget(
+          title: 'Login',
+          canPop: false,
+          child: SizedBox(
+            width: double.infinity,
+            child: Column(
+              children: [
+                GapSizes.xlGap,
+                Text('Gift Grab', style: textTheme.h1),
+                Lottie.network(
+                  height: 300,
+                  'https://lottie.host/a470a89f-73ab-4c17-9c93-f41cba57289c/Cs3tJzRAcQ.json',
                 ),
-              ),
-            );
-          },
+
+                ShadButton(
+                  child: const Text('Sign In with Google'),
+                  onPressed: () {
+                    Fluo.instance.signInWithGoogle(
+                      context: context,
+                      onBeforeSessionCreation: () {},
+                      onUserReady: () {},
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
         );
+
+        // return FluoOnboarding(
+        //   fluoTheme: FluoTheme.web(
+        //     primaryColor: colorScheme.foreground,
+        //     continueButtonStyle: continueButtonStyle,
+        //   ),
+        //   onUserReady: () async {
+        //     final user = Fluo.instance.session!.user;
+
+        //     final id = user.id;
+
+        //     // The username will be the user's email
+        //     final username = user.email ?? 'NOUSERNAME';
+
+        //     // Login using custom auth via Nakama
+        //     authCubit.loginCustom(id: id, username: username);
+
+        //     logger.i('Welcome back, ${user.firstName} 👋🏾');
+        //   },
+        //   introBuilder: (context, bottomContainerHeight) {
+        //     return GGScaffoldWidget(
+        //       title: 'Login',
+        //       canPop: false,
+        //       child: SizedBox(
+        //         width: double.infinity,
+        //         child: Column(
+        //           children: [
+        //             GapSizes.xlGap,
+        //             Text('Gift Grab', style: textTheme.h1),
+        //             Lottie.network(
+        //               height: 300,
+        //               'https://lottie.host/a470a89f-73ab-4c17-9c93-f41cba57289c/Cs3tJzRAcQ.json',
+        //             ),
+        //           ],
+        //         ),
+        //       ),
+        //     );
+        //   },
+        // );
       },
     );
   }

@@ -11,7 +11,6 @@ import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart'
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nakama/nakama.dart';
 import 'package:profanity_api/profanity_api.dart';
 import 'package:settings_ui/settings_ui.dart';
@@ -132,7 +131,7 @@ class SettingsView extends StatelessWidget {
                       onToggle: (val) async => accountUpdateBloc.add(
                         val ? const LinkGoogle() : const UnlinkGoogle(),
                       ),
-                      leading: const Icon(FontAwesomeIcons.google),
+                      leading: const FaIcon(FontAwesomeIcons.google),
                       title: const Text('Link to Google'),
                     ),
                     if (UniversalPlatform.isIOS ||
@@ -142,7 +141,7 @@ class SettingsView extends StatelessWidget {
                         onToggle: (val) async => accountUpdateBloc.add(
                           val ? const LinkApple() : const UnlinkApple(),
                         ),
-                        leading: const Icon(FontAwesomeIcons.apple),
+                        leading: const FaIcon(FontAwesomeIcons.apple),
                         title: const Text('Link to Apple'),
                       ),
                     ],
@@ -152,7 +151,7 @@ class SettingsView extends StatelessWidget {
                   title: const Text('App Info'),
                   tiles: [
                     SettingsTile.navigation(
-                      leading: Icon(MdiIcons.license),
+                      leading: const FaIcon(FontAwesomeIcons.idCard),
                       title: const Text('Licenses'),
                       value: Text(
                         'v ${packageInfo.version}.${packageInfo.buildNumber}',

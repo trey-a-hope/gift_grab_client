@@ -5,6 +5,8 @@ import 'package:fluo/l10n/fluo_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:gift_grab_client/core/di_container.dart';
+import 'package:gift_grab_client/core/logging.dart';
 import 'package:gift_grab_client/data/configuration/app_routes.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/constants/globals.dart';
@@ -16,7 +18,6 @@ import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_client/util/window_manager_util.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:logger/logger.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nakama/nakama.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -25,36 +26,18 @@ import 'package:universal_platform/universal_platform.dart';
 
 late PackageInfo packageInfo;
 
-late Logger logger;
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await configureDependencies();
   packageInfo = await PackageInfo.fromPlatform();
-
-  logger = Logger(
-    printer: PrefixPrinter(
-      PrettyPrinter(
-        methodCount: 0,
-        errorMethodCount: 8,
-        lineLength: 120,
-        colors: true,
-        printEmojis: true,
-        noBoxingByDefault: false,
-      ),
-    ),
-    output: null,
-  );
-
   await WindowManagerUtil.init();
-
+  // Initialze Nakama Module Client
   final _ = getNakamaClient(
     host: Globals.nakamaClientHost,
     serverKey: Globals.nakamaClientServerKey,
     httpPort: Globals.nakamaClientHttpPort,
     ssl: UniversalPlatform.isWeb,
   );
-
   runApp(const AppInitializer());
 }
 
@@ -220,7 +203,7 @@ Future<void> _initEnvVars() async {
 
 Future<void> _initFluo() async {
   try {
-    await Fluo.init(Globals.FLUO_API_KEY);
+    await Fluo.initWithApiKey(Globals.FLUO_API_KEY);
     logger.d('Fluo initialized successfully (key: ${Globals.FLUO_API_KEY})');
   } catch (e) {
     const flutterSecureStorage = FlutterSecureStorage();
