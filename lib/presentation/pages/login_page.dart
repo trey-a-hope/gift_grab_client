@@ -54,30 +54,59 @@ class LoginPage extends StatelessWidget {
                   'https://lottie.host/a470a89f-73ab-4c17-9c93-f41cba57289c/Cs3tJzRAcQ.json',
                 ),
 
-                ShadButton(
-                  leading: const FaIcon(FontAwesomeIcons.apple),
-                  child: const Text('Sign In with Apple'),
-                  onPressed: () async {
-                    await Fluo.instance.signInWithApple(
-                      context: context,
-                      onBeforeSessionCreation: () {},
-                      onUserReady: () => _onUserReady(authCubit),
-                    );
-                  },
-                ),
+                Row(
+                  mainAxisAlignment: .center,
 
-                GapSizes.mediumGap,
+                  children: [
+                    ShadButton(
+                      leading: const FaIcon(FontAwesomeIcons.message),
+                      child: const Text('Sign In with Email'),
+                      onPressed: () => Fluo.instance.signInWithEmail(
+                        context: context,
+                        onExit: () {},
+                        onUserReady: () => _onUserReady(authCubit),
+                      ),
+                    ),
 
-                ShadButton(
-                  leading: const FaIcon(FontAwesomeIcons.google),
-                  child: const Text('Sign In with Google'),
-                  onPressed: () async {
-                    await Fluo.instance.signInWithGoogle(
-                      context: context,
-                      onBeforeSessionCreation: () {},
-                      onUserReady: () => _onUserReady(authCubit),
-                    );
-                  },
+                    GapSizes.smallGap,
+
+                    ShadButton(
+                      leading: const FaIcon(FontAwesomeIcons.mobile),
+                      child: const Text('Sign In with Mobile'),
+                      onPressed: () async {
+                        await Fluo.instance.signInWithMobile(
+                          context: context,
+                          onExit: () {},
+                          onUserReady: () => _onUserReady(authCubit),
+                        );
+                      },
+                    ),
+
+                    GapSizes.smallGap,
+
+                    ShadButton(
+                      leading: const FaIcon(FontAwesomeIcons.apple),
+                      child: const Text('Sign In with Apple'),
+                      onPressed: () async {
+                        await Fluo.instance.signInWithApple(
+                          context: context,
+                          onBeforeSessionCreation: () {},
+                          onUserReady: () => _onUserReady(authCubit),
+                        );
+                      },
+                    ),
+
+                    GapSizes.smallGap,
+
+                    ShadButton(
+                      leading: const FaIcon(FontAwesomeIcons.google),
+                      child: const Text('Sign In with Google'),
+                      onPressed: () => modalService.shadToast(
+                        context,
+                        title: const Text('Coming soon'),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

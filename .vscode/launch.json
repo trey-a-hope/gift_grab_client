@@ -5,15 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "gift_grab_client",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "gift_grab_client (profile mode)",
+            "name": "debug",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "debug",
+            "args": [
+                "--dart-define-from-file=./env/local.json",
+            ]
+        },
+        {
+            "name": "profile",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "args": [
+                "--dart-define-from-file=./env/local.json",
+            ]
         },
         {
             "name": "release",
@@ -22,7 +29,6 @@
             "flutterMode": "release",
             "args": [
                 "--dart-define-from-file=./env/local.json",
-                // "--web-port=51423",
             ]
         },
     ]

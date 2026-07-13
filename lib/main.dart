@@ -204,6 +204,7 @@ Future<void> _initEnvVars() async {
 Future<void> _initFluo() async {
   try {
     await Fluo.initWithApiKey(Globals.FLUO_API_KEY);
+    await Fluo.instance.loadAppConfig();
     logger.d('Fluo initialized successfully (key: ${Globals.FLUO_API_KEY})');
   } catch (e) {
     const flutterSecureStorage = FlutterSecureStorage();
