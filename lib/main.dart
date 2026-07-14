@@ -28,7 +28,6 @@ late PackageInfo packageInfo;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await configureDependencies();
   packageInfo = await PackageInfo.fromPlatform();
   await WindowManagerUtil.init();
   // Initialze Nakama Module Client
@@ -38,6 +37,7 @@ void main() async {
     httpPort: Globals.nakamaClientHttpPort,
     ssl: UniversalPlatform.isWeb,
   );
+  await configureDependencies();
   runApp(const AppInitializer());
 }
 

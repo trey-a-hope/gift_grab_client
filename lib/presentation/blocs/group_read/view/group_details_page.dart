@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gift_grab_client/core/di_container.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
@@ -7,6 +8,8 @@ import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/group_delete/bloc/group_delete_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/group_membership_update/view/group_membership_state_button.dart';
+import 'package:gift_grab_client/presentation/blocs/group_read/view/members_list.dart';
+import 'package:gift_grab_client/presentation/controllers/group_users_controller.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:gift_grab_client/presentation/extensions/date_time_extensions.dart';
@@ -41,13 +44,14 @@ class GroupDetailsPage extends StatelessWidget {
           ),
         ),
       ],
-      child: const GroupDetailsView(),
+      child: GroupDetailsView(groupId),
     );
   }
 }
 
 class GroupDetailsView extends StatelessWidget {
-  const GroupDetailsView({super.key});
+  final String groupId;
+  const GroupDetailsView(this.groupId, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +63,8 @@ class GroupDetailsView extends StatelessWidget {
     final groupRefreshCubit = context.read<GroupRefreshCubit>();
     final groupDeleteBloc = context.read<GroupDeleteBloc>();
     final modalService = context.read<ModalService>();
+
+    final _groupUsersController = di<GroupUsersController>(param1: groupId);
 
     return BlocListener<GroupDeleteBloc, GroupDeleteState>(
       listener: (context, state) {
@@ -127,7 +133,10 @@ class GroupDetailsView extends StatelessWidget {
                             radius: 100,
                           ),
                           GapSizes.largeGap,
-                          GroupMembershipStateButton(groupId: group.id),
+                          GroupMembershipStateButton(
+                            groupId: group.id,
+                            groupUsersController: _groupUsersController,
+                          ),
                           GapSizes.largeGap,
                           Expanded(
                             child: Row(
@@ -195,8 +204,8 @@ class GroupDetailsView extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                const Expanded(
-                                  child: Placeholder(color: Colors.green),
+                                Expanded(
+                                  child: MembersList(_groupUsersController),
                                 ),
                               ],
                             ),
