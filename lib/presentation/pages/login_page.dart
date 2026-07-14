@@ -1,6 +1,4 @@
 import 'package:fluo/fluo.dart';
-import 'package:fluo/fluo_onboarding.dart';
-import 'package:fluo/fluo_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -24,7 +22,6 @@ class LoginPage extends StatelessWidget {
     final modalService = context.read<ModalService>();
 
     final textTheme = ShadTheme.of(context).textTheme;
-    final colorScheme = ShadTheme.of(context).colorScheme;
 
     return BlocConsumer<AuthCubit, AuthState>(
       listenWhen: _newError,
