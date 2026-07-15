@@ -21,4 +21,21 @@ class GroupService {
       rethrow;
     }
   }
+
+  Future<void> kickMember({
+    required String groupId,
+    required String userId,
+  }) async {
+    try {
+      final session = await sessionService.getSession();
+
+      return client.kickGroupUsers(
+        session: session,
+        groupId: groupId,
+        userIds: [userId],
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

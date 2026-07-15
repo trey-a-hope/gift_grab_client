@@ -4,7 +4,8 @@ import 'package:gift_grab_client/data/repositories/session_repository.dart';
 import 'package:gift_grab_client/domain/services/group_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/controllers/account_read_controller.dart';
-import 'package:gift_grab_client/presentation/controllers/group_users_controller.dart';
+import 'package:gift_grab_client/presentation/controllers/group_members_list_controller.dart';
+import 'package:gift_grab_client/presentation/controllers/group_members_update_controller.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:nakama/nakama.dart';
 
@@ -33,8 +34,13 @@ Future<void> configureDependencies() async {
     AccountReadController(getNakamaClient(), di<SessionService>()),
   );
 
-  // Group Users Controller
-  di.registerFactoryParam<GroupUsersController, String, void>(
-    (groupId, _) => GroupUsersController(groupId, di<GroupService>()),
+  // Group Members List Controller
+  di.registerFactoryParam<GroupMembersListController, String, void>(
+    (groupId, _) => GroupMembersListController(groupId, di<GroupService>()),
+  );
+
+  // Group Members Update Controller
+  di.registerFactoryParam<GroupMembersUpdateController, String, void>(
+    (groupId, _) => GroupMembersUpdateController(groupId, di<GroupService>()),
   );
 }

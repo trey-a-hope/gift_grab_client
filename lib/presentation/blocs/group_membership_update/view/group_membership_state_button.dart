@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gift_grab_client/core/di_container.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/group_membership_read/group_membership_read.dart';
 import 'package:gift_grab_client/presentation/blocs/group_membership_update/bloc/group_membership_update_bloc.dart';
-import 'package:gift_grab_client/presentation/controllers/group_users_controller.dart';
+import 'package:gift_grab_client/presentation/controllers/group_members_list_controller.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:nakama/nakama.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class GroupMembershipStateButton extends StatelessWidget {
   final String groupId;
-  final GroupUsersController groupUsersController;
 
-  const GroupMembershipStateButton({
-    required this.groupId,
-    required this.groupUsersController,
-    super.key,
-  });
+  const GroupMembershipStateButton({required this.groupId, super.key});
 
   @override
   Widget build(BuildContext context) {
     final sessionService = context.read<SessionService>();
+
+    final groupMembersListController = di<GroupMembersListController>(
+      param1: groupId,
+    );
 
     return MultiBlocListener(
       listeners: [
@@ -39,15 +39,18 @@ class GroupMembershipStateButton extends StatelessWidget {
           )..add(const ReadGroupMembershipState()),
         ),
       ],
-      child: GroupMembershipStateButtonView(groupUsersController),
+      child: GroupMembershipStateButtonView(groupMembersListController),
     );
   }
 }
 
 class GroupMembershipStateButtonView extends StatelessWidget {
-  final GroupUsersController groupUsersController;
+  final GroupMembersListController groupMembersListController;
 
-  const GroupMembershipStateButtonView(this.groupUsersController, {super.key});
+  const GroupMembershipStateButtonView(
+    this.groupMembersListController, {
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +63,7 @@ class GroupMembershipStateButtonView extends StatelessWidget {
         if (state.success != null) {
           modalService.shadToast(context, title: Text(state.success!));
           groupMembershipReadBloc.add(const ReadGroupMembershipState());
-          groupUsersController.groupUsersSignal.reload();
+          groupMembersListController.groupUsersSignal.reload();
         }
 
         if (state.error != null) {
