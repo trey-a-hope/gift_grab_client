@@ -62,7 +62,7 @@ class _MembersListState extends State<MembersList> {
   Widget build(BuildContext context) {
     final uid = _accountReadController.accountSignal.value.value?.user.id;
 
-    if (uid == null) throw Exception();
+    if (uid == null) throw Exception('User ID cannot be null.');
 
     return _groupMembersListController.groupUsersSignal.value.map(
       data: (groupUsers) => Column(
@@ -94,18 +94,18 @@ class _MembersListState extends State<MembersList> {
 
 class _GroupUserListTile extends StatelessWidget {
   final String groupId;
-  final GroupUser me;
+  final GroupUser? me;
   final GroupUser them;
 
   const _GroupUserListTile({
     required this.groupId,
-    required this.me,
+    this.me,
     required this.them,
   });
 
   @override
   Widget build(BuildContext context) {
-    logger.i('Me: ${me.user.username}');
+    logger.i('Me: ${me?.user.username}');
     logger.i('Them: ${them.user.username}');
 
     final groupMembersUpdateController = di<GroupMembersUpdateController>(
@@ -119,8 +119,8 @@ class _GroupUserListTile extends StatelessWidget {
       subtitle: Text(them.state.name, style: textTheme.p),
       leading: NetworkCircleAvatar(imgUrl: them.user.avatarUrl, radius: 50),
       trailing:
-          me.state == GroupMembershipState.superadmin &&
-              me.user.id != them.user.id
+          me?.state == GroupMembershipState.superadmin &&
+              me?.user.id != them.user.id
           ? IconButton(
               onPressed: () {
                 showModalBottomSheet(
@@ -137,7 +137,7 @@ class _GroupUserListTile extends StatelessWidget {
                             style: textTheme.h4,
                           ),
                           GapSizes.smallGap,
-                          if (MembershipPermissions.canKick(me, them)) ...[
+                          if (MembershipPermissions.canKick(me!, them)) ...[
                             ListTile(
                               leading: const Icon(Icons.delete),
                               title: Text('Kick "${them.user.username}"'),
