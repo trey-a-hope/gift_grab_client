@@ -6,8 +6,6 @@ import 'package:gift_grab_client/data/enums/go_routes.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/group_delete/bloc/group_delete_bloc.dart';
-import 'package:gift_grab_client/presentation/blocs/group_membership_update/view/group_membership_state_button.dart';
-import 'package:gift_grab_client/presentation/blocs/group_read/view/members_list.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:gift_grab_client/presentation/extensions/date_time_extensions.dart';
@@ -16,8 +14,20 @@ import 'package:gift_grab_client/presentation/widgets/network_circle_avatar.dart
 import 'package:gift_grab_ui/ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nakama/nakama.dart';
+import 'package:collection/collection.dart';
+import 'package:gift_grab_client/core/di_container.dart';
+import 'package:gift_grab_client/presentation/controllers/account_read_controller.dart';
+import 'package:gift_grab_client/presentation/controllers/group_members_list_controller.dart';
+import 'package:gift_grab_client/presentation/controllers/group_members_update_controller.dart';
+import 'package:gift_grab_client/presentation/extensions/model_log_extensions.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
+import 'package:signals/signals_flutter.dart';
+import '../../blocs/group_read/group_read.dart';
+import 'package:gift_grab_client/presentation/blocs/group_membership_read/group_membership_read.dart';
+import 'package:gift_grab_client/presentation/blocs/group_membership_update/bloc/group_membership_update_bloc.dart';
 
-import '../group_read.dart';
+part 'members_list.dart';
+part 'group_membership_state_button.dart';
 
 class GroupDetailsPage extends StatelessWidget {
   final String groupId;
@@ -49,7 +59,13 @@ class GroupDetailsPage extends StatelessWidget {
 
 class GroupDetailsView extends StatelessWidget {
   final String groupId;
-  const GroupDetailsView(this.groupId, {super.key});
+  late final GroupMembersListController _groupMembersListController;
+
+  GroupDetailsView(this.groupId, {super.key}) {
+    _groupMembersListController = di<GroupMembersListController>(
+      param1: groupId,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +145,11 @@ class GroupDetailsView extends StatelessWidget {
                             radius: 100,
                           ),
                           GapSizes.largeGap,
-                          GroupMembershipStateButton(groupId: group.id),
+                          GroupMembershipStateButton(
+                            groupId: group.id,
+                            groupMembersListController:
+                                _groupMembersListController,
+                          ),
                           GapSizes.largeGap,
                           Expanded(
                             child: Row(
@@ -197,7 +217,13 @@ class GroupDetailsView extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                                Expanded(child: MembersList(groupId)),
+                                Expanded(
+                                  child: MembersList(
+                                    groupId: groupId,
+                                    groupMembersListController:
+                                        _groupMembersListController,
+                                  ),
+                                ),
                               ],
                             ),
                           ),

@@ -3,42 +3,45 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
-import 'package:gift_grab_client/presentation/cubits/group_refresh/cubit/group_refresh_cubit.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
-import 'package:gift_grab_client/presentation/pages/group_form_page.dart';
+import 'package:gift_grab_client/presentation/pages/group/group_form_page.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
-import 'package:gift_grab_ui/ui.dart';
+import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nakama/nakama.dart';
 import 'package:profanity_api/profanity_api.dart';
 
-import '../group_create.dart';
+import '../../cubits/group_refresh/cubit/group_refresh_cubit.dart';
+import '../../blocs/group_update/group_update.dart';
 
-class GroupCreatePage extends StatelessWidget {
-  const GroupCreatePage({super.key});
+class EditGroupPage extends StatelessWidget {
+  final Group group;
+
+  const EditGroupPage(this.group, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => GroupCreateBloc(
+      create: (_) => GroupUpdateBloc(
         getNakamaClient(),
         context.read<SessionService>(),
         ProfanityApi.instance,
-      ),
-      child: const GroupCreateView(),
+      )..add(InitForm(group)),
+      child: EditGroupView(group),
     );
   }
 }
 
-class GroupCreateView extends StatelessWidget {
-  const GroupCreateView({super.key});
+class EditGroupView extends StatelessWidget {
+  final Group group;
+  const EditGroupView(this.group, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    final groupCreateBloc = context.read<GroupCreateBloc>();
+    final groupUpdateBloc = context.read<GroupUpdateBloc>();
     final modalService = context.read<ModalService>();
 
-    return BlocConsumer<GroupCreateBloc, GroupCreateState>(
+    return BlocConsumer<GroupUpdateBloc, GroupUpdateState>(
       listener: (context, state) {
         if (state.error != null) {
           modalService.shadToastDestructive(context, title: Text(state.error!));
@@ -52,19 +55,16 @@ class GroupCreateView extends StatelessWidget {
       },
       builder: (context, state) {
         return GGScaffoldWidget(
-          title: 'Create Group',
+          title: 'Update Group',
           child: SafeArea(
             child: GroupFormPage(
               name: state.name,
-              nameChanged: (val) => groupCreateBloc.add(NameChanged(val)),
+              nameChanged: (val) => groupUpdateBloc.add(NameChanged(val)),
               description: state.description,
               descriptionChanged: (val) =>
-                  groupCreateBloc.add(DescriptionChanged(val)),
-              maxCount: state.maxCount,
-              maxCountChanged: (val) =>
-                  groupCreateBloc.add(MaxCountChanged(val.toInt())),
+                  groupUpdateBloc.add(DescriptionChanged(val)),
               open: state.open,
-              openChanged: (val) => groupCreateBloc.add(OpenChanged(val)),
+              openChanged: (val) => groupUpdateBloc.add(OpenChanged(val)),
               submit: () async {
                 final formValid = Formz.validate(state.inputs);
 
@@ -78,13 +78,13 @@ class GroupCreateView extends StatelessWidget {
 
                 final confirm = await modalService.shadConfirmationDialog(
                   context,
-                  title: const Text('Create group'),
+                  title: const Text('Update group'),
                   description: const Text(LabelText.confirm),
                 );
 
                 if (!confirm.falseIfNull()) return;
 
-                groupCreateBloc.add(const SaveForm());
+                groupUpdateBloc.add(SaveForm(group.id));
               },
             ),
           ),

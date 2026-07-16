@@ -3,7 +3,7 @@ import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_ui/ui.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-import '../../data/constants/label_text.dart';
+import '../../../data/constants/label_text.dart';
 
 class GroupFormPage extends StatelessWidget {
   final ShortText name;
@@ -39,11 +39,7 @@ class GroupFormPage extends StatelessWidget {
       padding: const EdgeInsetsGeometry.all(16),
       child: Column(
         children: [
-          ShortTextInput(
-            name,
-            labelText: 'Name',
-            onChanged: nameChanged,
-          ),
+          ShortTextInput(name, labelText: 'Name', onChanged: nameChanged),
           GapSizes.xlGap,
           LongTextInput(
             description,

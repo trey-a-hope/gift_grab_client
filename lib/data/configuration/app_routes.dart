@@ -6,11 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/friend_list/view/friends_page.dart';
-import 'package:gift_grab_client/presentation/blocs/group_create/view/group_create_page.dart';
-import 'package:gift_grab_client/presentation/blocs/group_list/view/groups_page.dart';
-import 'package:gift_grab_client/presentation/blocs/group_list/view/search_groups_page.dart';
-import 'package:gift_grab_client/presentation/blocs/group_read/view/group_details_page.dart';
-import 'package:gift_grab_client/presentation/blocs/group_update/view/edit_group_page.dart';
+import 'package:gift_grab_client/presentation/pages/group/create_group_page.dart';
+import 'package:gift_grab_client/presentation/pages/group/groups_page.dart';
+import 'package:gift_grab_client/presentation/pages/group/search_groups_page.dart';
+import 'package:gift_grab_client/presentation/pages/group/group_details_page.dart';
+import 'package:gift_grab_client/presentation/pages/group/edit_group_page.dart';
 import 'package:gift_grab_client/presentation/blocs/record_create/bloc/record_create_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/record_list/view/leaderboard_page.dart';
 import 'package:gift_grab_client/presentation/blocs/user_list/view/search_users_page.dart';
@@ -118,7 +118,7 @@ GoRouter appRouter(BuildContext context) {
               GoRoute(
                 path: GoRoutes.CREATE_GROUP.name,
                 name: GoRoutes.CREATE_GROUP.name,
-                builder: (context, state) => const GroupCreatePage(),
+                builder: (context, state) => const CreateGroupPage(),
               ),
               GoRoute(
                 path: GoRoutes.GROUP_DETAILS.name + '/:group_id',

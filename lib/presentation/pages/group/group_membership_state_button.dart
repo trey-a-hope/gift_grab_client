@@ -1,18 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gift_grab_client/core/di_container.dart';
-import 'package:gift_grab_client/domain/services/session_service.dart';
-import 'package:gift_grab_client/presentation/blocs/group_membership_read/group_membership_read.dart';
-import 'package:gift_grab_client/presentation/blocs/group_membership_update/bloc/group_membership_update_bloc.dart';
-import 'package:gift_grab_client/presentation/controllers/group_members_list_controller.dart';
-import 'package:gift_grab_client/presentation/services/modal_service.dart';
-import 'package:nakama/nakama.dart';
-import 'package:shadcn_ui/shadcn_ui.dart';
+part of 'group_details_page.dart';
 
 class GroupMembershipStateButton extends StatelessWidget {
   final String groupId;
+  final GroupMembersListController groupMembersListController;
 
-  const GroupMembershipStateButton({required this.groupId, super.key});
+  const GroupMembershipStateButton({
+    required this.groupId,
+    required this.groupMembersListController,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

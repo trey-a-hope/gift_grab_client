@@ -1,1 +1,1 @@
-export 'edit_group_page.dart';
+export '../../../pages/group/edit_group_page.dart';

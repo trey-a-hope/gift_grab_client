@@ -1,22 +1,14 @@
-import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
-import 'package:gift_grab_client/core/di_container.dart';
-import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
-import 'package:gift_grab_client/presentation/controllers/account_read_controller.dart';
-import 'package:gift_grab_client/presentation/controllers/group_members_list_controller.dart';
-import 'package:gift_grab_client/presentation/controllers/group_members_update_controller.dart';
-import 'package:gift_grab_client/presentation/extensions/model_log_extensions.dart';
-import 'package:gift_grab_client/presentation/services/modal_service.dart';
-import 'package:gift_grab_client/presentation/widgets/network_circle_avatar.dart';
-import 'package:go_router/go_router.dart';
-import 'package:nakama/nakama.dart';
-import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:signals/signals_flutter.dart';
+part of 'group_details_page.dart';
 
 class MembersList extends SignalStatefulWidget {
   final String groupId;
+  final GroupMembersListController groupMembersListController;
 
-  const MembersList(this.groupId, {super.key});
+  const MembersList({
+    required this.groupId,
+    required this.groupMembersListController,
+    super.key,
+  });
 
   @override
   State<MembersList> createState() => _MembersListState();
@@ -27,18 +19,15 @@ class _MembersListState extends State<MembersList> {
   late final ModalService _modalService;
 
   late final AccountReadController _accountReadController;
-  late final GroupMembersListController _groupMembersListController;
 
   @override
   void initState() {
     _modalService = di<ModalService>();
     _accountReadController = di<AccountReadController>();
-    _groupMembersListController = di<GroupMembersListController>(
-      param1: widget.groupId,
-    );
 
     _errorToastListener = effect(() {
-      final error = _groupMembersListController.groupUsersSignal.value.error;
+      final error =
+          widget.groupMembersListController.groupUsersSignal.value.error;
       if (error != null && mounted) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (mounted) {
@@ -59,7 +48,7 @@ class _MembersListState extends State<MembersList> {
 
     if (uid == null) throw Exception('User ID cannot be null.');
 
-    return _groupMembersListController.groupUsersSignal.value.map(
+    return widget.groupMembersListController.groupUsersSignal.value.map(
       data: (groupUsers) {
         groupUsers.log(authenticatedUserId: uid);
 
