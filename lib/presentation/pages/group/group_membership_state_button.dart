@@ -14,10 +14,6 @@ class GroupMembershipStateButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final sessionService = context.read<SessionService>();
 
-    final groupMembersListController = di<GroupMembersListController>(
-      param1: groupId,
-    );
-
     return MultiBlocListener(
       listeners: [
         BlocProvider<GroupMembershipUpdateBloc>(

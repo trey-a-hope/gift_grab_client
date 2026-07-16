@@ -31,6 +31,7 @@ part 'group_membership_state_button.dart';
 
 class GroupDetailsPage extends StatelessWidget {
   final String groupId;
+
   const GroupDetailsPage(this.groupId, {super.key});
 
   @override
@@ -57,13 +58,24 @@ class GroupDetailsPage extends StatelessWidget {
   }
 }
 
-class GroupDetailsView extends StatelessWidget {
+class GroupDetailsView extends SignalStatefulWidget {
   final String groupId;
+
+  const GroupDetailsView(this.groupId, {super.key});
+
+  @override
+  State<GroupDetailsView> createState() => _GroupDetailsViewState();
+}
+
+class _GroupDetailsViewState extends State<GroupDetailsView> {
   late final GroupMembersListController _groupMembersListController;
 
-  GroupDetailsView(this.groupId, {super.key}) {
+  @override
+  void initState() {
+    super.initState();
+
     _groupMembersListController = di<GroupMembersListController>(
-      param1: groupId,
+      param1: widget.groupId,
     );
   }
 
@@ -219,7 +231,7 @@ class GroupDetailsView extends StatelessWidget {
                                 ),
                                 Expanded(
                                   child: MembersList(
-                                    groupId: groupId,
+                                    groupId: widget.groupId,
                                     groupMembersListController:
                                         _groupMembersListController,
                                   ),
