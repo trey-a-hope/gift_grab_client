@@ -1,10 +1,11 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gift_grab_client/core/di_container.dart';
-import 'package:gift_grab_client/core/logging.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/presentation/controllers/account_read_controller.dart';
 import 'package:gift_grab_client/presentation/controllers/group_members_list_controller.dart';
 import 'package:gift_grab_client/presentation/controllers/group_members_update_controller.dart';
+import 'package:gift_grab_client/presentation/extensions/model_log_extensions.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_client/presentation/widgets/network_circle_avatar.dart';
 import 'package:go_router/go_router.dart';
@@ -27,18 +28,12 @@ class _MembersListState extends State<MembersList> {
 
   late final AccountReadController _accountReadController;
   late final GroupMembersListController _groupMembersListController;
-  late final GroupMembersUpdateController _groupMembersUpdateController;
 
   @override
   void initState() {
     _modalService = di<ModalService>();
     _accountReadController = di<AccountReadController>();
-
     _groupMembersListController = di<GroupMembersListController>(
-      param1: widget.groupId,
-    );
-
-    _groupMembersUpdateController = di<GroupMembersUpdateController>(
       param1: widget.groupId,
     );
 
@@ -65,21 +60,25 @@ class _MembersListState extends State<MembersList> {
     if (uid == null) throw Exception('User ID cannot be null.');
 
     return _groupMembersListController.groupUsersSignal.value.map(
-      data: (groupUsers) => Column(
-        children: [
-          const Text('Members'),
-          Expanded(
-            child: ListView.builder(
-              itemCount: groupUsers.length,
-              itemBuilder: (context, index) => _GroupUserListTile(
-                groupId: widget.groupId,
-                me: groupUsers.firstWhere((element) => element.user.id == uid),
-                them: groupUsers[index],
+      data: (groupUsers) {
+        groupUsers.log(authenticatedUserId: uid);
+
+        return Column(
+          children: [
+            const Text('Members'),
+            Expanded(
+              child: ListView.builder(
+                itemCount: groupUsers.length,
+                itemBuilder: (context, index) => _GroupUserListTile(
+                  groupId: widget.groupId,
+                  me: groupUsers.firstWhereOrNull((gu) => gu.user.id == uid),
+                  them: groupUsers[index],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
+          ],
+        );
+      },
       error: (e, s) => Center(child: Text('Error loading group members: $e')),
       loading: () => const Center(child: CircularProgressIndicator()),
     );
@@ -105,9 +104,6 @@ class _GroupUserListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logger.i('Me: ${me?.user.username}');
-    logger.i('Them: ${them.user.username}');
-
     final groupMembersUpdateController = di<GroupMembersUpdateController>(
       param1: groupId,
     );

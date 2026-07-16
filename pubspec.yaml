@@ -45,6 +45,7 @@ dependencies:
   universal_platform: ^1.1.0
   window_manager: ^0.5.1
   flutter_launcher_icons: ^0.14.4
+  collection: ^1.19.1
 
 dev_dependencies:
   flutter_test:
