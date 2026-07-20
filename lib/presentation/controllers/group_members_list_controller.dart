@@ -1,16 +1,31 @@
 import 'package:gift_grab_client/domain/services/group_service.dart';
+import 'package:gift_grab_client/presentation/controllers/account_read_controller.dart';
+import 'package:gift_grab_client/presentation/extensions/model_log_extensions.dart';
 import 'package:nakama/nakama.dart';
 import 'package:signals/signals_flutter.dart';
 
 class GroupMembersListController {
   final String _groupId;
+  final AccountReadController _accountReadController;
   final GroupService _groupService;
 
   late final FutureSignal<List<GroupUser>> groupUsersSignal;
 
-  GroupMembersListController(this._groupId, this._groupService) {
+  GroupMembersListController(
+    this._groupId,
+    this._accountReadController,
+    this._groupService,
+  ) {
     groupUsersSignal = futureSignal<List<GroupUser>>(
-      () => _groupService.getMembersOfGroup(_groupId),
+      () async {
+        final members = await _groupService.getMembersOfGroup(_groupId);
+        members.log(
+          authenticatedUserId:
+              _accountReadController.accountSignal.value.value?.user.id ??
+              'uid unknown',
+        );
+        return members;
+      },
       options: const AsyncSignalOptions(
         name: 'GroupMembersListController.groupUsersSignal',
       ),

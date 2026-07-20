@@ -36,7 +36,11 @@ Future<void> configureDependencies() async {
 
   // Group Members List Controller
   di.registerFactoryParam<GroupMembersListController, String, void>(
-    (groupId, _) => GroupMembersListController(groupId, di<GroupService>()),
+    (groupId, _) => GroupMembersListController(
+      groupId,
+      di<AccountReadController>(),
+      di<GroupService>(),
+    ),
   );
 
   // Group Members Update Controller

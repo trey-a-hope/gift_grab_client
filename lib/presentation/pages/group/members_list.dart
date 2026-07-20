@@ -50,8 +50,6 @@ class _MembersListState extends State<MembersList> {
 
     return widget.groupMembersListController.groupUsersSignal.value.map(
       data: (groupUsers) {
-        groupUsers.log(authenticatedUserId: uid);
-
         return Column(
           children: [
             const Text('Members'),
