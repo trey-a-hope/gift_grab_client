@@ -62,6 +62,7 @@ class _MembersListState extends State<MembersList> {
                   groupId: widget.groupId,
                   me: groupUsers.firstWhereOrNull((gu) => gu.user.id == uid),
                   them: groupUsers[index],
+                  groupMembersListController: widget.groupMembersListController,
                 ),
               ),
             ),
@@ -84,11 +85,13 @@ class _GroupUserListTile extends StatelessWidget {
   final String groupId;
   final GroupUser? me;
   final GroupUser them;
+  final GroupMembersListController groupMembersListController;
 
   const _GroupUserListTile({
     required this.groupId,
     this.me,
     required this.them,
+    required this.groupMembersListController,
   });
 
   @override
@@ -107,109 +110,18 @@ class _GroupUserListTile extends StatelessWidget {
           me?.state == GroupMembershipState.superadmin &&
               me?.user.id != them.user.id
           ? IconButton(
-              onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    final textTheme = ShadTheme.of(context).textTheme;
-                    return Container(
-                      padding: const EdgeInsets.all(16),
-                      height: 300,
-                      child: Column(
-                        children: [
-                          Text(
-                            'What would you like to do?',
-                            style: textTheme.h4,
-                          ),
-                          GapSizes.smallGap,
-                          if (MembershipPermissions.canKick(me!, them)) ...[
-                            ListTile(
-                              leading: const Icon(Icons.delete),
-                              title: Text('Kick "${them.user.username}"'),
-                              subtitle: const Text(
-                                'Removes the user from the group; they can join again later.',
-                              ),
-                              onTap: () async {
-                                await groupMembersUpdateController.kickMember(
-                                  userId: them.user.id,
-                                );
-                                if (!context.mounted) return;
-                                context.pop();
-                              },
-                            ),
-                          ],
-
-                          ListTile(
-                            leading: const Icon(Icons.block),
-                            title: Text('Ban "${them.user.username}"'),
-                            subtitle: const Text(
-                              'Bans the user from the group; they cannot join again.',
-                            ),
-                            onTap: () {
-                              // TODO: Implement ban
-                              Navigator.pop(context);
-                            },
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.upgrade),
-                            title: Text('Promote "${them.user.username}"'),
-                            subtitle: const Text('Promotes the user to admin.'),
-                            onTap: () {
-                              // TODO: Implement promote
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
+              onPressed: () => showModalBottomSheet(
+                context: context,
+                builder: (context) => AdminBottomSheet(
+                  me: me!,
+                  them: them,
+                  groupMembersUpdateController: groupMembersUpdateController,
+                  groupMembersListController: groupMembersListController,
+                ),
+              ),
               icon: const Icon(Icons.more_horiz),
             )
           : null,
     );
-  }
-
-  // void _showOptions(BuildContext context, final GroupUser them) {
-
-  // }
-}
-
-class MembershipPermissions {
-  static bool canKick(GroupUser gu1, GroupUser gu2) {
-    if (gu1.user.id == gu2.user.id) {
-      return false;
-    }
-
-    switch (gu1.state) {
-      case GroupMembershipState.superadmin:
-        return gu2.state != GroupMembershipState.superadmin;
-      case GroupMembershipState.admin:
-        return gu2.state != GroupMembershipState.superadmin &&
-            gu2.state != GroupMembershipState.admin;
-      case GroupMembershipState.member:
-        return false;
-      case GroupMembershipState.joinRequest:
-        return false;
-    }
-  }
-
-  bool canPromote(GroupUser gu1, GroupUser gu2) {
-    switch (gu1.state) {
-      case GroupMembershipState.superadmin:
-        return gu2.state != GroupMembershipState.superadmin;
-      case GroupMembershipState.admin:
-        return gu2.state != GroupMembershipState.superadmin &&
-            gu2.state != GroupMembershipState.admin;
-      case GroupMembershipState.member:
-        return false;
-      case GroupMembershipState.joinRequest:
-        return false;
-    }
-  }
-
-  bool canRemove(GroupUser gu1, GroupUser gu2) {
-    return canKick(gu1, gu2);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gift_grab_client/core/logging.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
@@ -28,6 +29,8 @@ import 'package:gift_grab_client/presentation/blocs/group_membership_update/bloc
 
 part 'members_list.dart';
 part 'group_membership_state_button.dart';
+part 'admin_bottom_sheet.dart';
+part 'membership_permissions.dart';
 
 class GroupDetailsPage extends StatelessWidget {
   final String groupId;

@@ -7,35 +7,54 @@ class GroupService {
 
   GroupService(this.sessionService, this.client);
 
-  Future<List<GroupUser>> getMembersOfGroup(String groupId) async {
-    try {
-      final session = await sessionService.getSession();
-
-      final result = await client.listGroupUsers(
-        session: session,
+  Future<List<GroupUser>> getMembersOfGroup(String groupId) async =>
+      (await client.listGroupUsers(
+        session: await sessionService.getSession(),
         groupId: groupId,
-      );
-
-      return result.groupUsers;
-    } catch (e) {
-      rethrow;
-    }
-  }
+      )).groupUsers;
 
   Future<void> kickMember({
     required String groupId,
     required String userId,
-  }) async {
-    try {
-      final session = await sessionService.getSession();
+  }) async => client.kickGroupUsers(
+    session: await sessionService.getSession(),
+    groupId: groupId,
+    userIds: [userId],
+  );
 
-      return client.kickGroupUsers(
-        session: session,
-        groupId: groupId,
-        userIds: [userId],
-      );
-    } catch (e) {
-      rethrow;
-    }
-  }
+  Future<void> banMember({
+    required String groupId,
+    required String userId,
+  }) async => client.banGroupUsers(
+    session: await sessionService.getSession(),
+    groupId: groupId,
+    userIds: [userId],
+  );
+
+  Future<void> promoteMember({
+    required String groupId,
+    required String userId,
+  }) async => client.promoteGroupUsers(
+    session: await sessionService.getSession(),
+    groupId: groupId,
+    userIds: [userId],
+  );
+
+  Future<void> demoteMember({
+    required String groupId,
+    required String userId,
+  }) async => client.demoteGroupUsers(
+    session: await sessionService.getSession(),
+    groupId: groupId,
+    userIds: [userId],
+  );
+
+  Future<void> addMember({
+    required String groupId,
+    required String userId,
+  }) async => client.addGroupUsers(
+    session: await sessionService.getSession(),
+    groupId: groupId,
+    userIds: [userId],
+  );
 }
