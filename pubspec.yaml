@@ -4,7 +4,7 @@ publish_to: "none"
 version: 26.3.3+79
 
 environment:
-  sdk: ">=3.10.0 <4.0.0"
+  sdk: ">=3.12.0 <4.0.0"
   flutter: ">=3.0.0"
 
 dependencies:
@@ -17,12 +17,13 @@ dependencies:
   cupertino_icons: ^1.0.8
   equatable: ^2.0.7
   flutter_bloc: ^9.1.1
-  flutter_login: ^6.0.0
+  flutter_login: ^7.0.0
   flutter_secure_storage: ^9.2.4
-  fluo: ^3.3.3
-  font_awesome_flutter: ^10.9.0
+  fluo: ^4.0.3
+  font_awesome_flutter: ^11.0.0
   formz: ^0.8.0
   gap: ^3.0.1
+  get_it: ^9.2.1
   gift_grab_game:
     git: https://github.com/trey-a-hope/gift_grab_game.git
   gift_grab_ui:
@@ -33,16 +34,18 @@ dependencies:
   intl: ^0.20.2
   logger: ^2.6.1
   lottie: ^3.3.2
-  material_design_icons_flutter: ^7.0.7296
   mocktail: ^1.0.4
   nakama: ^1.3.0
   package_info_plus: ^9.0.0
   profanity_api: ^0.0.1
-  settings_ui: ^2.0.2
-  shadcn_ui: ^0.45.0
+  settings_ui: ^3.0.1
+  shadcn_ui: ^0.55.0
+  signals: ^7.1.0
   sign_in_with_apple: ^7.0.1
   universal_platform: ^1.1.0
   window_manager: ^0.5.1
+  flutter_launcher_icons: ^0.14.4
+  collection: ^1.19.1
 
 dev_dependencies:
   flutter_test:
@@ -58,3 +61,24 @@ flutter:
     - assets/images/
     - .env
     - shorebird.yaml
+
+flutter_launcher_icons:
+  image_path: "assets/icon/icon.png"
+  android: "ic_launcher"
+  adaptive_icon_foreground: "assets/icon/icon.png"
+  adaptive_icon_background: "#000000"
+  min_sdk_android: 21
+  ios: true
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: "assets/icon/icon.png"
+    background_color: "#hexcode"
+    theme_color: "#hexcode"
+  windows:
+    generate: true
+    image_path: "assets/icon/icon.png"
+    icon_size: 48
+  macos:
+    generate: true
+    image_path: "assets/icon/icon.png"

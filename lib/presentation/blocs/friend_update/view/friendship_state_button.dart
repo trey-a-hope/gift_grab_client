@@ -57,7 +57,7 @@ class FriendshipStateButton extends StatelessWidget {
 
       case FriendshipState.incomingRequest:
         return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: .center,
           children: [
             ShadButton(
               child: const Text('Accept request'),

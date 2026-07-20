@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
@@ -12,7 +13,6 @@ import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_client/presentation/widgets/network_circle_avatar.dart';
 import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
 import 'package:go_router/go_router.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nakama/nakama.dart';
 
 import '../user_read.dart';
@@ -104,8 +104,8 @@ class ProfileView extends StatelessWidget {
                       isBlocked ? UnblockFriend(user.id) : BlockFriend(user.id),
                     );
                   },
-                  icon: Icon(
-                    isBlocked ? MdiIcons.accountLockOpen : MdiIcons.accountLock,
+                  icon: FaIcon(
+                    isBlocked ? FontAwesomeIcons.unlock : FontAwesomeIcons.lock,
                   ),
                 ),
               ],

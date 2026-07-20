@@ -1,19 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gift_grab_client/domain/services/session_service.dart';
-import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
-import 'package:gift_grab_client/presentation/extensions/string_extensions.dart';
-import 'package:gift_grab_client/presentation/widgets/group_list_tile.dart';
-import 'package:gift_grab_ui/widgets/no_results_widget.dart';
-import 'package:nakama/nakama.dart';
-import 'package:shadcn_ui/shadcn_ui.dart';
+part of 'groups_page.dart';
 
-import '../group_list.dart';
-
-class GroupListPage extends StatelessWidget {
+class GroupsList extends StatelessWidget {
   final bool all;
 
-  const GroupListPage({required this.all, super.key});
+  const GroupsList({required this.all, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -54,13 +44,12 @@ class GroupListView extends StatelessWidget {
               child: displayEmpty
                   ? const SizedBox.shrink()
                   : displayNoResults
-                      ? const NoResultsWidget(NoResultsEnum.allGroups)
-                      : ListView.builder(
-                          itemCount: groups.length,
-                          itemBuilder: (context, index) => GroupListTile(
-                            groups[index],
-                          ),
-                        ),
+                  ? const NoResultsWidget(NoResultsEnum.allGroups)
+                  : ListView.builder(
+                      itemCount: groups.length,
+                      itemBuilder: (context, index) =>
+                          GroupListTile(groups[index]),
+                    ),
             ),
             if (displayMoreButton) ...[
               Padding(
@@ -69,8 +58,8 @@ class GroupListView extends StatelessWidget {
                   onPressed: () => groupListBloc.add(const FetchMore()),
                   child: const Text('More'),
                 ),
-              )
-            ]
+              ),
+            ],
           ],
         );
       },

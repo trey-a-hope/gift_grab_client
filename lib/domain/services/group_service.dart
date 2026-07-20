@@ -1,0 +1,60 @@
+import 'package:gift_grab_client/domain/services/session_service.dart';
+import 'package:nakama/nakama.dart';
+
+class GroupService {
+  final SessionService sessionService;
+  final NakamaBaseClient client;
+
+  GroupService(this.sessionService, this.client);
+
+  Future<List<GroupUser>> getMembersOfGroup(String groupId) async =>
+      (await client.listGroupUsers(
+        session: await sessionService.getSession(),
+        groupId: groupId,
+      )).groupUsers;
+
+  Future<void> kickMember({
+    required String groupId,
+    required String userId,
+  }) async => client.kickGroupUsers(
+    session: await sessionService.getSession(),
+    groupId: groupId,
+    userIds: [userId],
+  );
+
+  Future<void> banMember({
+    required String groupId,
+    required String userId,
+  }) async => client.banGroupUsers(
+    session: await sessionService.getSession(),
+    groupId: groupId,
+    userIds: [userId],
+  );
+
+  Future<void> promoteMember({
+    required String groupId,
+    required String userId,
+  }) async => client.promoteGroupUsers(
+    session: await sessionService.getSession(),
+    groupId: groupId,
+    userIds: [userId],
+  );
+
+  Future<void> demoteMember({
+    required String groupId,
+    required String userId,
+  }) async => client.demoteGroupUsers(
+    session: await sessionService.getSession(),
+    groupId: groupId,
+    userIds: [userId],
+  );
+
+  Future<void> addMember({
+    required String groupId,
+    required String userId,
+  }) async => client.addGroupUsers(
+    session: await sessionService.getSession(),
+    groupId: groupId,
+    userIds: [userId],
+  );
+}

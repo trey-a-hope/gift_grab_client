@@ -1,5 +1,5 @@
+import 'package:gift_grab_client/core/logging.dart';
 import 'package:gift_grab_client/domain/repositories/i_session_repository.dart';
-import 'package:gift_grab_client/main.dart';
 import 'package:gift_grab_client/presentation/extensions/session_extensions.dart';
 import 'package:nakama/nakama.dart';
 

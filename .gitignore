@@ -46,7 +46,5 @@ app.*.map.json
 
 /coverage/
 
-/.vscode/
-
 /env/prod.json
 /macos/scripts/.env
