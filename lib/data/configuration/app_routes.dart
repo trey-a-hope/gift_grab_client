@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:clerk_flutter/clerk_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/friend_list/view/friends_page.dart';
+import 'package:gift_grab_client/presentation/blocs/user_read/view/profile_page.dart';
 import 'package:gift_grab_client/presentation/pages/group/create_group_page.dart';
 import 'package:gift_grab_client/presentation/pages/group/groups_page.dart';
 import 'package:gift_grab_client/presentation/pages/group/search_groups_page.dart';
@@ -14,9 +16,7 @@ import 'package:gift_grab_client/presentation/pages/group/edit_group_page.dart';
 import 'package:gift_grab_client/presentation/blocs/record_create/bloc/record_create_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/record_list/view/leaderboard_page.dart';
 import 'package:gift_grab_client/presentation/blocs/user_list/view/search_users_page.dart';
-import 'package:gift_grab_client/presentation/blocs/user_read/user_read.dart';
 import 'package:gift_grab_client/presentation/blocs/user_update/view/edit_profile_page.dart';
-import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 import 'package:gift_grab_client/presentation/pages/login_page.dart';
 import 'package:gift_grab_client/presentation/pages/main_menu_page.dart';
 import 'package:gift_grab_client/presentation/pages/settings_page.dart';
@@ -25,21 +25,25 @@ import 'package:go_router/go_router.dart';
 import 'package:nakama/nakama.dart';
 
 GoRouter appRouter(BuildContext context) {
-  final authCubit = context.read<AuthCubit>();
-
   return GoRouter(
     initialLocation: '/${GoRoutes.LOGIN.name}',
-    refreshListenable: _GoRouterRefreshStream(authCubit.stream),
+    // ClerkAuthState implements Listenable, making custom stream subscriptions unnecessary.
+    refreshListenable: ClerkAuth.of(context),
     redirect: (context, state) {
-      final isAuthenticated = authCubit.state.authenticated;
+      // Check Clerk's active session state directly
+      final isAuthenticated = ClerkAuth.of(context).isSignedIn;
 
-      if (!isAuthenticated &&
-          !state.matchedLocation.contains('/${GoRoutes.LOGIN.name}')) {
+      final isLoggingIn = state.matchedLocation.contains(
+        '/${GoRoutes.LOGIN.name}',
+      );
+
+      // 1. Unauthenticated users trying to navigate protected routes -> /login
+      if (!isAuthenticated && !isLoggingIn) {
         return '/${GoRoutes.LOGIN.name}';
       }
 
-      if (isAuthenticated &&
-          state.matchedLocation == '/${GoRoutes.LOGIN.name}') {
+      // 2. Authenticated users sitting on /login -> /main
+      if (isAuthenticated && isLoggingIn) {
         return '/${GoRoutes.MAIN.name}';
       }
 
@@ -80,11 +84,11 @@ GoRouter appRouter(BuildContext context) {
             builder: (context, state) => const SettingsPage(),
           ),
           GoRoute(
-            path: GoRoutes.PROFILE.name + '/:uid',
+            path: '${GoRoutes.PROFILE.name}/:uid',
             name: GoRoutes.PROFILE.name,
             builder: (context, state) {
               final uid = state.pathParameters['uid'];
-              if (uid == null) throw Exception();
+              if (uid == null) throw Exception('Profile UID null');
               return ProfilePage(uid);
             },
             routes: [
@@ -121,7 +125,7 @@ GoRouter appRouter(BuildContext context) {
                 builder: (context, state) => const CreateGroupPage(),
               ),
               GoRoute(
-                path: GoRoutes.GROUP_DETAILS.name + '/:group_id',
+                path: '${GoRoutes.GROUP_DETAILS.name}/:group_id',
                 name: GoRoutes.GROUP_DETAILS.name,
                 builder: (context, state) {
                   final groupId = state.pathParameters['group_id'];
@@ -150,19 +154,4 @@ GoRouter appRouter(BuildContext context) {
       ),
     ],
   );
-}
-
-class _GoRouterRefreshStream extends ChangeNotifier {
-  late final StreamSubscription<AuthState?> _subscription;
-
-  _GoRouterRefreshStream(Stream<AuthState?> stream) {
-    notifyListeners();
-    _subscription = stream.asBroadcastStream().listen((_) => notifyListeners());
-  }
-
-  @override
-  void dispose() {
-    _subscription.cancel();
-    super.dispose();
-  }
 }

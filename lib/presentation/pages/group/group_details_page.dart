@@ -20,7 +20,6 @@ import 'package:gift_grab_client/core/di_container.dart';
 import 'package:gift_grab_client/presentation/controllers/account_read_controller.dart';
 import 'package:gift_grab_client/presentation/controllers/group_members_list_controller.dart';
 import 'package:gift_grab_client/presentation/controllers/group_members_update_controller.dart';
-import 'package:gift_grab_client/presentation/extensions/model_log_extensions.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:signals/signals_flutter.dart';
 import '../../blocs/group_read/group_read.dart';

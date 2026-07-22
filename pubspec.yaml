@@ -46,6 +46,8 @@ dependencies:
   window_manager: ^0.5.1
   flutter_launcher_icons: ^0.14.4
   collection: ^1.19.1
+  clerk_auth: ^0.0.18-beta
+  clerk_flutter: ^0.0.18-beta
 
 dev_dependencies:
   flutter_test:

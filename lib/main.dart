@@ -1,5 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:clerk_auth/clerk_auth.dart';
+import 'package:clerk_flutter/clerk_flutter.dart';
 import 'package:fluo/fluo.dart';
 import 'package:fluo/l10n/fluo_localizations.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +41,16 @@ void main() async {
     ssl: UniversalPlatform.isWeb,
   );
   await configureDependencies();
-  runApp(const AppInitializer());
+
+  runApp(
+    ClerkAuth(
+      config: ClerkAuthConfig(
+        publishableKey:
+            'pk_test_Y29taWMtc2hpbmVyLTE3LmNsZXJrLmFjY291bnRzLmRldiQ',
+      ),
+      child: const AppInitializer(),
+    ),
+  );
 }
 
 class AppInitializer extends StatefulWidget {
@@ -168,25 +180,27 @@ class MyAppView extends StatelessWidget {
   Widget build(BuildContext context) {
     final router = appRouter(context);
 
-    return ShadApp.router(
-      localizationsDelegates: FluoLocalizations.localizationsDelegates,
-      supportedLocales: FluoLocalizations.supportedLocales,
-      debugShowCheckedModeBanner: false,
-      theme: ShadThemeData(
-        brightness: Brightness.light,
-        colorScheme: const ShadNeutralColorScheme.light(),
-        textTheme: ShadTextTheme.fromGoogleFont(_font),
+    return ClerkErrorListener(
+      child: ShadApp.router(
+        localizationsDelegates: const [
+          ...FluoLocalizations.localizationsDelegates,
+        ],
+        supportedLocales: FluoLocalizations.supportedLocales,
+        debugShowCheckedModeBanner: false,
+        theme: ShadThemeData(
+          brightness: Brightness.light,
+          colorScheme: const ShadNeutralColorScheme.light(),
+          textTheme: ShadTextTheme.fromGoogleFont(_font),
+        ),
+        darkTheme: ShadThemeData(
+          brightness: Brightness.dark,
+          colorScheme: const ShadNeutralColorScheme.dark(),
+          textTheme: ShadTextTheme.fromGoogleFont(_font),
+        ),
+        themeMode: ThemeMode.dark,
+        title: 'Gift Grab',
+        routerConfig: router,
       ),
-      darkTheme: ShadThemeData(
-        brightness: Brightness.dark,
-        colorScheme: const ShadNeutralColorScheme.dark(),
-        textTheme: ShadTextTheme.fromGoogleFont(_font),
-      ),
-      themeMode: ThemeMode.dark,
-      title: 'Gift Grab',
-      routeInformationParser: router.routeInformationParser,
-      routeInformationProvider: router.routeInformationProvider,
-      routerDelegate: router.routerDelegate,
     );
   }
 }

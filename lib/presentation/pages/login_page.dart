@@ -1,3 +1,4 @@
+import 'package:clerk_flutter/clerk_flutter.dart';
 import 'package:fluo/fluo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -46,65 +47,75 @@ class LoginPage extends StatelessWidget {
               children: [
                 GapSizes.xlGap,
                 Text('Gift Grab', style: textTheme.h1),
-                Lottie.network(
-                  height: 300,
-                  'https://lottie.host/a470a89f-73ab-4c17-9c93-f41cba57289c/Cs3tJzRAcQ.json',
-                ),
 
-                Row(
-                  mainAxisAlignment: .center,
-
-                  children: [
-                    ShadButton(
-                      leading: const FaIcon(FontAwesomeIcons.message),
-                      child: const Text('Sign In with Email'),
-                      onPressed: () => Fluo.instance.signInWithEmail(
-                        context: context,
-                        onExit: () {},
-                        onUserReady: () => _onUserReady(authCubit),
+                Expanded(
+                  child: Center(
+                    child: SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 450),
+                        child: ClerkAuthBuilder(
+                          signedOutBuilder: (context, authState) =>
+                              const ClerkAuthentication(),
+                        ),
                       ),
                     ),
-
-                    GapSizes.smallGap,
-
-                    ShadButton(
-                      leading: const FaIcon(FontAwesomeIcons.mobile),
-                      child: const Text('Sign In with Mobile'),
-                      onPressed: () async {
-                        await Fluo.instance.signInWithMobile(
-                          context: context,
-                          onExit: () {},
-                          onUserReady: () => _onUserReady(authCubit),
-                        );
-                      },
-                    ),
-
-                    GapSizes.smallGap,
-
-                    ShadButton(
-                      leading: const FaIcon(FontAwesomeIcons.apple),
-                      child: const Text('Sign In with Apple'),
-                      onPressed: () async {
-                        await Fluo.instance.signInWithApple(
-                          context: context,
-                          onBeforeSessionCreation: () {},
-                          onUserReady: () => _onUserReady(authCubit),
-                        );
-                      },
-                    ),
-
-                    GapSizes.smallGap,
-
-                    ShadButton(
-                      leading: const FaIcon(FontAwesomeIcons.google),
-                      child: const Text('Sign In with Google'),
-                      onPressed: () => modalService.shadToast(
-                        context,
-                        title: const Text('Coming soon'),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
+
+                // Row(
+                //   mainAxisAlignment: .center,
+
+                //   children: [
+                //     ShadButton(
+                //       leading: const FaIcon(FontAwesomeIcons.message),
+                //       child: const Text('Sign In with Email'),
+                //       onPressed: () => Fluo.instance.signInWithEmail(
+                //         context: context,
+                //         onExit: () {},
+                //         onUserReady: () => _onUserReady(authCubit),
+                //       ),
+                //     ),
+
+                //     GapSizes.smallGap,
+
+                //     ShadButton(
+                //       leading: const FaIcon(FontAwesomeIcons.mobile),
+                //       child: const Text('Sign In with Mobile'),
+                //       onPressed: () async {
+                //         await Fluo.instance.signInWithMobile(
+                //           context: context,
+                //           onExit: () {},
+                //           onUserReady: () => _onUserReady(authCubit),
+                //         );
+                //       },
+                //     ),
+
+                //     GapSizes.smallGap,
+
+                //     ShadButton(
+                //       leading: const FaIcon(FontAwesomeIcons.apple),
+                //       child: const Text('Sign In with Apple'),
+                //       onPressed: () async {
+                //         await Fluo.instance.signInWithApple(
+                //           context: context,
+                //           onBeforeSessionCreation: () {},
+                //           onUserReady: () => _onUserReady(authCubit),
+                //         );
+                //       },
+                //     ),
+
+                //     GapSizes.smallGap,
+
+                //     ShadButton(
+                //       leading: const FaIcon(FontAwesomeIcons.google),
+                //       child: const Text('Sign In with Google'),
+                //       onPressed: () => modalService.shadToast(
+                //         context,
+                //         title: const Text('Coming soon'),
+                //       ),
+                //     ),
+                //   ],
+                // ),
               ],
             ),
           ),
