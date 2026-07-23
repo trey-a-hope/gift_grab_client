@@ -2,14 +2,11 @@ import 'package:clerk_flutter/clerk_flutter.dart';
 import 'package:fluo/fluo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
-import 'package:lottie/lottie.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
-import 'package:gift_grab_client/core/logging.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -19,7 +16,6 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authCubit = context.read<AuthCubit>();
     final modalService = context.read<ModalService>();
 
     final textTheme = ShadTheme.of(context).textTheme;
@@ -32,10 +28,10 @@ class LoginPage extends StatelessWidget {
           Fluo.instance.clearSession();
         }
       },
-      buildWhen: _newError,
       builder: (context, state) {
-        if (state.isLoading)
+        if (state.isLoading || ClerkAuth.of(context).isSignedIn) {
           return const Center(child: CircularProgressIndicator());
+        }
 
         return GGScaffoldWidget(
           title: 'Login',
@@ -125,19 +121,7 @@ class LoginPage extends StatelessWidget {
   }
 }
 
-void _onUserReady(AuthCubit authCubit) {
-  final user = Fluo.instance.session!.user;
 
-  final id = user.id;
-
-  // The username will be the user's email
-  final username = user.email ?? 'NOUSERNAME';
-
-  // Login using custom auth via Nakama
-  authCubit.loginCustom(id: id, username: username);
-
-  logger.i('Welcome back, ${user.firstName} 👋🏾');
-}
 
 // Custom continue button style, just to get the black title text.
 final continueButtonStyle = ButtonStyle(

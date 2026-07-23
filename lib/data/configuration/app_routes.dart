@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:clerk_flutter/clerk_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -23,15 +22,17 @@ import 'package:gift_grab_client/presentation/pages/settings_page.dart';
 import 'package:gift_grab_game/game/gift_grab_game_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nakama/nakama.dart';
+import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 
 GoRouter appRouter(BuildContext context) {
+  final clerkAuth = ClerkAuth.of(context, listen: false);
+  final authCubit = context.read<AuthCubit>();
   return GoRouter(
     initialLocation: '/${GoRoutes.LOGIN.name}',
-    // ClerkAuthState implements Listenable, making custom stream subscriptions unnecessary.
-    refreshListenable: ClerkAuth.of(context),
+    refreshListenable: _AuthListenable(clerkAuth, authCubit.stream),
     redirect: (context, state) {
-      // Check Clerk's active session state directly
-      final isAuthenticated = ClerkAuth.of(context).isSignedIn;
+      // Check both Clerk's and Nakama's authentication status
+      final isAuthenticated = clerkAuth.isSignedIn && authCubit.state.authenticated;
 
       final isLoggingIn = state.matchedLocation.contains(
         '/${GoRoutes.LOGIN.name}',
@@ -154,4 +155,22 @@ GoRouter appRouter(BuildContext context) {
       ),
     ],
   );
+}
+
+class _AuthListenable extends ChangeNotifier {
+  final Listenable listenable;
+  final Stream stream;
+  late final StreamSubscription _subscription;
+
+  _AuthListenable(this.listenable, this.stream) {
+    listenable.addListener(notifyListeners);
+    _subscription = stream.listen((_) => notifyListeners());
+  }
+
+  @override
+  void dispose() {
+    listenable.removeListener(notifyListeners);
+    _subscription.cancel();
+    super.dispose();
+  }
 }

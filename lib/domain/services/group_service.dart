@@ -1,5 +1,6 @@
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:nakama/nakama.dart';
+import 'package:result_dart/result_dart.dart';
 
 class GroupService {
   final SessionService sessionService;
@@ -31,14 +32,22 @@ class GroupService {
     userIds: [userId],
   );
 
-  Future<void> promoteMember({
+  Future<Result<Unit>> promoteMember({
     required String groupId,
     required String userId,
-  }) async => client.promoteGroupUsers(
-    session: await sessionService.getSession(),
-    groupId: groupId,
-    userIds: [userId],
-  );
+  }) async {
+    try {
+      final session = await sessionService.getSession();
+      await client.promoteGroupUsers(
+        session: session,
+        groupId: groupId,
+        userIds: [userId],
+      );
+      return const Success(unit);
+    } catch (e) {
+      return Failure(e is Exception ? e : Exception(e.toString()));
+    }
+  }
 
   Future<void> demoteMember({
     required String groupId,

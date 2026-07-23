@@ -30,13 +30,19 @@ class GroupMembersUpdateController {
   }
 
   Future<void> promoteMember({required String userId}) async {
-    try {
-      kickMemberSignal.value = const AsyncLoading();
-      await _groupService.promoteMember(groupId: _groupId, userId: userId);
-      kickMemberSignal.value = const AsyncData('User promoted successfully');
-    } catch (e, st) {
-      kickMemberSignal.value = AsyncError(e, st);
-    }
+    kickMemberSignal.value = const AsyncLoading();
+
+    final result = await _groupService.promoteMember(
+      groupId: _groupId,
+      userId: userId,
+    );
+
+    result.fold(
+      (success) => kickMemberSignal.value = const AsyncData(
+        'User promoted successfully',
+      ),
+      (error) => kickMemberSignal.value = AsyncError(error, StackTrace.current),
+    );
   }
 
   Future<void> demoteMember({required String userId}) async {

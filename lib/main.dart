@@ -1,7 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
-
-import 'package:clerk_auth/clerk_auth.dart';
 import 'package:clerk_flutter/clerk_flutter.dart';
 import 'package:fluo/fluo.dart';
 import 'package:fluo/l10n/fluo_localizations.dart';
@@ -30,6 +27,8 @@ import 'package:universal_platform/universal_platform.dart';
 late PackageInfo packageInfo;
 
 void main() async {
+  // debugPaintSizeEnabled = true;
+
   WidgetsFlutterBinding.ensureInitialized();
   packageInfo = await PackageInfo.fromPlatform();
   await WindowManagerUtil.init();
@@ -142,8 +141,13 @@ class MyAppPage extends StatelessWidget {
           BlocProvider<AuthCubit>(
             create: (context) {
               final sessionService = context.read<SessionService>();
+              final clerkAuth = ClerkAuth.of(context, listen: false);
 
-              final authCubit = AuthCubit(getNakamaClient(), sessionService);
+              final authCubit = AuthCubit(
+                getNakamaClient(),
+                sessionService,
+                clerkAuth,
+              );
 
               sessionService.setUnauthenticatedCallback(
                 () => authCubit.logout(),
