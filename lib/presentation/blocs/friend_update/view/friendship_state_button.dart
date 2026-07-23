@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/constants/label_text.dart';
-import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/friend_update/bloc/friend_update_bloc.dart';
+import 'package:gift_grab_client/presentation/controllers/account_read_controller.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:nakama/nakama.dart';
@@ -18,11 +18,11 @@ class FriendshipStateButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final friendUpdateBloc = context.read<FriendUpdateBloc>();
-    final accountReadBloc = context.read<AccountReadBloc>();
+    final accountReadController = context.read<AccountReadController>();
     final modalService = context.read<ModalService>();
 
-    final account = accountReadBloc.state.account!;
-    final isMyProfile = uid == account.user.id;
+    final account = accountReadController.accountSignal.value.value;
+    final isMyProfile = uid == account?.user.id;
 
     switch (friendshipState) {
       case null:

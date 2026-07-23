@@ -4,7 +4,6 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   audioplayers_windows
-  device_region
   file_selector_windows
   flutter_secure_storage_windows
   passkeys_windows

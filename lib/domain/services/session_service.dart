@@ -2,6 +2,7 @@ import 'package:gift_grab_client/core/logging.dart';
 import 'package:gift_grab_client/domain/repositories/i_session_repository.dart';
 import 'package:gift_grab_client/presentation/extensions/session_extensions.dart';
 import 'package:nakama/nakama.dart';
+import 'package:result_dart/result_dart.dart';
 
 class SessionService {
   static const _hasExpiredDuration = Duration(minutes: 5);
@@ -33,7 +34,7 @@ class SessionService {
     }
   }
 
-  Future<Session> getSession() async {
+  Future<Result<Session>> getSession() async {
     try {
       final session = await _iSessionRepository.getStoredSession();
 
@@ -43,12 +44,13 @@ class SessionService {
       }
 
       if (shouldRefreshSession(session)) {
-        return await refreshSession(session);
+        final freshSession = await refreshSession(session);
+        return Success(freshSession);
       }
 
       logger.d('getSession:${session.print()}');
 
-      return session;
+      return Success(session);
     } catch (e) {
       _iSessionRepository.clearSession();
       rethrow;

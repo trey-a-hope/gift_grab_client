@@ -5,7 +5,6 @@ import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
-import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/group_delete/bloc/group_delete_bloc.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
@@ -85,8 +84,8 @@ class _GroupDetailsViewState extends State<GroupDetailsView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final accountReadBloc = context.read<AccountReadBloc>();
-    final account = accountReadBloc.state.account!;
+    final accountReadController = di<AccountReadController>();
+    final account = accountReadController.accountSignal.value.value!;
     final groupReadBloc = context.read<GroupReadBloc>();
     final groupRefreshCubit = context.read<GroupRefreshCubit>();
     final groupDeleteBloc = context.read<GroupDeleteBloc>();

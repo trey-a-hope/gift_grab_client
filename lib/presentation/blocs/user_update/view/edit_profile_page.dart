@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
-import 'package:gift_grab_client/presentation/blocs/account_read/account_read.dart';
 import 'package:gift_grab_client/presentation/blocs/account_update/bloc/account_update_bloc.dart';
+import 'package:gift_grab_client/presentation/controllers/account_read_controller.dart';
 import 'package:gift_grab_ui/formz_inputs/short_text/short_text_input.dart';
 import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
 import 'package:go_router/go_router.dart';
@@ -17,9 +17,9 @@ class EditProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accountReadBloc = context.read<AccountReadBloc>();
+    final accountReadController = context.read<AccountReadController>();
 
-    final account = accountReadBloc.state.account!;
+    final account = accountReadController.accountSignal.value.value!;
 
     return MultiBlocProvider(
       providers: [

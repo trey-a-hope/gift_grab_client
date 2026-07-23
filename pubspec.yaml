@@ -17,9 +17,9 @@ dependencies:
   cupertino_icons: ^1.0.8
   equatable: ^2.0.7
   flutter_bloc: ^9.1.1
-  flutter_login: ^7.0.0
+  # flutter_login: ^7.0.0
   flutter_secure_storage: ^9.2.4
-  fluo: ^4.0.3
+  # fluo: ^4.0.3
   font_awesome_flutter: ^11.0.0
   formz: ^0.8.0
   gap: ^3.0.1
@@ -46,7 +46,6 @@ dependencies:
   window_manager: ^0.5.1
   flutter_launcher_icons: ^0.14.4
   collection: ^1.19.1
-  clerk_auth: ^0.0.18-beta
   clerk_flutter: ^0.0.18-beta
   webview_flutter: ^4.14.1
   webview_flutter_wkwebview: ^3.26.0

@@ -1,12 +1,12 @@
-import 'dart:async';
-import 'package:clerk_flutter/clerk_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gift_grab_client/core/di_container.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/friend_list/view/friends_page.dart';
 import 'package:gift_grab_client/presentation/blocs/user_read/view/profile_page.dart';
+import 'package:gift_grab_client/presentation/controllers/auth_controller.dart';
 import 'package:gift_grab_client/presentation/pages/group/create_group_page.dart';
 import 'package:gift_grab_client/presentation/pages/group/groups_page.dart';
 import 'package:gift_grab_client/presentation/pages/group/search_groups_page.dart';
@@ -18,21 +18,24 @@ import 'package:gift_grab_client/presentation/blocs/user_list/view/search_users_
 import 'package:gift_grab_client/presentation/blocs/user_update/view/edit_profile_page.dart';
 import 'package:gift_grab_client/presentation/pages/login_page.dart';
 import 'package:gift_grab_client/presentation/pages/main_menu_page.dart';
-import 'package:gift_grab_client/presentation/pages/settings_page.dart';
 import 'package:gift_grab_game/game/gift_grab_game_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nakama/nakama.dart';
-import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
+import 'package:signals/signals_flutter.dart';
 
 GoRouter appRouter(BuildContext context) {
-  final clerkAuth = ClerkAuth.of(context, listen: false);
-  final authCubit = context.read<AuthCubit>();
+  // final clerkAuth = ClerkAuth.of(context, listen: false);
+  final _authController = di<AuthController>();
+  // final authCubit = context.read<AuthCubit>();
   return GoRouter(
     initialLocation: '/${GoRoutes.LOGIN.name}',
-    refreshListenable: _AuthListenable(clerkAuth, authCubit.stream),
+    refreshListenable: Listenable.merge([
+      SignalListenable(_authController.isAuthenticated),
+    ]),
     redirect: (context, state) {
       // Check both Clerk's and Nakama's authentication status
-      final isAuthenticated = clerkAuth.isSignedIn && authCubit.state.authenticated;
+      final isAuthenticated =
+          _authController.isAuthenticated.value.value ?? false;
 
       final isLoggingIn = state.matchedLocation.contains(
         '/${GoRoutes.LOGIN.name}',
@@ -79,11 +82,11 @@ GoRouter appRouter(BuildContext context) {
               );
             },
           ),
-          GoRoute(
-            path: GoRoutes.SETTINGS.name,
-            name: GoRoutes.SETTINGS.name,
-            builder: (context, state) => const SettingsPage(),
-          ),
+          // GoRoute(
+          //   path: GoRoutes.SETTINGS.name,
+          //   name: GoRoutes.SETTINGS.name,
+          //   builder: (context, state) => const SettingsPage(),
+          // ),
           GoRoute(
             path: '${GoRoutes.PROFILE.name}/:uid',
             name: GoRoutes.PROFILE.name,
@@ -157,20 +160,35 @@ GoRouter appRouter(BuildContext context) {
   );
 }
 
-class _AuthListenable extends ChangeNotifier {
-  final Listenable listenable;
-  final Stream stream;
-  late final StreamSubscription _subscription;
+// class _AuthListenable extends ChangeNotifier {
+//   final Listenable listenable;
+//   final Stream stream;
+//   late final StreamSubscription _subscription;
 
-  _AuthListenable(this.listenable, this.stream) {
-    listenable.addListener(notifyListeners);
-    _subscription = stream.listen((_) => notifyListeners());
+//   _AuthListenable(this.listenable, this.stream) {
+//     listenable.addListener(notifyListeners);
+//     _subscription = stream.listen((_) => notifyListeners());
+//   }
+
+//   @override
+//   void dispose() {
+//     listenable.removeListener(notifyListeners);
+//     _subscription.cancel();
+//     super.dispose();
+//   }
+// }
+
+class SignalListenable extends ChangeNotifier {
+  late final void Function() _dispose;
+
+  SignalListenable(ReadonlySignal signal) {
+    // subscribe fires immediately and on every change; returns a disposer
+    _dispose = signal.subscribe((_) => notifyListeners());
   }
 
   @override
   void dispose() {
-    listenable.removeListener(notifyListeners);
-    _subscription.cancel();
+    _dispose();
     super.dispose();
   }
 }

@@ -1,12 +1,12 @@
-part of 'account_read_bloc.dart';
+// part of 'account_read_bloc.dart';
 
-sealed class AccountReadEvent extends Equatable {
-  const AccountReadEvent();
-}
+// sealed class AccountReadEvent extends Equatable {
+//   const AccountReadEvent();
+// }
 
-class ReadAccount extends AccountReadEvent {
-  const ReadAccount();
+// class ReadAccount extends AccountReadEvent {
+//   const ReadAccount();
 
-  @override
-  List<Object?> get props => [];
-}
+//   @override
+//   List<Object?> get props => [];
+// }

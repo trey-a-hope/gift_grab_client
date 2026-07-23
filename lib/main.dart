@@ -1,19 +1,14 @@
 import 'dart:convert';
 import 'package:clerk_flutter/clerk_flutter.dart';
-import 'package:fluo/fluo.dart';
-import 'package:fluo/l10n/fluo_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gift_grab_client/core/di_container.dart';
-import 'package:gift_grab_client/core/logging.dart';
 import 'package:gift_grab_client/data/configuration/app_routes.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/constants/globals.dart';
 import 'package:gift_grab_client/data/repositories/session_repository.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
-import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
-import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_client/util/window_manager_util.dart';
@@ -42,13 +37,7 @@ void main() async {
   await configureDependencies();
 
   runApp(
-    ClerkAuth(
-      config: ClerkAuthConfig(
-        publishableKey:
-            'pk_test_Y29taWMtc2hpbmVyLTE3LmNsZXJrLmFjY291bnRzLmRldiQ',
-      ),
-      child: const AppInitializer(),
-    ),
+    ClerkAuth(config: Globals.clerkAuthConfig, child: const AppInitializer()),
   );
 }
 
@@ -72,7 +61,7 @@ class _AppInitializerState extends State<AppInitializer> {
   Future<void> _initialize() async {
     try {
       await _initEnvVars();
-      await _initFluo();
+      // await _initFluo();
 
       setState(() => _isInitialized = true);
     } catch (e) {
@@ -129,42 +118,42 @@ class MyAppPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<SessionService>(
-          create: (context) => SessionService(
-            SessionRepository(const FlutterSecureStorage(), getNakamaClient()),
-          ),
-        ),
+        // RepositoryProvider<SessionService>(
+        //   create: (context) => SessionService(
+        //     SessionRepository(const FlutterSecureStorage(), getNakamaClient()),
+        //   ),
+        // ),
         RepositoryProvider<ModalService>(create: (context) => ModalService()),
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider<AuthCubit>(
-            create: (context) {
-              final sessionService = context.read<SessionService>();
-              final clerkAuth = ClerkAuth.of(context, listen: false);
+          // BlocProvider<AuthCubit>(
+          //   create: (context) {
+          //     final sessionService = context.read<SessionService>();
+          //     final clerkAuth = ClerkAuth.of(context, listen: false);
 
-              final authCubit = AuthCubit(
-                getNakamaClient(),
-                sessionService,
-                clerkAuth,
-              );
+          //     final authCubit = AuthCubit(
+          //       getNakamaClient(),
+          //       sessionService,
+          //       clerkAuth,
+          //     );
 
-              sessionService.setUnauthenticatedCallback(
-                () => authCubit.logout(),
-              );
+          //     sessionService.setUnauthenticatedCallback(
+          //       () => authCubit.logout(),
+          //     );
 
-              authCubit.checkAuthStatus();
+          //     authCubit.checkAuthStatus();
 
-              return authCubit;
-            },
-          ),
-          BlocProvider<AccountReadBloc>(
-            create: (context) => AccountReadBloc(
-              context.read<AuthCubit>(),
-              getNakamaClient(),
-              context.read<SessionService>(),
-            ),
-          ),
+          //     return authCubit;
+          //   },
+          // ),
+          // BlocProvider<AccountReadBloc>(
+          //   create: (context) => AccountReadBloc(
+          //     di<AuthController>(),
+          //     getNakamaClient(),
+          //     context.read<SessionService>(),
+          //   ),
+          // ),
           BlocProvider<GroupRefreshCubit>(
             create: (context) => GroupRefreshCubit(),
           ),
@@ -186,10 +175,10 @@ class MyAppView extends StatelessWidget {
 
     return ClerkErrorListener(
       child: ShadApp.router(
-        localizationsDelegates: const [
-          ...FluoLocalizations.localizationsDelegates,
-        ],
-        supportedLocales: FluoLocalizations.supportedLocales,
+        // localizationsDelegates: const [
+        //   ...FluoLocalizations.localizationsDelegates,
+        // ],
+        // supportedLocales: FluoLocalizations.supportedLocales,
         debugShowCheckedModeBanner: false,
         theme: ShadThemeData(
           brightness: Brightness.light,
@@ -219,16 +208,16 @@ Future<void> _initEnvVars() async {
   Globals.FLUO_API_KEY = fluoApiKey;
 }
 
-Future<void> _initFluo() async {
-  try {
-    await Fluo.initWithApiKey(Globals.FLUO_API_KEY);
-    await Fluo.instance.loadAppConfig();
-    logger.d('Fluo initialized successfully (key: ${Globals.FLUO_API_KEY})');
-  } catch (e) {
-    const flutterSecureStorage = FlutterSecureStorage();
-    await flutterSecureStorage.deleteAll();
-    throw Exception(
-      'Could not initialize Fluo\n\napikey: ${Globals.FLUO_API_KEY}\n\n${e.toString()}\n\nPlease try relaunching the app',
-    );
-  }
-}
+// Future<void> _initFluo() async {
+//   try {
+//     await Fluo.initWithApiKey(Globals.FLUO_API_KEY);
+//     await Fluo.instance.loadAppConfig();
+//     logger.d('Fluo initialized successfully (key: ${Globals.FLUO_API_KEY})');
+//   } catch (e) {
+//     const flutterSecureStorage = FlutterSecureStorage();
+//     await flutterSecureStorage.deleteAll();
+//     throw Exception(
+//       'Could not initialize Fluo\n\napikey: ${Globals.FLUO_API_KEY}\n\n${e.toString()}\n\nPlease try relaunching the app',
+//     );
+//   }
+// }

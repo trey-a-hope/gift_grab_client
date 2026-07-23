@@ -1,3 +1,5 @@
+import 'package:clerk_flutter/clerk_flutter.dart';
+
 class Globals {
   Globals._();
 
@@ -24,4 +26,8 @@ class Globals {
       '955072082839-oo9gainsq9d4scss7kjuttqt5u54vshj.apps.googleusercontent.com';
 
   static late final FLUO_API_KEY;
+
+  static final clerkAuthConfig = ClerkAuthConfig(
+    publishableKey: 'pk_test_Y29taWMtc2hpbmVyLTE3LmNsZXJrLmFjY291bnRzLmRldiQ',
+  );
 }

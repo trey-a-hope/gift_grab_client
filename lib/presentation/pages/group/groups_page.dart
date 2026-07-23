@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gift_grab_client/core/di_container.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
+import 'package:gift_grab_client/presentation/controllers/account_read_controller.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/cubit/group_refresh_cubit.dart';
 import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
-import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/extensions/string_extensions.dart';
 import 'package:gift_grab_client/presentation/widgets/group_list_tile.dart';
 import 'package:gift_grab_ui/widgets/no_results_widget.dart';
