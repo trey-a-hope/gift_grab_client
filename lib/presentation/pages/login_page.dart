@@ -21,7 +21,6 @@ class LoginPage extends StatelessWidget {
           children: [
             GapSizes.xlGap,
             Text('Gift Grab', style: textTheme.h1),
-
             Expanded(
               child: Center(
                 child: SingleChildScrollView(

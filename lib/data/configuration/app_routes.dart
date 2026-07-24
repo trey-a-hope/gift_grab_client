@@ -1,3 +1,4 @@
+import 'package:clerk_flutter/clerk_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,10 +20,13 @@ import 'package:gift_grab_client/presentation/blocs/user_update/view/edit_profil
 import 'package:gift_grab_client/presentation/pages/login_page.dart';
 import 'package:gift_grab_client/presentation/pages/main_menu_page.dart';
 import 'package:gift_grab_client/presentation/pages/settings_page.dart';
+import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_game/game/gift_grab_game_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nakama/nakama.dart';
 import 'package:signals/signals_flutter.dart';
+
+import '../../core/logging.dart';
 
 GoRouter appRouter(BuildContext context) {
   // final clerkAuth = ClerkAuth.of(context, listen: false);
@@ -55,103 +59,118 @@ GoRouter appRouter(BuildContext context) {
       return null;
     },
     routes: [
-      GoRoute(
-        path: '/${GoRoutes.LOGIN.name}',
-        name: GoRoutes.LOGIN.name,
-        builder: (context, state) => const LoginPage(),
-      ),
-      GoRoute(
-        path: '/${GoRoutes.MAIN.name}',
-        name: GoRoutes.MAIN.name,
-        builder: (context, state) => const MainMenuPage(),
+      ShellRoute(
+        builder: (context, state, child) => ClerkErrorListener(
+          handler: (context, error) {
+            logger.e(error.toString());
+            di<ModalService>().shadToastDestructive(
+              context,
+              title: const Text('ERROR'),
+              description: Text(error.argument ?? 'Unknown error'),
+            );
+          },
+          child: child,
+        ),
         routes: [
           GoRoute(
-            path: GoRoutes.GAME.name,
-            name: GoRoutes.GAME.name,
-            builder: (context, state) {
-              final recordCreateBloc = RecordCreateBloc(
-                getNakamaClient(),
-                di<SessionService>(),
-              );
-
-              return BlocProvider<RecordCreateBloc>(
-                create: (context) => recordCreateBloc,
-                child: GiftGrabGameWidget(
-                  onEndGame: (score) =>
-                      recordCreateBloc.add(SubmitRecord(score)),
-                ),
-              );
-            },
+            path: '/${GoRoutes.LOGIN.name}',
+            name: GoRoutes.LOGIN.name,
+            builder: (context, state) => const LoginPage(),
           ),
           GoRoute(
-            path: GoRoutes.SETTINGS.name,
-            name: GoRoutes.SETTINGS.name,
-            builder: (context, state) => const SettingsPage(),
-          ),
-          GoRoute(
-            path: '${GoRoutes.PROFILE.name}/:uid',
-            name: GoRoutes.PROFILE.name,
-            builder: (context, state) {
-              final uid = state.pathParameters['uid'];
-              if (uid == null) throw Exception('Profile UID null');
-              return ProfilePage(uid);
-            },
+            path: '/${GoRoutes.MAIN.name}',
+            name: GoRoutes.MAIN.name,
+            builder: (context, state) => const MainMenuPage(),
             routes: [
               GoRoute(
-                path: GoRoutes.EDIT_PROFILE.name,
-                name: GoRoutes.EDIT_PROFILE.name,
-                builder: (context, state) => const EditProfilePage(),
-              ),
-            ],
-          ),
-          GoRoute(
-            path: GoRoutes.SEARCH_USERS.name,
-            name: GoRoutes.SEARCH_USERS.name,
-            builder: (context, state) => const SearchUsersPage(),
-          ),
-          GoRoute(
-            path: GoRoutes.LEADERBOARD.name,
-            name: GoRoutes.LEADERBOARD.name,
-            builder: (context, state) => const LeaderboardPage(),
-          ),
-          GoRoute(
-            path: GoRoutes.FRIENDS.name,
-            name: GoRoutes.FRIENDS.name,
-            builder: (context, state) => const FriendsPage(),
-          ),
-          GoRoute(
-            path: GoRoutes.GROUPS.name,
-            name: GoRoutes.GROUPS.name,
-            builder: (context, state) => const GroupsPage(),
-            routes: [
-              GoRoute(
-                path: GoRoutes.CREATE_GROUP.name,
-                name: GoRoutes.CREATE_GROUP.name,
-                builder: (context, state) => const CreateGroupPage(),
-              ),
-              GoRoute(
-                path: '${GoRoutes.GROUP_DETAILS.name}/:group_id',
-                name: GoRoutes.GROUP_DETAILS.name,
+                path: GoRoutes.GAME.name,
+                name: GoRoutes.GAME.name,
                 builder: (context, state) {
-                  final groupId = state.pathParameters['group_id'];
-                  if (groupId == null) throw Exception('Group ID null');
-                  return GroupDetailsPage(groupId);
+                  final recordCreateBloc = RecordCreateBloc(
+                    getNakamaClient(),
+                    di<SessionService>(),
+                  );
+
+                  return BlocProvider<RecordCreateBloc>(
+                    create: (context) => recordCreateBloc,
+                    child: GiftGrabGameWidget(
+                      onEndGame: (score) =>
+                          recordCreateBloc.add(SubmitRecord(score)),
+                    ),
+                  );
+                },
+              ),
+              GoRoute(
+                path: GoRoutes.SETTINGS.name,
+                name: GoRoutes.SETTINGS.name,
+                builder: (context, state) => const SettingsPage(),
+              ),
+              GoRoute(
+                path: '${GoRoutes.PROFILE.name}/:uid',
+                name: GoRoutes.PROFILE.name,
+                builder: (context, state) {
+                  final uid = state.pathParameters['uid'];
+                  if (uid == null) throw Exception('Profile UID null');
+                  return ProfilePage(uid);
                 },
                 routes: [
                   GoRoute(
-                    path: GoRoutes.EDIT_GROUP.name,
-                    name: GoRoutes.EDIT_GROUP.name,
-                    builder: (context, state) {
-                      final group = state.extra as Group;
-                      return EditGroupPage(group);
-                    },
+                    path: GoRoutes.EDIT_PROFILE.name,
+                    name: GoRoutes.EDIT_PROFILE.name,
+                    builder: (context, state) => const EditProfilePage(),
                   ),
                 ],
               ),
               GoRoute(
-                path: GoRoutes.SEARCH_GROUPS.name,
-                name: GoRoutes.SEARCH_GROUPS.name,
-                builder: (context, state) => const SearchGroupsPage(),
+                path: GoRoutes.SEARCH_USERS.name,
+                name: GoRoutes.SEARCH_USERS.name,
+                builder: (context, state) => const SearchUsersPage(),
+              ),
+              GoRoute(
+                path: GoRoutes.LEADERBOARD.name,
+                name: GoRoutes.LEADERBOARD.name,
+                builder: (context, state) => const LeaderboardPage(),
+              ),
+              GoRoute(
+                path: GoRoutes.FRIENDS.name,
+                name: GoRoutes.FRIENDS.name,
+                builder: (context, state) => const FriendsPage(),
+              ),
+              GoRoute(
+                path: GoRoutes.GROUPS.name,
+                name: GoRoutes.GROUPS.name,
+                builder: (context, state) => const GroupsPage(),
+                routes: [
+                  GoRoute(
+                    path: GoRoutes.CREATE_GROUP.name,
+                    name: GoRoutes.CREATE_GROUP.name,
+                    builder: (context, state) => const CreateGroupPage(),
+                  ),
+                  GoRoute(
+                    path: '${GoRoutes.GROUP_DETAILS.name}/:group_id',
+                    name: GoRoutes.GROUP_DETAILS.name,
+                    builder: (context, state) {
+                      final groupId = state.pathParameters['group_id'];
+                      if (groupId == null) throw Exception('Group ID null');
+                      return GroupDetailsPage(groupId);
+                    },
+                    routes: [
+                      GoRoute(
+                        path: GoRoutes.EDIT_GROUP.name,
+                        name: GoRoutes.EDIT_GROUP.name,
+                        builder: (context, state) {
+                          final group = state.extra as Group;
+                          return EditGroupPage(group);
+                        },
+                      ),
+                    ],
+                  ),
+                  GoRoute(
+                    path: GoRoutes.SEARCH_GROUPS.name,
+                    name: GoRoutes.SEARCH_GROUPS.name,
+                    builder: (context, state) => const SearchGroupsPage(),
+                  ),
+                ],
               ),
             ],
           ),

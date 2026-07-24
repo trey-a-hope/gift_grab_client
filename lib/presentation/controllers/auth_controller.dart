@@ -36,6 +36,18 @@ class AuthController {
 
   Future<void> _onClerkSessionToken(SessionToken token) async {
     try {
+      if (_clerkAuth.client.signUp != null) {
+        // This session came from the widget silently signing someone
+        // up — not a real login. Reject it.
+        logger.d('Blocking auto-provisioned Clerk sign-up');
+        await _clerkAuth.signOut();
+        isAuthenticated.value = AsyncError(
+          'No account found for this email',
+          StackTrace.current,
+        );
+        return;
+      }
+
       logger.d('Running "_onClerkSessionToken"...');
       final session = await _client.authenticateCustom(id: token.jwt);
       await _sessionService.saveSession(session);

@@ -139,23 +139,21 @@ class MyAppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClerkErrorListener(
-      child: ShadApp.router(
-        debugShowCheckedModeBanner: false,
-        theme: ShadThemeData(
-          brightness: Brightness.light,
-          colorScheme: const ShadNeutralColorScheme.light(),
-          textTheme: ShadTextTheme.fromGoogleFont(_font),
-        ),
-        darkTheme: ShadThemeData(
-          brightness: Brightness.dark,
-          colorScheme: const ShadNeutralColorScheme.dark(),
-          textTheme: ShadTextTheme.fromGoogleFont(_font),
-        ),
-        themeMode: ThemeMode.dark,
-        title: 'Gift Grab',
-        routerConfig: _router,
+    return ShadApp.router(
+      debugShowCheckedModeBanner: false,
+      theme: ShadThemeData(
+        brightness: Brightness.light,
+        colorScheme: const ShadNeutralColorScheme.light(),
+        textTheme: ShadTextTheme.fromGoogleFont(_font),
       ),
+      darkTheme: ShadThemeData(
+        brightness: Brightness.dark,
+        colorScheme: const ShadNeutralColorScheme.dark(),
+        textTheme: ShadTextTheme.fromGoogleFont(_font),
+      ),
+      themeMode: ThemeMode.dark,
+      title: 'Gift Grab',
+      routerConfig: _router,
     );
   }
 }
