@@ -1,6 +1,7 @@
 import 'package:animated_search_bar/animated_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gift_grab_client/core/di_container.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_client/presentation/widgets/user_list_tile.dart';
@@ -16,7 +17,7 @@ class SearchUsersPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<UserListBloc>(
       create: (context) =>
-          UserListBloc(getNakamaClient(), context.read<SessionService>()),
+          UserListBloc(getNakamaClient(), di<SessionService>()),
       child: const SearchUsersView(),
     );
   }

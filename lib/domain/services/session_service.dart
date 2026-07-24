@@ -14,7 +14,7 @@ class SessionService {
   SessionService(this._iSessionRepository);
 
   Future<void> saveSession(Session session) async {
-    logger.d('saveSession:${session.print()}');
+    logger.d('Saving session:${session.print()}');
     await _iSessionRepository.saveSession(session);
   }
 
@@ -67,14 +67,11 @@ class SessionService {
 
       await _iSessionRepository.clearSession();
 
-      logger.d('logged out, see you later!');
+      logger.i('Logged out, see you later!');
 
       return true;
     } catch (e) {
       return false;
     }
   }
-
-  void setUnauthenticatedCallback(void Function() callback) =>
-      _onUnauthenticated = callback;
 }

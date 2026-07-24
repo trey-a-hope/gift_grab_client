@@ -14,7 +14,7 @@ class GroupsList extends StatelessWidget {
       create: (_) => GroupListBloc(
         all ? null : account.user.id,
         getNakamaClient(),
-        context.read<SessionService>(),
+        di<SessionService>(),
       )..add(const InitialFetch()),
       child: const GroupListView(),
     );

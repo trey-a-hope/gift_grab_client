@@ -18,6 +18,7 @@ import 'package:gift_grab_client/presentation/blocs/user_list/view/search_users_
 import 'package:gift_grab_client/presentation/blocs/user_update/view/edit_profile_page.dart';
 import 'package:gift_grab_client/presentation/pages/login_page.dart';
 import 'package:gift_grab_client/presentation/pages/main_menu_page.dart';
+import 'package:gift_grab_client/presentation/pages/settings_page.dart';
 import 'package:gift_grab_game/game/gift_grab_game_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nakama/nakama.dart';
@@ -70,7 +71,7 @@ GoRouter appRouter(BuildContext context) {
             builder: (context, state) {
               final recordCreateBloc = RecordCreateBloc(
                 getNakamaClient(),
-                context.read<SessionService>(),
+                di<SessionService>(),
               );
 
               return BlocProvider<RecordCreateBloc>(
@@ -82,11 +83,11 @@ GoRouter appRouter(BuildContext context) {
               );
             },
           ),
-          // GoRoute(
-          //   path: GoRoutes.SETTINGS.name,
-          //   name: GoRoutes.SETTINGS.name,
-          //   builder: (context, state) => const SettingsPage(),
-          // ),
+          GoRoute(
+            path: GoRoutes.SETTINGS.name,
+            name: GoRoutes.SETTINGS.name,
+            builder: (context, state) => const SettingsPage(),
+          ),
           GoRoute(
             path: '${GoRoutes.PROFILE.name}/:uid',
             name: GoRoutes.PROFILE.name,

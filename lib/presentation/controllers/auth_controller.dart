@@ -36,7 +36,6 @@ class AuthController {
 
   Future<void> _onClerkSessionToken(SessionToken token) async {
     try {
-      logger.d('Running _onClerkSessionToken with token ${token.jwt}');
       final session = await _client.authenticateCustom(id: token.jwt);
       await _sessionService.saveSession(session);
       isAuthenticated.value = const AsyncData(true);

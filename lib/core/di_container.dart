@@ -13,7 +13,11 @@ import 'package:clerk_flutter/clerk_flutter.dart';
 
 final di = GetIt.I;
 
-Future<void> configureDependencies() async {
+Future<void> configureDependencies({
+  required ClerkAuthState clerkAuthState,
+}) async {
+  di.registerSingleton<ClerkAuthState>(clerkAuthState);
+
   // -- SERVICES --
   // Modal Service
   di.registerSingleton<ModalService>(ModalService());

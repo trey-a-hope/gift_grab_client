@@ -31,17 +31,13 @@ class ProfilePage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<UserReadBloc>(
-          create: (context) => UserReadBloc(
-            uid,
-            getNakamaClient(),
-            context.read<SessionService>(),
-          )..add(const ReadUser()),
+          create: (context) =>
+              UserReadBloc(uid, getNakamaClient(), di<SessionService>())
+                ..add(const ReadUser()),
         ),
         BlocProvider<FriendUpdateBloc>(
-          create: (context) => FriendUpdateBloc(
-            getNakamaClient(),
-            context.read<SessionService>(),
-          ),
+          create: (context) =>
+              FriendUpdateBloc(getNakamaClient(), di<SessionService>()),
         ),
       ],
       child: const ProfileView(),

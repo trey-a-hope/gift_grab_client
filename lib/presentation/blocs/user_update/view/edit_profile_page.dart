@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:gift_grab_client/core/di_container.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/account_update/bloc/account_update_bloc.dart';
 import 'package:gift_grab_client/presentation/controllers/account_read_controller.dart';
@@ -17,7 +18,7 @@ class EditProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accountReadController = context.read<AccountReadController>();
+    final accountReadController = di<AccountReadController>();
 
     final account = accountReadController.accountSignal.value.value!;
 
@@ -25,13 +26,12 @@ class EditProfilePage extends StatelessWidget {
       providers: [
         BlocProvider<UserUpdateBloc>(
           create: (context) =>
-              UserUpdateBloc(account, context.read<SessionService>())
-                ..add(const Init()),
+              UserUpdateBloc(account, di<SessionService>())..add(const Init()),
         ),
         BlocProvider<AccountUpdateBloc>(
           create: (context) => AccountUpdateBloc(
             account,
-            context.read<SessionService>(),
+            di<SessionService>(),
             getNakamaClient(),
             ProfanityApi.instance,
           ),

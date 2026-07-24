@@ -6,7 +6,6 @@ import 'package:gift_grab_client/core/di_container.dart';
 import 'package:gift_grab_client/data/configuration/app_routes.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/constants/globals.dart';
-import 'package:gift_grab_client/presentation/controllers/auth_controller.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_client/util/window_manager_util.dart';
@@ -25,6 +24,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   packageInfo = await PackageInfo.fromPlatform();
   await WindowManagerUtil.init();
+
   // Initialze Nakama Module Client
   final _ = getNakamaClient(
     host: Globals.nakamaClientHost,
@@ -32,7 +32,6 @@ void main() async {
     httpPort: Globals.nakamaClientHttpPort,
     ssl: UniversalPlatform.isWeb,
   );
-  await configureDependencies();
 
   runApp(
     ClerkAuth(config: Globals.clerkAuthConfig, child: const AppInitializer()),
@@ -58,16 +57,9 @@ class _AppInitializerState extends State<AppInitializer> {
 
   Future<void> _initialize() async {
     try {
-      if (!di.isRegistered<ClerkAuthState>()) {
-        final authState = ClerkAuth.of(context, listen: false);
-        di.registerSingleton<ClerkAuthState>(authState);
-      }
-
+      final authState = ClerkAuth.of(context, listen: false);
+      await configureDependencies(clerkAuthState: authState);
       await _initEnvVars();
-      // await _initFluo();
-
-      // await di<AuthController>().logout();
-
       setState(() => _isInitialized = true);
     } catch (e) {
       setState(() => _errorMessage = e.toString());

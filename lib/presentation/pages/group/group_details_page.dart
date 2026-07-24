@@ -40,18 +40,13 @@ class GroupDetailsPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<GroupReadBloc>(
-          create: (context) => GroupReadBloc(
-            groupId,
-            getNakamaClient(),
-            context.read<SessionService>(),
-          )..add(const ReadGroup()),
+          create: (context) =>
+              GroupReadBloc(groupId, getNakamaClient(), di<SessionService>())
+                ..add(const ReadGroup()),
         ),
         BlocProvider<GroupDeleteBloc>(
-          create: (context) => GroupDeleteBloc(
-            groupId,
-            getNakamaClient(),
-            context.read<SessionService>(),
-          ),
+          create: (context) =>
+              GroupDeleteBloc(groupId, getNakamaClient(), di<SessionService>()),
         ),
       ],
       child: GroupDetailsView(groupId),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gift_grab_client/core/di_container.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/record_delete/bloc/record_delete_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/record_list/view/record_list_tile.dart';
@@ -22,14 +23,12 @@ class LeaderboardPage extends StatelessWidget {
       providers: [
         BlocProvider<RecordListBloc>(
           create: (context) =>
-              RecordListBloc(getNakamaClient(), context.read<SessionService>())
+              RecordListBloc(getNakamaClient(), di<SessionService>())
                 ..add(const InitialFetch()),
         ),
         BlocProvider<RecordDeleteBloc>(
-          create: (context) => RecordDeleteBloc(
-            getNakamaClient(),
-            context.read<SessionService>(),
-          ),
+          create: (context) =>
+              RecordDeleteBloc(getNakamaClient(), di<SessionService>()),
         ),
       ],
       child: const LeaderboardView(),
@@ -44,7 +43,7 @@ class LeaderboardView extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final recordListBloc = context.read<RecordListBloc>();
-    final accountReadController = context.read<AccountReadController>();
+    final accountReadController = di<AccountReadController>();
     final modalService = context.read<ModalService>();
 
     final account = accountReadController.accountSignal.value.value;

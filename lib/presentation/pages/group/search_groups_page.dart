@@ -1,6 +1,7 @@
 import 'package:animated_search_bar/animated_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gift_grab_client/core/di_container.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/group_list/group_list.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
@@ -14,11 +15,8 @@ class SearchGroupsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<GroupListBloc>(
-      create: (context) => GroupListBloc(
-        null,
-        getNakamaClient(),
-        context.read<SessionService>(),
-      ),
+      create: (context) =>
+          GroupListBloc(null, getNakamaClient(), di<SessionService>()),
       child: const SearchGroupsView(),
     );
   }

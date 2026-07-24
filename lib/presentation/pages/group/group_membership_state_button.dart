@@ -12,7 +12,7 @@ class GroupMembershipStateButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sessionService = context.read<SessionService>();
+    final sessionService = di<SessionService>();
 
     return MultiBlocListener(
       listeners: [

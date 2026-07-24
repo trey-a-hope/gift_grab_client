@@ -5,21 +5,16 @@ import 'package:gift_grab_client/data/enums/go_routes.dart';
 import 'package:gift_grab_client/presentation/controllers/account_read_controller.dart';
 import 'package:gift_grab_ui/ui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:signals/signals_flutter.dart';
 
-class MainMenuPage extends StatelessWidget {
+class MainMenuPage extends SignalStatefulWidget {
   const MainMenuPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final accountReadController = di<AccountReadController>();
-    accountReadController.accountSignal.reset();
-    return const MainMenuView();
-  }
+  State<MainMenuPage> createState() => _MainMenuPageState();
 }
 
-class MainMenuView extends StatelessWidget {
-  const MainMenuView({super.key});
-
+class _MainMenuPageState extends State<MainMenuPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

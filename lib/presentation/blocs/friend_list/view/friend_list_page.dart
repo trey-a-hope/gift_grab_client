@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gift_grab_client/core/di_container.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/friend_update/friend_update.dart';
 import 'package:gift_grab_client/presentation/extensions/string_extensions.dart';
@@ -23,14 +24,12 @@ class FriendListPage extends StatelessWidget {
           create: (_) => FriendListBloc(
             friendshipState,
             getNakamaClient(),
-            context.read<SessionService>(),
+            di<SessionService>(),
           )..add(const InitialFetch()),
         ),
         BlocProvider<FriendUpdateBloc>(
-          create: (context) => FriendUpdateBloc(
-            getNakamaClient(),
-            context.read<SessionService>(),
-          ),
+          create: (context) =>
+              FriendUpdateBloc(getNakamaClient(), di<SessionService>()),
         ),
       ],
       child: const FriendListView(),
