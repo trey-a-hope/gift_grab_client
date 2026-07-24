@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:result_dart/result_dart.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
@@ -43,7 +44,7 @@ void main() {
 
         // Default mock setup
         when(() => mockSessionService.getSession())
-            .thenAnswer((_) async => mockSession);
+            .thenAnswer((_) async => Success(mockSession));
       });
 
       group('SendRequest', () {

@@ -28,7 +28,10 @@ class GroupMembershipReadBloc
     action: () async {
       emit(state.copyWith(isLoading: true));
 
-      final session = await sessionService.getSession();
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
 
       final groupMembershipState = await _getGroupMembershipState(
         session,

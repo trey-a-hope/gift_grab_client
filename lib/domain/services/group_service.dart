@@ -8,62 +8,131 @@ class GroupService {
 
   GroupService(this.sessionService, this.client);
 
-  Future<List<GroupUser>> getMembersOfGroup(String groupId) async =>
-      (await client.listGroupUsers(
-        session: await sessionService.getSession(),
+  Future<Result<List<GroupUser>>> getMembersOfGroup(String groupId) async {
+    try {
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
+
+      final result = await client.listGroupUsers(
+        session: session,
         groupId: groupId,
-      )).groupUsers;
+      );
 
-  Future<void> kickMember({
-    required String groupId,
-    required String userId,
-  }) async => client.kickGroupUsers(
-    session: await sessionService.getSession(),
-    groupId: groupId,
-    userIds: [userId],
-  );
+      return Success(result.groupUsers);
+    } catch (e) {
+      return Failure(e is Exception ? e : Exception(e.toString()));
+    }
+  }
 
-  Future<void> banMember({
-    required String groupId,
-    required String userId,
-  }) async => client.banGroupUsers(
-    session: await sessionService.getSession(),
-    groupId: groupId,
-    userIds: [userId],
-  );
-
-  Future<Result<Unit>> promoteMember({
+  Future<Result<Unit>> kickMember({
     required String groupId,
     required String userId,
   }) async {
     try {
-      final session = await sessionService.getSession();
-      await client.promoteGroupUsers(
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
+
+      await client.kickGroupUsers(
         session: session,
         groupId: groupId,
         userIds: [userId],
       );
+
       return const Success(unit);
     } catch (e) {
       return Failure(e is Exception ? e : Exception(e.toString()));
     }
   }
 
-  Future<void> demoteMember({
+  Future<Result<Unit>> banMember({
     required String groupId,
     required String userId,
-  }) async => client.demoteGroupUsers(
-    session: await sessionService.getSession(),
-    groupId: groupId,
-    userIds: [userId],
-  );
+  }) async {
+    try {
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
 
-  Future<void> addMember({
+      await client.banGroupUsers(
+        session: session,
+        groupId: groupId,
+        userIds: [userId],
+      );
+
+      return const Success(unit);
+    } catch (e) {
+      return Failure(e is Exception ? e : Exception(e.toString()));
+    }
+  }
+
+  Future<Result<Unit>> promoteMember({
     required String groupId,
     required String userId,
-  }) async => client.addGroupUsers(
-    session: await sessionService.getSession(),
-    groupId: groupId,
-    userIds: [userId],
-  );
+  }) async {
+    try {
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
+
+      await client.promoteGroupUsers(
+        session: session,
+        groupId: groupId,
+        userIds: [userId],
+      );
+
+      return const Success(unit);
+    } catch (e) {
+      return Failure(e is Exception ? e : Exception(e.toString()));
+    }
+  }
+
+  Future<Result<Unit>> demoteMember({
+    required String groupId,
+    required String userId,
+  }) async {
+    try {
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
+
+      await client.demoteGroupUsers(
+        session: session,
+        groupId: groupId,
+        userIds: [userId],
+      );
+
+      return const Success(unit);
+    } catch (e) {
+      return Failure(e is Exception ? e : Exception(e.toString()));
+    }
+  }
+
+  Future<Result<Unit>> addMember({
+    required String groupId,
+    required String userId,
+  }) async {
+    try {
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
+
+      await client.addGroupUsers(
+        session: session,
+        groupId: groupId,
+        userIds: [userId],
+      );
+
+      return const Success(unit);
+    } catch (e) {
+      return Failure(e is Exception ? e : Exception(e.toString()));
+    }
+  }
 }

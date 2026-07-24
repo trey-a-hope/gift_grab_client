@@ -38,7 +38,10 @@ class AccountUpdateBloc extends Bloc<AccountUpdateEvent, AccountUpdateState> {
     action: () async {
       emit(state.copyWith(isLoading: true));
 
-      final session = await sessionService.getSession();
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
 
       final profanityResponse = await profanityApi.scan(event.username);
 
@@ -60,8 +63,10 @@ class AccountUpdateBloc extends Bloc<AccountUpdateEvent, AccountUpdateState> {
   ) async => await runWithErrorHandling(
     action: () async {
       emit(state.copyWith(isLoading: true));
-
-      final session = await sessionService.getSession();
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
 
       await client.linkEmail(
         session: session,
@@ -82,7 +87,10 @@ class AccountUpdateBloc extends Bloc<AccountUpdateEvent, AccountUpdateState> {
     action: () async {
       emit(state.copyWith(isLoading: true));
 
-      final session = await sessionService.getSession();
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
 
       final email = account.email;
 
@@ -105,7 +113,10 @@ class AccountUpdateBloc extends Bloc<AccountUpdateEvent, AccountUpdateState> {
     action: () async {
       emit(state.copyWith(isLoading: true));
 
-      final session = await sessionService.getSession();
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
 
       // final idToken = await socialAuthService.getGoogleToken();
       const idToken = null;
@@ -130,7 +141,10 @@ class AccountUpdateBloc extends Bloc<AccountUpdateEvent, AccountUpdateState> {
     action: () async {
       emit(state.copyWith(isLoading: true));
 
-      final session = await sessionService.getSession();
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
 
       const idToken = null;
 
@@ -154,7 +168,10 @@ class AccountUpdateBloc extends Bloc<AccountUpdateEvent, AccountUpdateState> {
     action: () async {
       emit(state.copyWith(isLoading: true));
 
-      final session = await sessionService.getSession();
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
 
       const idToken = null;
 
@@ -178,7 +195,10 @@ class AccountUpdateBloc extends Bloc<AccountUpdateEvent, AccountUpdateState> {
     action: () async {
       emit(state.copyWith(isLoading: true));
 
-      final session = await sessionService.getSession();
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
 
       const idToken = null;
 

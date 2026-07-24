@@ -49,7 +49,10 @@ class GroupListBloc extends Bloc<GroupListEvent, GroupListState> {
   ) async =>
       await runWithErrorHandling(
         action: () async {
-          final session = await sessionService.getSession();
+          final session = (await sessionService.getSession()).fold(
+            (success) => success,
+            (error) => throw error,
+          );
 
           late List<Group> groups;
           late String? cursor;

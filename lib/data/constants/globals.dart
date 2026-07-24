@@ -10,7 +10,7 @@ class Globals {
 
   static const String giftAsset = 'assets/images/gift-sprite.png';
 
-  static const bool isProd = true;
+  static const bool isProd = false;
 
   static const String nakamaClientHost = isProd
       ? 'gift-grab-server.app'

@@ -2,13 +2,11 @@ import 'dart:convert';
 import 'package:clerk_flutter/clerk_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gift_grab_client/core/di_container.dart';
 import 'package:gift_grab_client/data/configuration/app_routes.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/constants/globals.dart';
-import 'package:gift_grab_client/data/repositories/session_repository.dart';
-import 'package:gift_grab_client/domain/services/session_service.dart';
+import 'package:gift_grab_client/presentation/controllers/auth_controller.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_client/util/window_manager_util.dart';
@@ -60,8 +58,15 @@ class _AppInitializerState extends State<AppInitializer> {
 
   Future<void> _initialize() async {
     try {
+      if (!di.isRegistered<ClerkAuthState>()) {
+        final authState = ClerkAuth.of(context, listen: false);
+        di.registerSingleton<ClerkAuthState>(authState);
+      }
+
       await _initEnvVars();
       // await _initFluo();
+
+      // await di<AuthController>().logout();
 
       setState(() => _isInitialized = true);
     } catch (e) {

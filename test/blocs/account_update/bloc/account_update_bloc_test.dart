@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:result_dart/result_dart.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
@@ -57,7 +58,7 @@ void main() {
         setUp: () {
           when(
             () => mockSessionService.getSession(),
-          ).thenAnswer((_) async => mockSession);
+          ).thenAnswer((_) async => Success(mockSession));
 
           when(
             () => mockProfanityApi.scan('newUsername'),
@@ -93,7 +94,7 @@ void main() {
         setUp: () {
           when(
             () => mockSessionService.getSession(),
-          ).thenAnswer((_) async => mockSession);
+          ).thenAnswer((_) async => Success(mockSession));
 
           when(() => mockProfanityApi.scan('badword')).thenAnswer(
             (_) async => mockProfanityResponse.copyWith(isProfanity: true),
@@ -124,7 +125,7 @@ void main() {
         setUp: () {
           when(
             () => mockSessionService.getSession(),
-          ).thenAnswer((_) async => mockSession);
+          ).thenAnswer((_) async => Success(mockSession));
 
           when(
             () => mockNakamaBaseClient.linkEmail(
@@ -160,7 +161,7 @@ void main() {
         setUp: () {
           when(
             () => mockSessionService.getSession(),
-          ).thenAnswer((_) async => mockSession);
+          ).thenAnswer((_) async => Success(mockSession));
 
           when(() => mockAccount.email).thenReturn('test@example.com');
 
@@ -195,7 +196,7 @@ void main() {
         setUp: () {
           when(
             () => mockSessionService.getSession(),
-          ).thenAnswer((_) async => mockSession);
+          ).thenAnswer((_) async => Success(mockSession));
 
           when(() => mockAccount.email).thenReturn(null);
         },
@@ -223,7 +224,7 @@ void main() {
         setUp: () {
           when(
             () => mockSessionService.getSession(),
-          ).thenAnswer((_) async => mockSession);
+          ).thenAnswer((_) async => Success(mockSession));
         },
         build: () => AccountUpdateBloc(
           mockAccount,
@@ -246,7 +247,7 @@ void main() {
         setUp: () {
           when(
             () => mockSessionService.getSession(),
-          ).thenAnswer((_) async => mockSession);
+          ).thenAnswer((_) async => Success(mockSession));
         },
         build: () => AccountUpdateBloc(
           mockAccount,
@@ -269,7 +270,7 @@ void main() {
         setUp: () {
           when(
             () => mockSessionService.getSession(),
-          ).thenAnswer((_) async => mockSession);
+          ).thenAnswer((_) async => Success(mockSession));
         },
         build: () => AccountUpdateBloc(
           mockAccount,
@@ -292,7 +293,7 @@ void main() {
         setUp: () {
           when(
             () => mockSessionService.getSession(),
-          ).thenAnswer((_) async => mockSession);
+          ).thenAnswer((_) async => Success(mockSession));
         },
         build: () => AccountUpdateBloc(
           mockAccount,

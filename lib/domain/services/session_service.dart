@@ -53,7 +53,7 @@ class SessionService {
       return Success(session);
     } catch (e) {
       _iSessionRepository.clearSession();
-      rethrow;
+      return Failure(e is Exception ? e : Exception(e.toString()));
     }
   }
 

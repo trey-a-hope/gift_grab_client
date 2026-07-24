@@ -28,7 +28,10 @@ class RecordCreateBloc extends Bloc<RecordCreateEvent, RecordCreateState> {
         action: () async {
           emit(state.copyWith(isLoading: true));
 
-          final session = await sessionService.getSession();
+          final session = (await sessionService.getSession()).fold(
+            (success) => success,
+            (error) => throw error,
+          );
 
           await client.writeLeaderboardRecord(
             session: session,

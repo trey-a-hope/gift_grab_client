@@ -1,14 +1,15 @@
 import 'dart:async';
+import 'package:clerk_flutter/clerk_flutter.dart';
+import 'package:gift_grab_client/core/logging.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:nakama/nakama.dart';
-import 'package:gift_grab_client/core/logging.dart';
 import 'package:signals/signals_hooks.dart';
-import 'package:clerk_auth/clerk_auth.dart' as clerk;
+import 'package:clerk_auth/clerk_auth.dart';
 
 class AuthController {
   final NakamaBaseClient _client;
   final SessionService _sessionService;
-  final clerk.Auth _clerkAuth;
+  final ClerkAuthState _clerkAuth;
 
   final AsyncSignal<bool> isAuthenticated = AsyncSignal(const AsyncData(false));
 
@@ -16,32 +17,59 @@ class AuthController {
     required this._client,
     required this._sessionService,
     required this._clerkAuth,
-  });
+  }) {
+    _clerkAuth.sessionTokenStream.listen(_onClerkSessionToken);
+    _initializeAuth();
+  }
 
-  Future<void> loginCustom({
-    required String id,
-    required String username,
-  }) async {
+  Future<void> _initializeAuth() async {
     try {
-      isAuthenticated.value = const AsyncLoading();
-
-      if (!_clerkAuth.isSignedIn) {
-        return;
+      if (_clerkAuth.isSignedIn) {
+        isAuthenticated.value = const AsyncLoading();
+        final token = await _clerkAuth.sessionToken();
+        await _onClerkSessionToken(token);
       }
-
-      final session = await _client.authenticateCustom(
-        id: id,
-        create: false,
-        username: username,
-      );
-
-      await _sessionService.saveSession(session);
-      logger.d('loginEmail: id - $id, username - $username');
-      isAuthenticated.value = const AsyncData(true);
     } catch (e) {
       isAuthenticated.value = AsyncError(e, StackTrace.current);
     }
   }
+
+  Future<void> _onClerkSessionToken(SessionToken token) async {
+    try {
+      logger.d('Running _onClerkSessionToken with token ${token.jwt}');
+      final session = await _client.authenticateCustom(id: token.jwt);
+      await _sessionService.saveSession(session);
+      isAuthenticated.value = const AsyncData(true);
+    } catch (e) {
+      logger.e('Error in _onClerkSessionToken: $e');
+      isAuthenticated.value = AsyncError(e, StackTrace.current);
+    }
+  }
+
+  // Future<void> loginCustom({
+  //   required String id,
+  //   required String username,
+  // }) async {
+  //   try {
+  //     isAuthenticated.value = const AsyncLoading();
+
+  //     if (!_clerkAuth.isSignedIn) {
+  //       return;
+  //     }
+
+  //     final session = await _client.authenticateCustom(
+  //       id: id,
+  //       create: false,
+  //       username: username,
+  //     );
+
+  //     await _sessionService.saveSession(session);
+  //     logger.d('loginEmail: id - $id, username - $username');
+  //     isAuthenticated.value = const AsyncData(true);
+  //   } catch (e) {
+  //     isAuthenticated.value = AsyncError(e, StackTrace.current);
+  //   }
+  // }
 
   Future<void> logout() async {
     try {
@@ -58,7 +86,10 @@ class AuthController {
     try {
       isAuthenticated.value = const AsyncLoading();
 
-      final session = await _sessionService.getSession();
+      final session = (await _sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
 
       if (_sessionService.shouldRefreshSession(session)) {
         await _sessionService.refreshSession(session);

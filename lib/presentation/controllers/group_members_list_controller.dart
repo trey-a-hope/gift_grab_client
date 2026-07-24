@@ -18,13 +18,18 @@ class GroupMembersListController {
   ) {
     groupUsersSignal = futureSignal<List<GroupUser>>(
       () async {
-        final members = await _groupService.getMembersOfGroup(_groupId);
-        members.log(
-          authenticatedUserId:
-              _accountReadController.accountSignal.value.value?.user.id ??
-              'uid unknown',
+        final result = await _groupService.getMembersOfGroup(_groupId);
+        return result.fold(
+          (success) {
+            success.log(
+              authenticatedUserId:
+                  _accountReadController.accountSignal.value.value?.user.id ??
+                  'uid unknown',
+            );
+            return success;
+          },
+          (error) => throw error,
         );
-        return members;
       },
       options: const AsyncSignalOptions(
         name: 'GroupMembersListController.groupUsersSignal',

@@ -28,7 +28,10 @@ class GroupMembershipUpdateBloc
     action: () async {
       emit(state.copyWith(isLoading: true));
 
-      final session = await sessionService.getSession();
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
 
       await client.joinGroup(session: session, groupId: state.groupId);
 
@@ -45,7 +48,10 @@ class GroupMembershipUpdateBloc
     action: () async {
       emit(state.copyWith(isLoading: true));
 
-      final session = await sessionService.getSession();
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
 
       await client.leaveGroup(session: session, groupId: state.groupId);
 
@@ -62,7 +68,10 @@ class GroupMembershipUpdateBloc
     action: () async {
       emit(state.copyWith(isLoading: true));
 
-      final session = await sessionService.getSession();
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
 
       await client.leaveGroup(session: session, groupId: state.groupId);
 
@@ -79,7 +88,10 @@ class GroupMembershipUpdateBloc
     action: () async {
       emit(state.copyWith(isLoading: true));
 
-      final session = await sessionService.getSession();
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
 
       await client.addGroupUsers(
         session: session,

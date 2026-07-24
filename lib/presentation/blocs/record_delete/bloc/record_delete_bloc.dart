@@ -27,7 +27,10 @@ class RecordDeleteBloc extends Bloc<RecordDeleteEvent, RecordDeleteState> {
       await runWithErrorHandling(
         action: () async {
           emit(state.copyWith(isLoading: true));
-          final session = await sessionService.getSession();
+          final session = (await sessionService.getSession()).fold(
+            (success) => success,
+            (error) => throw error,
+          );
 
           await client.deleteLeaderboardRecord(
             session: session,

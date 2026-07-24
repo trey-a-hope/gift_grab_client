@@ -28,7 +28,10 @@ class AccountDeleteBloc extends Bloc<AccountDeleteEvent, AccountDeleteState> {
     action: () async {
       emit(state.copyWith(isLoading: true));
 
-      final session = await sessionService.getSession();
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
 
       await client.rpc(session: session, id: RpcFunctions.ACCOUNT_DELETE.id);
 

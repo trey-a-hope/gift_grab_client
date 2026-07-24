@@ -11,7 +11,10 @@ class AccountReadController {
   // TODO (Trey) - Have this signal listen to changes on the AuthController.
   AccountReadController(this.client, this.sessionService) {
     accountSignal = futureSignal<Account>(() async {
-      final session = await sessionService.getSession();
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
+      );
       final account = await client.getAccount(session);
       return account;
     });

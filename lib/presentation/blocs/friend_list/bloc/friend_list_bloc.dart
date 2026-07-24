@@ -44,7 +44,10 @@ class FriendListBloc extends Bloc<FriendListEvent, FriendListState> {
   ) async =>
       await runWithErrorHandling(
         action: () async {
-          final session = await sessionService.getSession();
+          final session = (await sessionService.getSession()).fold(
+            (success) => success,
+            (error) => throw error,
+          );
 
           final friendList = await client.listFriends(
             session: session,

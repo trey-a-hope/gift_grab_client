@@ -10,23 +10,35 @@ class GroupMembersUpdateController {
   GroupMembersUpdateController(this._groupId, this._groupService);
 
   Future<void> kickMember({required String userId}) async {
-    try {
-      kickMemberSignal.value = const AsyncLoading();
-      await _groupService.kickMember(groupId: _groupId, userId: userId);
-      kickMemberSignal.value = const AsyncData('User kicked successfully');
-    } catch (e, st) {
-      kickMemberSignal.value = AsyncError(e, st);
-    }
+    kickMemberSignal.value = const AsyncLoading();
+
+    final result = await _groupService.kickMember(
+      groupId: _groupId,
+      userId: userId,
+    );
+
+    result.fold(
+      (success) => kickMemberSignal.value = const AsyncData(
+        'User kicked successfully',
+      ),
+      (error) => kickMemberSignal.value = AsyncError(error, StackTrace.current),
+    );
   }
 
   Future<void> banMember({required String userId}) async {
-    try {
-      kickMemberSignal.value = const AsyncLoading();
-      await _groupService.banMember(groupId: _groupId, userId: userId);
-      kickMemberSignal.value = const AsyncData('User banned successfully');
-    } catch (e, st) {
-      kickMemberSignal.value = AsyncError(e, st);
-    }
+    kickMemberSignal.value = const AsyncLoading();
+
+    final result = await _groupService.banMember(
+      groupId: _groupId,
+      userId: userId,
+    );
+
+    result.fold(
+      (success) => kickMemberSignal.value = const AsyncData(
+        'User banned successfully',
+      ),
+      (error) => kickMemberSignal.value = AsyncError(error, StackTrace.current),
+    );
   }
 
   Future<void> promoteMember({required String userId}) async {
@@ -46,22 +58,34 @@ class GroupMembersUpdateController {
   }
 
   Future<void> demoteMember({required String userId}) async {
-    try {
-      kickMemberSignal.value = const AsyncLoading();
-      await _groupService.demoteMember(groupId: _groupId, userId: userId);
-      kickMemberSignal.value = const AsyncData('User demoted successfully');
-    } catch (e, st) {
-      kickMemberSignal.value = AsyncError(e, st);
-    }
+    kickMemberSignal.value = const AsyncLoading();
+
+    final result = await _groupService.demoteMember(
+      groupId: _groupId,
+      userId: userId,
+    );
+
+    result.fold(
+      (success) => kickMemberSignal.value = const AsyncData(
+        'User demoted successfully',
+      ),
+      (error) => kickMemberSignal.value = AsyncError(error, StackTrace.current),
+    );
   }
 
   Future<void> addMember({required String userId}) async {
-    try {
-      kickMemberSignal.value = const AsyncLoading();
-      await _groupService.addMember(groupId: _groupId, userId: userId);
-      kickMemberSignal.value = const AsyncData('User added successfully');
-    } catch (e, st) {
-      kickMemberSignal.value = AsyncError(e, st);
-    }
+    kickMemberSignal.value = const AsyncLoading();
+
+    final result = await _groupService.addMember(
+      groupId: _groupId,
+      userId: userId,
+    );
+
+    result.fold(
+      (success) => kickMemberSignal.value = const AsyncData(
+        'User added successfully',
+      ),
+      (error) => kickMemberSignal.value = AsyncError(error, StackTrace.current),
+    );
   }
 }
