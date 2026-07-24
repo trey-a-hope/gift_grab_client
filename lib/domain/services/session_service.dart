@@ -1,6 +1,5 @@
 import 'package:gift_grab_client/core/logging.dart';
 import 'package:gift_grab_client/domain/repositories/i_session_repository.dart';
-import 'package:gift_grab_client/presentation/extensions/session_extensions.dart';
 import 'package:nakama/nakama.dart';
 import 'package:result_dart/result_dart.dart';
 
@@ -14,7 +13,6 @@ class SessionService {
   SessionService(this._iSessionRepository);
 
   Future<void> saveSession(Session session) async {
-    logger.d('Saving session:${session.print()}');
     await _iSessionRepository.saveSession(session);
   }
 
@@ -26,7 +24,6 @@ class SessionService {
     try {
       final newSession = await _iSessionRepository.refreshSession(session);
       await _iSessionRepository.saveSession(newSession);
-      logger.d('refreshSession:${session.print()}');
       return newSession;
     } catch (e) {
       _iSessionRepository.clearSession();
@@ -47,8 +44,6 @@ class SessionService {
         final freshSession = await refreshSession(session);
         return Success(freshSession);
       }
-
-      logger.d('getSession:${session.print()}');
 
       return Success(session);
     } catch (e) {

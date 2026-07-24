@@ -9,6 +9,7 @@ import 'package:gift_grab_client/data/constants/globals.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_client/util/window_manager_util.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nakama/nakama.dart';
@@ -17,7 +18,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:universal_platform/universal_platform.dart';
 
 late PackageInfo packageInfo;
-
+late GoRouter _router;
 void main() async {
   // debugPaintSizeEnabled = true;
 
@@ -59,6 +60,8 @@ class _AppInitializerState extends State<AppInitializer> {
     try {
       final authState = ClerkAuth.of(context, listen: false);
       await configureDependencies(clerkAuthState: authState);
+      // NOTE: MUST come after `configureDependencies` is called.
+      _router = appRouter(context);
       await _initEnvVars();
       setState(() => _isInitialized = true);
     } catch (e) {
@@ -115,42 +118,10 @@ class MyAppPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        // RepositoryProvider<SessionService>(
-        //   create: (context) => SessionService(
-        //     SessionRepository(const FlutterSecureStorage(), getNakamaClient()),
-        //   ),
-        // ),
         RepositoryProvider<ModalService>(create: (context) => ModalService()),
       ],
       child: MultiBlocProvider(
         providers: [
-          // BlocProvider<AuthCubit>(
-          //   create: (context) {
-          //     final sessionService = context.read<SessionService>();
-          //     final clerkAuth = ClerkAuth.of(context, listen: false);
-
-          //     final authCubit = AuthCubit(
-          //       getNakamaClient(),
-          //       sessionService,
-          //       clerkAuth,
-          //     );
-
-          //     sessionService.setUnauthenticatedCallback(
-          //       () => authCubit.logout(),
-          //     );
-
-          //     authCubit.checkAuthStatus();
-
-          //     return authCubit;
-          //   },
-          // ),
-          // BlocProvider<AccountReadBloc>(
-          //   create: (context) => AccountReadBloc(
-          //     di<AuthController>(),
-          //     getNakamaClient(),
-          //     context.read<SessionService>(),
-          //   ),
-          // ),
           BlocProvider<GroupRefreshCubit>(
             create: (context) => GroupRefreshCubit(),
           ),
@@ -168,14 +139,8 @@ class MyAppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final router = appRouter(context);
-
     return ClerkErrorListener(
       child: ShadApp.router(
-        // localizationsDelegates: const [
-        //   ...FluoLocalizations.localizationsDelegates,
-        // ],
-        // supportedLocales: FluoLocalizations.supportedLocales,
         debugShowCheckedModeBanner: false,
         theme: ShadThemeData(
           brightness: Brightness.light,
@@ -189,7 +154,7 @@ class MyAppView extends StatelessWidget {
         ),
         themeMode: ThemeMode.dark,
         title: 'Gift Grab',
-        routerConfig: router,
+        routerConfig: _router,
       ),
     );
   }
@@ -204,17 +169,3 @@ Future<void> _initEnvVars() async {
 
   Globals.FLUO_API_KEY = fluoApiKey;
 }
-
-// Future<void> _initFluo() async {
-//   try {
-//     await Fluo.initWithApiKey(Globals.FLUO_API_KEY);
-//     await Fluo.instance.loadAppConfig();
-//     logger.d('Fluo initialized successfully (key: ${Globals.FLUO_API_KEY})');
-//   } catch (e) {
-//     const flutterSecureStorage = FlutterSecureStorage();
-//     await flutterSecureStorage.deleteAll();
-//     throw Exception(
-//       'Could not initialize Fluo\n\napikey: ${Globals.FLUO_API_KEY}\n\n${e.toString()}\n\nPlease try relaunching the app',
-//     );
-//   }
-// }

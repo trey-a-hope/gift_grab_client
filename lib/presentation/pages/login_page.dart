@@ -30,7 +30,7 @@ class LoginPage extends StatelessWidget {
                     child: ClerkAuthBuilder(
                       signedOutBuilder: (context, authState) =>
                           const ClerkAuthentication(),
-                      signingInBuilder: (context, authState) =>
+                      signedInBuilder: (context, authState) =>
                           const CircularProgressIndicator(),
                     ),
                   ),

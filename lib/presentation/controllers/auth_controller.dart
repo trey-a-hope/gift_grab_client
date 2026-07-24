@@ -36,39 +36,16 @@ class AuthController {
 
   Future<void> _onClerkSessionToken(SessionToken token) async {
     try {
+      logger.d('Running "_onClerkSessionToken"...');
       final session = await _client.authenticateCustom(id: token.jwt);
       await _sessionService.saveSession(session);
       isAuthenticated.value = const AsyncData(true);
+      logger.d('"_onClerkSessionToken" complete, user is authenticated');
     } catch (e) {
       logger.e('Error in _onClerkSessionToken: $e');
       isAuthenticated.value = AsyncError(e, StackTrace.current);
     }
   }
-
-  // Future<void> loginCustom({
-  //   required String id,
-  //   required String username,
-  // }) async {
-  //   try {
-  //     isAuthenticated.value = const AsyncLoading();
-
-  //     if (!_clerkAuth.isSignedIn) {
-  //       return;
-  //     }
-
-  //     final session = await _client.authenticateCustom(
-  //       id: id,
-  //       create: false,
-  //       username: username,
-  //     );
-
-  //     await _sessionService.saveSession(session);
-  //     logger.d('loginEmail: id - $id, username - $username');
-  //     isAuthenticated.value = const AsyncData(true);
-  //   } catch (e) {
-  //     isAuthenticated.value = AsyncError(e, StackTrace.current);
-  //   }
-  // }
 
   Future<void> logout() async {
     try {

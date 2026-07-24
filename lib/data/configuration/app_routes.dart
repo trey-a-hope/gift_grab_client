@@ -161,24 +161,6 @@ GoRouter appRouter(BuildContext context) {
   );
 }
 
-// class _AuthListenable extends ChangeNotifier {
-//   final Listenable listenable;
-//   final Stream stream;
-//   late final StreamSubscription _subscription;
-
-//   _AuthListenable(this.listenable, this.stream) {
-//     listenable.addListener(notifyListeners);
-//     _subscription = stream.listen((_) => notifyListeners());
-//   }
-
-//   @override
-//   void dispose() {
-//     listenable.removeListener(notifyListeners);
-//     _subscription.cancel();
-//     super.dispose();
-//   }
-// }
-
 class SignalListenable extends ChangeNotifier {
   late final void Function() _dispose;
 

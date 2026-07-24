@@ -184,7 +184,7 @@ class SettingsView extends StatelessWidget {
 
                         if (!confirm.falseIfNull()) return;
 
-                        authController.logout();
+                        await authController.logout();
                       },
                     ),
                     SettingsTile.navigation(
