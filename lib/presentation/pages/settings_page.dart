@@ -15,7 +15,6 @@ import 'package:gift_grab_ui/widgets/gg_scaffold_widget.dart';
 import 'package:nakama/nakama.dart';
 import 'package:profanity_api/profanity_api.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:universal_platform/universal_platform.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -57,7 +56,6 @@ class SettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     final authController = di<AuthController>();
     final accountDeleteBloc = context.read<AccountDeleteBloc>();
-    final accountUpdateBloc = context.read<AccountUpdateBloc>();
     final accountReadController = di<AccountReadController>();
     final modalService = di<ModalService>();
 
@@ -95,65 +93,10 @@ class SettingsView extends StatelessWidget {
       ],
       child: Builder(
         builder: (context) {
-          // final isEmailLinked = state.account?.email?.isNotEmpty ?? false;
-          // final isGoogleLinked =
-          //     state.account?.user.googleId?.isNotEmpty ?? false;
-          // final isAppleLinked =
-          //     state.account?.user.appleId?.isNotEmpty ?? false;
-
-          final isEmailLinked = false;
-          final isGoogleLinked = false;
-          final isAppleLinked = false;
-
           return GGScaffoldWidget(
             title: 'Settings',
             child: SettingsList(
               sections: [
-                SettingsSection(
-                  title: const Text('Connected Accounts'),
-                  tiles: [
-                    SettingsTile.switchTile(
-                      initialValue: isEmailLinked,
-                      onToggle: (val) async {
-                        // TODO (Trey) - Added showEmailPasswordDialog to modalService
-                        // if (val) {
-                        //   final result =
-                        //       await ModalUtil.showEmailPasswordDialog(context);
-
-                        //   if (result == null) return;
-
-                        //   final email = result.$1;
-                        //   final password = result.$2;
-
-                        //   accountUpdateBloc.add(LinkEmail(email, password));
-                        // } else {
-                        //   accountUpdateBloc.add(const UnlinkEmail());
-                        // }
-                      },
-                      leading: const Icon(Icons.email),
-                      title: const Text('Link to Email'),
-                    ),
-                    SettingsTile.switchTile(
-                      initialValue: isGoogleLinked,
-                      onToggle: (val) async => accountUpdateBloc.add(
-                        val ? const LinkGoogle() : const UnlinkGoogle(),
-                      ),
-                      leading: const FaIcon(FontAwesomeIcons.google),
-                      title: const Text('Link to Google'),
-                    ),
-                    if (UniversalPlatform.isIOS ||
-                        UniversalPlatform.isMacOS) ...[
-                      SettingsTile.switchTile(
-                        initialValue: isAppleLinked,
-                        onToggle: (val) async => accountUpdateBloc.add(
-                          val ? const LinkApple() : const UnlinkApple(),
-                        ),
-                        leading: const FaIcon(FontAwesomeIcons.apple),
-                        title: const Text('Link to Apple'),
-                      ),
-                    ],
-                  ],
-                ),
                 SettingsSection(
                   title: const Text('App Info'),
                   tiles: [
