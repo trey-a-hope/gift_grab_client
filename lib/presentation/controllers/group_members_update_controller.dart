@@ -5,7 +5,12 @@ class GroupMembersUpdateController {
   final String _groupId;
   final GroupService _groupService;
 
-  final kickMemberSignal = AsyncSignal<String?>(const AsyncData(null));
+  final kickMemberSignal = AsyncSignal<String?>(
+    const AsyncData(null),
+    options: const AsyncSignalOptions(
+      name: 'GroupMembersUpdateController.kickMemberSignal',
+    ),
+  );
 
   GroupMembersUpdateController(this._groupId, this._groupService);
 
@@ -18,9 +23,8 @@ class GroupMembersUpdateController {
     );
 
     result.fold(
-      (success) => kickMemberSignal.value = const AsyncData(
-        'User kicked successfully',
-      ),
+      (success) =>
+          kickMemberSignal.value = const AsyncData('User kicked successfully'),
       (error) => kickMemberSignal.value = AsyncError(error, StackTrace.current),
     );
   }
@@ -34,9 +38,8 @@ class GroupMembersUpdateController {
     );
 
     result.fold(
-      (success) => kickMemberSignal.value = const AsyncData(
-        'User banned successfully',
-      ),
+      (success) =>
+          kickMemberSignal.value = const AsyncData('User banned successfully'),
       (error) => kickMemberSignal.value = AsyncError(error, StackTrace.current),
     );
   }
@@ -66,9 +69,8 @@ class GroupMembersUpdateController {
     );
 
     result.fold(
-      (success) => kickMemberSignal.value = const AsyncData(
-        'User demoted successfully',
-      ),
+      (success) =>
+          kickMemberSignal.value = const AsyncData('User demoted successfully'),
       (error) => kickMemberSignal.value = AsyncError(error, StackTrace.current),
     );
   }
@@ -82,9 +84,8 @@ class GroupMembersUpdateController {
     );
 
     result.fold(
-      (success) => kickMemberSignal.value = const AsyncData(
-        'User added successfully',
-      ),
+      (success) =>
+          kickMemberSignal.value = const AsyncData('User added successfully'),
       (error) => kickMemberSignal.value = AsyncError(error, StackTrace.current),
     );
   }

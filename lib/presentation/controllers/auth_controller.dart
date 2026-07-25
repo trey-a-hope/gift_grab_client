@@ -11,7 +11,10 @@ class AuthController {
   final SessionService _sessionService;
   final ClerkAuthState _clerkAuth;
 
-  final AsyncSignal<bool> isAuthenticated = AsyncSignal(const AsyncData(false));
+  final AsyncSignal<bool> isAuthenticated = AsyncSignal(
+    const AsyncData(false),
+    options: const SignalOptions(name: 'AuthController.isAuthenticated'),
+  );
 
   AuthController({
     required this._client,
@@ -49,8 +52,16 @@ class AuthController {
       }
 
       logger.d('Running "_onClerkSessionToken"...');
-      final session = await _client.authenticateCustom(id: token.jwt);
+
+      final username = _clerkAuth.user?.username;
+
+      final session = await _client.authenticateCustom(
+        id: token.jwt,
+        username: username,
+      );
+
       await _sessionService.saveSession(session);
+
       isAuthenticated.value = const AsyncData(true);
       logger.d('"_onClerkSessionToken" complete, user is authenticated');
     } catch (e) {

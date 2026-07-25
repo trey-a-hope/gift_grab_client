@@ -10,14 +10,17 @@ class AccountReadController {
   late final FutureSignal<Account> accountSignal;
 
   AccountReadController(this.client, this.sessionService) {
-    accountSignal = futureSignal<Account>(() async {
-      final session = (await sessionService.getSession()).fold(
-        (success) => success,
-        (error) => throw error,
-      );
-      final account = await client.getAccount(session);
-      logger.i('Welcome back, ${account.user.username}!');
-      return account;
-    });
+    accountSignal = futureSignal<Account>(
+      () async {
+        final session = (await sessionService.getSession()).fold(
+          (success) => success,
+          (error) => throw error,
+        );
+        final account = await client.getAccount(session);
+        logger.i('Welcome back, ${account.user.username}!');
+        return account;
+      },
+      options: const AsyncSignalOptions(name: 'AuthController.isAuthenticated'),
+    );
   }
 }
