@@ -34,7 +34,10 @@ class AuthController {
     required this._sessionService,
     required this._clerkAuth,
   }) {
-    _clerkSessionId = signal(_clerkAuth.session?.id);
+    _clerkSessionId = signal(
+      _clerkAuth.session?.id,
+      options: const SignalOptions(name: 'AuthController.clerkSessionId'),
+    );
 
     _clerkListener = () => _clerkSessionId.value = _clerkAuth.session?.id;
 
@@ -42,18 +45,23 @@ class AuthController {
 
     // Watch the clerk session id and process nakama authentication
     // accordingly.
-    _onClerkSessionIdChangedEffect = effect(() {
-      final sessionId = _clerkSessionId.value;
+    _onClerkSessionIdChangedEffect = effect(
+      () {
+        final sessionId = _clerkSessionId.value;
 
-      if (sessionId != null) {
-        // Unawaited fires the async _processAuthentication() in the background
-        // without blocking the synchronous effect callback or triggering
-        // unawaited future linter warnings.
-        unawaited(_processAuthentication());
-      } else {
-        isAuthenticated.value = const AsyncData(false);
-      }
-    });
+        if (sessionId != null) {
+          // Unawaited fires the async _processAuthentication() in the background
+          // without blocking the synchronous effect callback or triggering
+          // unawaited future linter warnings.
+          unawaited(_processAuthentication());
+        } else {
+          isAuthenticated.value = const AsyncData(false);
+        }
+      },
+      options: const EffectOptions(
+        name: 'AuthController.onClerkSessionIdChangedEffect',
+      ),
+    );
   }
 
   /// Processes authentication against Nakama using the user's Clerk session JWT token.
