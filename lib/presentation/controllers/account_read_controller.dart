@@ -20,7 +20,9 @@ class AccountReadController {
         logger.i('Welcome back, ${account.user.username}!');
         return account;
       },
-      options: const AsyncSignalOptions(name: 'AuthController.isAuthenticated'),
+      options: const AsyncSignalOptions(
+        name: 'AccountReadController.accountSignal',
+      ),
     );
   }
 }

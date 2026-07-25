@@ -3,8 +3,10 @@ import 'package:clerk_flutter/clerk_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gift_grab_client/core/di_container.dart';
+import 'package:gift_grab_client/core/logging.dart';
 import 'package:gift_grab_client/data/configuration/app_routes.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
+import 'package:gift_grab_client/data/configuration/signal_observer.dart';
 import 'package:gift_grab_client/data/constants/globals.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
@@ -16,11 +18,13 @@ import 'package:nakama/nakama.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:universal_platform/universal_platform.dart';
+import 'package:signals/signals_flutter.dart';
 
 late PackageInfo packageInfo;
 late GoRouter _router;
 void main() async {
   // debugPaintSizeEnabled = true;
+  SignalsObserver.instance = SignalObserver(logger);
 
   WidgetsFlutterBinding.ensureInitialized();
   packageInfo = await PackageInfo.fromPlatform();
