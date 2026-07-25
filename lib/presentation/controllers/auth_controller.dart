@@ -1,75 +1,98 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:clerk_flutter/clerk_flutter.dart';
 import 'package:gift_grab_client/core/logging.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:nakama/nakama.dart';
 import 'package:signals/signals_hooks.dart';
-import 'package:clerk_auth/clerk_auth.dart';
 
+/// Controller responsible for managing the authentication flow.
+/// It bridges Clerk authentication with Nakama server authentication.
 class AuthController {
   final NakamaBaseClient _client;
   final SessionService _sessionService;
   final ClerkAuthState _clerkAuth;
 
+  /// Signal to track changes to the Clerk session ID.
+  late final Signal<String?> _clerkSessionId;
+
+  /// Cleanup function for the reactive effect tracking authentication.
+  late final EffectCleanup _disposeEffect;
+
+  /// Callback to listen for Clerk auth changes and update [_clerkSessionId].
+  late final VoidCallback _clerkListener;
+
+  /// Async signal representing the user's current authentication state.
   final AsyncSignal<bool> isAuthenticated = AsyncSignal(
     const AsyncData(false),
     options: const SignalOptions(name: 'AuthController.isAuthenticated'),
   );
 
+  /// Initializes the AuthController and sets up listeners and effects
+  /// to automatically sync Clerk auth state changes with Nakama.
   AuthController({
     required this._client,
     required this._sessionService,
     required this._clerkAuth,
   }) {
-    _clerkAuth.sessionTokenStream.listen(_onClerkSessionToken);
-    _initializeAuth();
+    _clerkSessionId = signal(_clerkAuth.session?.id);
+
+    _clerkListener = () {
+      _clerkSessionId.value = _clerkAuth.session?.id;
+    };
+    _clerkAuth.addListener(_clerkListener);
+
+    // Watch the clerk session id and process nakama authentication
+    // accordingly.
+    _disposeEffect = effect(() {
+      final sessionId = _clerkSessionId.value;
+
+      if (sessionId != null) {
+        // Unawaited fires the async _processAuthentication() in the background
+        // without blocking the synchronous effect callback or triggering
+        // unawaited future linter warnings.
+        unawaited(_processAuthentication());
+      } else {
+        isAuthenticated.value = const AsyncData(false);
+      }
+    });
   }
 
-  Future<void> _initializeAuth() async {
+  /// Processes authentication against Nakama using the user's Clerk session JWT token.
+  /// Determines if a signup or login flow should be used based on account creation time.
+  Future<void> _processAuthentication() async {
     try {
-      if (_clerkAuth.isSignedIn) {
-        isAuthenticated.value = const AsyncLoading();
-        final token = await _clerkAuth.sessionToken();
-        await _onClerkSessionToken(token);
-      }
-    } catch (e) {
-      isAuthenticated.value = AsyncError(e, StackTrace.current);
-    }
-  }
+      isAuthenticated.value = const AsyncLoading();
 
-  Future<void> _onClerkSessionToken(SessionToken token) async {
-    try {
-      if (_clerkAuth.client.signUp != null) {
-        // This session came from the widget silently signing someone
-        // up — not a real login. Reject it.
-        logger.d('Blocking auto-provisioned Clerk sign-up');
-        await _clerkAuth.signOut();
-        isAuthenticated.value = AsyncError(
-          'No account found for this email',
-          StackTrace.current,
-        );
-        return;
-      }
+      final token = await _clerkAuth.sessionToken();
+      final user = _clerkAuth.user;
 
-      logger.d('Running "_onClerkSessionToken"...');
+      if (user == null) return;
 
-      final username = _clerkAuth.user?.username;
+      final isSignUp =
+          user.lastSignInAt.difference(user.createdAt).abs().inSeconds < 2;
+
+      logger.d(
+        isSignUp
+            ? 'Clerk user ${user.id} signed UP'
+            : 'Clerk user ${user.id} signed IN',
+      );
 
       final session = await _client.authenticateCustom(
         id: token.jwt,
-        username: username,
+        username: user.username,
+        create: isSignUp,
       );
 
       await _sessionService.saveSession(session);
-
       isAuthenticated.value = const AsyncData(true);
-      logger.d('"_onClerkSessionToken" complete, user is authenticated');
     } catch (e) {
-      logger.e('Error in _onClerkSessionToken: $e');
+      logger.e('Error in authentication: $e');
       isAuthenticated.value = AsyncError(e, StackTrace.current);
     }
   }
 
+  /// Logs out the current user, clearing the Nakama session and signing out from Clerk.
   Future<void> logout() async {
     try {
       isAuthenticated.value = const AsyncLoading();
@@ -81,6 +104,8 @@ class AuthController {
     }
   }
 
+  /// Checks the local storage for an active Nakama session, refreshes it if needed,
+  /// and marks the authentication status as true if a valid session exists.
   Future<void> checkAuthStatus() async {
     try {
       isAuthenticated.value = const AsyncLoading();
@@ -98,5 +123,11 @@ class AuthController {
     } catch (e) {
       isAuthenticated.value = AsyncError(e, StackTrace.current);
     }
+  }
+
+  /// Cleans up listeners and effect timers when the controller is disposed.
+  void dispose() {
+    _clerkAuth.removeListener(_clerkListener);
+    _disposeEffect();
   }
 }

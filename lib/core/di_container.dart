@@ -45,7 +45,11 @@ Future<void> configureDependencies({
 
   // Account Read Controller
   di.registerLazySingleton<AccountReadController>(
-    () => AccountReadController(getNakamaClient(), di<SessionService>()),
+    () => AccountReadController(
+      getNakamaClient(),
+      di<SessionService>(),
+      di<AuthController>(),
+    ),
   );
 
   // Group Members List Controller
