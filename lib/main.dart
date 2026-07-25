@@ -20,6 +20,7 @@ import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:universal_platform/universal_platform.dart';
 import 'package:signals/signals_flutter.dart';
 
+// TODO (Trey) - Add timeout for clerk auth request
 late PackageInfo packageInfo;
 late GoRouter _router;
 void main() async {

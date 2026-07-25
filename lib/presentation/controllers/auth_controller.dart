@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 import 'package:clerk_flutter/clerk_flutter.dart';
 import 'package:gift_grab_client/core/logging.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
@@ -17,10 +16,10 @@ class AuthController {
   late final Signal<String?> _clerkSessionId;
 
   /// Cleanup function for the reactive effect tracking authentication.
-  late final EffectCleanup _disposeEffect;
+  late final EffectCleanup _onClerkSessionIdChangedEffect;
 
   /// Callback to listen for Clerk auth changes and update [_clerkSessionId].
-  late final VoidCallback _clerkListener;
+  late final Function() _clerkListener;
 
   /// Async signal representing the user's current authentication state.
   final AsyncSignal<bool> isAuthenticated = AsyncSignal(
@@ -37,14 +36,13 @@ class AuthController {
   }) {
     _clerkSessionId = signal(_clerkAuth.session?.id);
 
-    _clerkListener = () {
-      _clerkSessionId.value = _clerkAuth.session?.id;
-    };
+    _clerkListener = () => _clerkSessionId.value = _clerkAuth.session?.id;
+
     _clerkAuth.addListener(_clerkListener);
 
     // Watch the clerk session id and process nakama authentication
     // accordingly.
-    _disposeEffect = effect(() {
+    _onClerkSessionIdChangedEffect = effect(() {
       final sessionId = _clerkSessionId.value;
 
       if (sessionId != null) {
@@ -74,8 +72,8 @@ class AuthController {
 
       logger.d(
         isSignUp
-            ? 'Clerk user ${user.id} signed UP'
-            : 'Clerk user ${user.id} signed IN',
+            ? 'New clerk user sign up - ID: ${user.id}, Username: ${user.username}'
+            : 'Existing clerk user sign in - ID: ${user.id}, Username: ${user.username}',
       );
 
       final session = await _client.authenticateCustom(
@@ -128,6 +126,6 @@ class AuthController {
   /// Cleans up listeners and effect timers when the controller is disposed.
   void dispose() {
     _clerkAuth.removeListener(_clerkListener);
-    _disposeEffect();
+    _onClerkSessionIdChangedEffect();
   }
 }
