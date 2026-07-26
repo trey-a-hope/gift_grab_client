@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:clerk_flutter/clerk_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -164,11 +163,11 @@ class MyAppView extends StatelessWidget {
 }
 
 Future<void> _initEnvVars() async {
-  const fluoApiKeyEncoded = String.fromEnvironment('FLUO_API_KEY');
-  if (fluoApiKeyEncoded.isEmpty) {
-    throw Exception('Fluo api key is empty');
-  }
-  final fluoApiKey = utf8.decode(base64.decode(fluoApiKeyEncoded));
+  // const fluoApiKeyEncoded = String.fromEnvironment('FLUO_API_KEY');
+  // if (fluoApiKeyEncoded.isEmpty) {
+  //   throw Exception('Fluo api key is empty');
+  // }
+  // final fluoApiKey = utf8.decode(base64.decode(fluoApiKeyEncoded));
 
-  Globals.FLUO_API_KEY = fluoApiKey;
+  // Globals.FLUO_API_KEY = fluoApiKey;
 }

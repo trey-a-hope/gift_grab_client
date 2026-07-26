@@ -48,3 +48,5 @@ app.*.map.json
 
 /env/prod.json
 /macos/scripts/.env
+
+.env
