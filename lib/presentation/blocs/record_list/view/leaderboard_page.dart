@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gift_grab_client/core/di_container.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
-import 'package:gift_grab_client/presentation/blocs/account_read/account_read.dart';
 import 'package:gift_grab_client/presentation/blocs/record_delete/bloc/record_delete_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/record_list/view/record_list_tile.dart';
+import 'package:gift_grab_client/presentation/controllers/account_read_controller.dart';
 import 'package:gift_grab_client/presentation/extensions/date_time_extensions.dart';
 import 'package:gift_grab_client/presentation/extensions/string_extensions.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
@@ -22,14 +23,12 @@ class LeaderboardPage extends StatelessWidget {
       providers: [
         BlocProvider<RecordListBloc>(
           create: (context) =>
-              RecordListBloc(getNakamaClient(), context.read<SessionService>())
+              RecordListBloc(getNakamaClient(), di<SessionService>())
                 ..add(const InitialFetch()),
         ),
         BlocProvider<RecordDeleteBloc>(
-          create: (context) => RecordDeleteBloc(
-            getNakamaClient(),
-            context.read<SessionService>(),
-          ),
+          create: (context) =>
+              RecordDeleteBloc(getNakamaClient(), di<SessionService>()),
         ),
       ],
       child: const LeaderboardView(),
@@ -44,10 +43,10 @@ class LeaderboardView extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final recordListBloc = context.read<RecordListBloc>();
-    final accountReadBloc = context.read<AccountReadBloc>();
+    final accountReadController = di<AccountReadController>();
     final modalService = context.read<ModalService>();
 
-    final account = accountReadBloc.state.account!;
+    final account = accountReadController.accountSignal.value.value;
 
     return BlocListener<RecordDeleteBloc, RecordDeleteState>(
       listener: (context, state) {
@@ -86,7 +85,7 @@ class LeaderboardView extends StatelessWidget {
                           : ListView.builder(
                               itemCount: entries.length,
                               itemBuilder: (context, index) => RecordListTile(
-                                account.user.id,
+                                account?.user.id ?? '',
                                 entries[index],
                               ),
                             ),

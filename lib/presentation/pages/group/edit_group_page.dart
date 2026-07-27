@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:gift_grab_client/core/di_container.dart';
 import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
@@ -24,7 +25,7 @@ class EditGroupPage extends StatelessWidget {
     return BlocProvider(
       create: (_) => GroupUpdateBloc(
         getNakamaClient(),
-        context.read<SessionService>(),
+        di<SessionService>(),
         ProfanityApi.instance,
       )..add(InitForm(group)),
       child: EditGroupView(group),

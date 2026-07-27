@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:result_dart/result_dart.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
@@ -51,7 +52,7 @@ void main() {
           'emits loading state then success state with user when reading user (not my profile)',
           setUp: () {
             when(() => mockSessionService.getSession())
-                .thenAnswer((_) async => mockSession);
+                .thenAnswer((_) async => Success(mockSession));
 
             when(() => mockNakamaBaseClient.rpc(
                   session: mockSession,
@@ -91,7 +92,7 @@ void main() {
           'emits loading state then success state with user when reading user (is my profile)',
           setUp: () {
             when(() => mockSessionService.getSession())
-                .thenAnswer((_) async => mockSession);
+                .thenAnswer((_) async => Success(mockSession));
 
             when(() => mockNakamaBaseClient.rpc(
                   session: mockSession,
@@ -100,7 +101,7 @@ void main() {
                 )).thenAnswer((_) async => "0");
 
             when(() => mockSessionService.getSession())
-                .thenAnswer((_) async => mockSession);
+                .thenAnswer((_) async => Success(mockSession));
 
             when(() => mockNakamaBaseClient.getUsers(
                   session: mockSession,
@@ -135,7 +136,7 @@ void main() {
           'throws exception when no users found',
           setUp: () {
             when(() => mockSessionService.getSession())
-                .thenAnswer((_) async => mockSession);
+                .thenAnswer((_) async => Success(mockSession));
 
             when(() => mockNakamaBaseClient.getUsers(
                   session: mockSession,

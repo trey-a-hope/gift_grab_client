@@ -1,35 +1,37 @@
-import 'dart:convert';
+import 'dart:async';
 
-import 'package:fluo/fluo.dart';
-import 'package:fluo/l10n/fluo_localizations.dart';
+import 'package:clerk_flutter/clerk_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gift_grab_client/core/di_container.dart';
 import 'package:gift_grab_client/core/logging.dart';
 import 'package:gift_grab_client/data/configuration/app_routes.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
+import 'package:gift_grab_client/data/configuration/signal_observer.dart';
 import 'package:gift_grab_client/data/constants/globals.dart';
-import 'package:gift_grab_client/data/repositories/session_repository.dart';
-import 'package:gift_grab_client/domain/services/session_service.dart';
-import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
-import 'package:gift_grab_client/presentation/cubits/auth/cubit/auth_cubit.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_client/util/window_manager_util.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nakama/nakama.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:universal_platform/universal_platform.dart';
+import 'package:signals/signals_flutter.dart';
 
+// TODO (Trey) - Add timeout for clerk auth request
 late PackageInfo packageInfo;
-
+late GoRouter _router;
 void main() async {
+  // debugPaintSizeEnabled = true;
+  SignalsObserver.instance = SignalObserver(logger);
+
   WidgetsFlutterBinding.ensureInitialized();
   packageInfo = await PackageInfo.fromPlatform();
   await WindowManagerUtil.init();
+
   // Initialze Nakama Module Client
   final _ = getNakamaClient(
     host: Globals.nakamaClientHost,
@@ -37,8 +39,10 @@ void main() async {
     httpPort: Globals.nakamaClientHttpPort,
     ssl: UniversalPlatform.isWeb,
   );
-  await configureDependencies();
-  runApp(const AppInitializer());
+
+  runApp(
+    ClerkAuth(config: Globals.clerkAuthConfig, child: const AppInitializer()),
+  );
 }
 
 class AppInitializer extends StatefulWidget {
@@ -60,9 +64,11 @@ class _AppInitializerState extends State<AppInitializer> {
 
   Future<void> _initialize() async {
     try {
+      final authState = ClerkAuth.of(context, listen: false);
+      await configureDependencies(clerkAuthState: authState);
+      // NOTE: MUST come after `configureDependencies` is called.
+      _router = appRouter(context);
       await _initEnvVars();
-      await _initFluo();
-
       setState(() => _isInitialized = true);
     } catch (e) {
       setState(() => _errorMessage = e.toString());
@@ -118,37 +124,10 @@ class MyAppPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<SessionService>(
-          create: (context) => SessionService(
-            SessionRepository(const FlutterSecureStorage(), getNakamaClient()),
-          ),
-        ),
         RepositoryProvider<ModalService>(create: (context) => ModalService()),
       ],
       child: MultiBlocProvider(
         providers: [
-          BlocProvider<AuthCubit>(
-            create: (context) {
-              final sessionService = context.read<SessionService>();
-
-              final authCubit = AuthCubit(getNakamaClient(), sessionService);
-
-              sessionService.setUnauthenticatedCallback(
-                () => authCubit.logout(),
-              );
-
-              authCubit.checkAuthStatus();
-
-              return authCubit;
-            },
-          ),
-          BlocProvider<AccountReadBloc>(
-            create: (context) => AccountReadBloc(
-              context.read<AuthCubit>(),
-              getNakamaClient(),
-              context.read<SessionService>(),
-            ),
-          ),
           BlocProvider<GroupRefreshCubit>(
             create: (context) => GroupRefreshCubit(),
           ),
@@ -166,11 +145,7 @@ class MyAppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final router = appRouter(context);
-
     return ShadApp.router(
-      localizationsDelegates: FluoLocalizations.localizationsDelegates,
-      supportedLocales: FluoLocalizations.supportedLocales,
       debugShowCheckedModeBanner: false,
       theme: ShadThemeData(
         brightness: Brightness.light,
@@ -184,33 +159,17 @@ class MyAppView extends StatelessWidget {
       ),
       themeMode: ThemeMode.dark,
       title: 'Gift Grab',
-      routeInformationParser: router.routeInformationParser,
-      routeInformationProvider: router.routeInformationProvider,
-      routerDelegate: router.routerDelegate,
+      routerConfig: _router,
     );
   }
 }
 
 Future<void> _initEnvVars() async {
-  const fluoApiKeyEncoded = String.fromEnvironment('FLUO_API_KEY');
-  if (fluoApiKeyEncoded.isEmpty) {
-    throw Exception('Fluo api key is empty');
-  }
-  final fluoApiKey = utf8.decode(base64.decode(fluoApiKeyEncoded));
+  // const fluoApiKeyEncoded = String.fromEnvironment('FLUO_API_KEY');
+  // if (fluoApiKeyEncoded.isEmpty) {
+  //   throw Exception('Fluo api key is empty');
+  // }
+  // final fluoApiKey = utf8.decode(base64.decode(fluoApiKeyEncoded));
 
-  Globals.FLUO_API_KEY = fluoApiKey;
-}
-
-Future<void> _initFluo() async {
-  try {
-    await Fluo.initWithApiKey(Globals.FLUO_API_KEY);
-    await Fluo.instance.loadAppConfig();
-    logger.d('Fluo initialized successfully (key: ${Globals.FLUO_API_KEY})');
-  } catch (e) {
-    const flutterSecureStorage = FlutterSecureStorage();
-    await flutterSecureStorage.deleteAll();
-    throw Exception(
-      'Could not initialize Fluo\n\napikey: ${Globals.FLUO_API_KEY}\n\n${e.toString()}\n\nPlease try relaunching the app',
-    );
-  }
+  // Globals.FLUO_API_KEY = fluoApiKey;
 }

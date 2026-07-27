@@ -29,7 +29,10 @@ class GroupDeleteBloc extends Bloc<GroupDeleteEvent, GroupDeleteState> {
         action: () async {
           emit(state.copyWith(isLoading: true));
 
-          final session = await sessionService.getSession();
+          final session = (await sessionService.getSession()).fold(
+            (success) => success,
+            (error) => throw error,
+          );
 
           await client.deleteGroup(session: session, groupId: groupId);
 

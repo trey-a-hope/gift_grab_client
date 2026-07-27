@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gift_grab_client/core/di_container.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
-import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/friend_update/bloc/friend_update_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/friend_update/view/friendship_state_button.dart';
+import 'package:gift_grab_client/presentation/controllers/account_read_controller.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_client/presentation/widgets/network_circle_avatar.dart';
@@ -30,17 +31,13 @@ class ProfilePage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<UserReadBloc>(
-          create: (context) => UserReadBloc(
-            uid,
-            getNakamaClient(),
-            context.read<SessionService>(),
-          )..add(const ReadUser()),
+          create: (context) =>
+              UserReadBloc(uid, getNakamaClient(), di<SessionService>())
+                ..add(const ReadUser()),
         ),
         BlocProvider<FriendUpdateBloc>(
-          create: (context) => FriendUpdateBloc(
-            getNakamaClient(),
-            context.read<SessionService>(),
-          ),
+          create: (context) =>
+              FriendUpdateBloc(getNakamaClient(), di<SessionService>()),
         ),
       ],
       child: const ProfileView(),
@@ -56,6 +53,7 @@ class ProfileView extends StatelessWidget {
     final userReadBloc = context.read<UserReadBloc>();
     final friendUpdateBloc = context.read<FriendUpdateBloc>();
     final modalService = context.read<ModalService>();
+    final accountReadController = di<AccountReadController>();
 
     return BlocListener<FriendUpdateBloc, FriendUpdateState>(
       listener: (context, state) {
@@ -83,7 +81,7 @@ class ProfileView extends StatelessWidget {
 
                     if (success == true) {
                       context.read<UserReadBloc>().add(const ReadUser());
-                      context.read<AccountReadBloc>().add(const ReadAccount());
+                      accountReadController.accountSignal.reset();
                     }
                   },
                   icon: const Icon(Icons.edit),

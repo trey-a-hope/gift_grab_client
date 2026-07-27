@@ -5,7 +5,6 @@ import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/constants/label_text.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
-import 'package:gift_grab_client/presentation/blocs/account_read/bloc/account_read_bloc.dart';
 import 'package:gift_grab_client/presentation/blocs/group_delete/bloc/group_delete_bloc.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
@@ -20,7 +19,6 @@ import 'package:gift_grab_client/core/di_container.dart';
 import 'package:gift_grab_client/presentation/controllers/account_read_controller.dart';
 import 'package:gift_grab_client/presentation/controllers/group_members_list_controller.dart';
 import 'package:gift_grab_client/presentation/controllers/group_members_update_controller.dart';
-import 'package:gift_grab_client/presentation/extensions/model_log_extensions.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 import 'package:signals/signals_flutter.dart';
 import '../../blocs/group_read/group_read.dart';
@@ -42,18 +40,13 @@ class GroupDetailsPage extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<GroupReadBloc>(
-          create: (context) => GroupReadBloc(
-            groupId,
-            getNakamaClient(),
-            context.read<SessionService>(),
-          )..add(const ReadGroup()),
+          create: (context) =>
+              GroupReadBloc(groupId, getNakamaClient(), di<SessionService>())
+                ..add(const ReadGroup()),
         ),
         BlocProvider<GroupDeleteBloc>(
-          create: (context) => GroupDeleteBloc(
-            groupId,
-            getNakamaClient(),
-            context.read<SessionService>(),
-          ),
+          create: (context) =>
+              GroupDeleteBloc(groupId, getNakamaClient(), di<SessionService>()),
         ),
       ],
       child: GroupDetailsView(groupId),
@@ -86,8 +79,8 @@ class _GroupDetailsViewState extends State<GroupDetailsView> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final accountReadBloc = context.read<AccountReadBloc>();
-    final account = accountReadBloc.state.account!;
+    final accountReadController = di<AccountReadController>();
+    final account = accountReadController.accountSignal.value.value!;
     final groupReadBloc = context.read<GroupReadBloc>();
     final groupRefreshCubit = context.read<GroupRefreshCubit>();
     final groupDeleteBloc = context.read<GroupDeleteBloc>();

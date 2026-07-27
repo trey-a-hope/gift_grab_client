@@ -1,31 +1,36 @@
 import 'package:gift_grab_client/core/logging.dart';
 import 'package:gift_grab_client/domain/repositories/i_session_repository.dart';
-import 'package:gift_grab_client/presentation/extensions/session_extensions.dart';
 import 'package:nakama/nakama.dart';
+import 'package:result_dart/result_dart.dart';
 
+/// Service class for managing user sessions, including retrieval, refresh, and logout.
 class SessionService {
+  /// Session expiration threshold buffer to trigger a proactive refresh.
   static const _hasExpiredDuration = Duration(minutes: 5);
 
+  /// Callback executed when the session is found to be unauthenticated or invalid.
   void Function()? _onUnauthenticated;
 
+  /// Repository for low-level session storage and API operations.
   final ISessionRepository _iSessionRepository;
 
   SessionService(this._iSessionRepository);
 
+  /// Persists the provided Nakama session.
   Future<void> saveSession(Session session) async {
-    logger.d('saveSession:${session.print()}');
     await _iSessionRepository.saveSession(session);
   }
 
+  /// Determines whether the session has expired or is nearing expiration.
   bool shouldRefreshSession(Session session) =>
       session.isExpired ||
       session.hasExpired(DateTime.now().add(_hasExpiredDuration));
 
+  /// Requests a fresh session from the backend using the current session details.
   Future<Session> refreshSession(Session session) async {
     try {
       final newSession = await _iSessionRepository.refreshSession(session);
       await _iSessionRepository.saveSession(newSession);
-      logger.d('refreshSession:${session.print()}');
       return newSession;
     } catch (e) {
       _iSessionRepository.clearSession();
@@ -33,7 +38,8 @@ class SessionService {
     }
   }
 
-  Future<Session> getSession() async {
+  /// Retrieves the stored session, refreshing it first if necessary.
+  Future<Result<Session>> getSession() async {
     try {
       final session = await _iSessionRepository.getStoredSession();
 
@@ -43,18 +49,18 @@ class SessionService {
       }
 
       if (shouldRefreshSession(session)) {
-        return await refreshSession(session);
+        final freshSession = await refreshSession(session);
+        return Success(freshSession);
       }
 
-      logger.d('getSession:${session.print()}');
-
-      return session;
+      return Success(session);
     } catch (e) {
       _iSessionRepository.clearSession();
-      rethrow;
+      return Failure(e is Exception ? e : Exception(e.toString()));
     }
   }
 
+  /// Logs the user out by invalidating their session on the backend and clearing local storage.
   Future<bool> logout() async {
     try {
       final session = await _iSessionRepository.getStoredSession();
@@ -65,14 +71,11 @@ class SessionService {
 
       await _iSessionRepository.clearSession();
 
-      logger.d('logged out, see you later!');
+      logger.i('Logged out, see you later!');
 
       return true;
     } catch (e) {
       return false;
     }
   }
-
-  void setUnauthenticatedCallback(void Function() callback) =>
-      _onUnauthenticated = callback;
 }

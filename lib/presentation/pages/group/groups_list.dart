@@ -7,14 +7,14 @@ class GroupsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final accountReadBloc = context.read<AccountReadBloc>();
-    final account = accountReadBloc.state.account!;
+    final accountReadController = di<AccountReadController>();
+    final account = accountReadController.accountSignal.value.value!;
 
     return BlocProvider(
       create: (_) => GroupListBloc(
         all ? null : account.user.id,
         getNakamaClient(),
-        context.read<SessionService>(),
+        di<SessionService>(),
       )..add(const InitialFetch()),
       child: const GroupListView(),
     );

@@ -61,7 +61,10 @@ class GroupCreateBloc extends Bloc<GroupCreateEvent, GroupCreateState> {
         action: () async {
           emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
 
-          final session = await sessionService.getSession();
+          final session = (await sessionService.getSession()).fold(
+            (success) => success,
+            (error) => throw error,
+          );
 
           final nameRes = await profanityApi.scan(state.name.value);
           final descriptionRes =

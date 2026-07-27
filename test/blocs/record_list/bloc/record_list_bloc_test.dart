@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:result_dart/result_dart.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gift_grab_client/domain/entities/leaderboard_entry.dart';
@@ -50,7 +51,7 @@ void main() {
 
         // Default mock setup
         when(() => mockSessionService.getSession())
-            .thenAnswer((_) async => mockSession);
+            .thenAnswer((_) async => Success(mockSession));
 
         when(() => mockLeaderboardRecord.ownerId).thenReturn('owner_123');
         when(() => mockUser.id).thenReturn('owner_123');

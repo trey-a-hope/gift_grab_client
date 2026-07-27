@@ -47,7 +47,10 @@ class RecordListBloc extends Bloc<RecordListEvent, RecordListState> {
   ) async =>
       await runWithErrorHandling(
         action: () async {
-          final session = await sessionService.getSession();
+          final session = (await sessionService.getSession()).fold(
+            (success) => success,
+            (error) => throw error,
+          );
 
           final leaderboardRecordList = await client.listLeaderboardRecords(
             session: session,

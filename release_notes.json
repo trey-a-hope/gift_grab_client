@@ -1,6 +1,6 @@
 [
     {
         "language": "en-US",
-        "text": "* Updated macos release"
+        "text": "* Refactored authentication system to use Clerk authentication services"
     }
 ]

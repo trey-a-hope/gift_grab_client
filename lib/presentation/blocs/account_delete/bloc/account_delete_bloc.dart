@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:gift_grab_client/data/constants/feedback_messages.dart';
 import 'package:gift_grab_client/data/enums/rpc_functions.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
-import 'package:gift_grab_client/presentation/cubits/auth/auth.dart';
+import 'package:gift_grab_client/presentation/controllers/auth_controller.dart';
 import 'package:nakama/nakama.dart';
 import 'package:gift_grab_client/presentation/extensions/bool_extensions.dart';
 
@@ -12,39 +12,34 @@ part 'account_delete_event.dart';
 part 'account_delete_state.dart';
 
 class AccountDeleteBloc extends Bloc<AccountDeleteEvent, AccountDeleteState> {
-  final AuthCubit authCubit;
+  final AuthController _authController;
   final SessionService sessionService;
   final NakamaBaseClient client;
 
-  AccountDeleteBloc(this.authCubit, this.sessionService, this.client)
-      : super(const AccountDeleteState()) {
+  AccountDeleteBloc(this._authController, this.sessionService, this.client)
+    : super(const AccountDeleteState()) {
     on<DeleteAccount>(_onDeleteAccount);
   }
 
   Future<void> _onDeleteAccount(
     DeleteAccount event,
     Emitter<AccountDeleteState> emit,
-  ) async =>
-      await runWithErrorHandling(
-        action: () async {
-          emit(state.copyWith(isLoading: true));
+  ) async => await runWithErrorHandling(
+    action: () async {
+      emit(state.copyWith(isLoading: true));
 
-          final session = await sessionService.getSession();
-
-          await client.rpc(
-            session: session,
-            id: RpcFunctions.ACCOUNT_DELETE.id,
-          );
-
-          await authCubit.logout();
-
-          emit(
-            state.copyWith(
-              success: FeedbackMessages.accountDeleteSuccess,
-            ),
-          );
-        },
-        emit: emit,
-        state: state,
+      final session = (await sessionService.getSession()).fold(
+        (success) => success,
+        (error) => throw error,
       );
+
+      await client.rpc(session: session, id: RpcFunctions.ACCOUNT_DELETE.id);
+
+      await _authController.logout();
+
+      emit(state.copyWith(success: FeedbackMessages.accountDeleteSuccess));
+    },
+    emit: emit,
+    state: state,
+  );
 }
