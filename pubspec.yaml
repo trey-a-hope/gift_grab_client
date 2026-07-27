@@ -62,7 +62,6 @@ flutter:
   assets:
     - assets/audio/
     - assets/images/
-    - .env
     - shorebird.yaml
 
 flutter_launcher_icons:
