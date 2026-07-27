@@ -7,7 +7,6 @@ import 'package:gift_grab_client/data/configuration/app_routes.dart';
 import 'package:gift_grab_client/data/configuration/gap_sizes.dart';
 import 'package:gift_grab_client/data/configuration/signal_observer.dart';
 import 'package:gift_grab_client/data/constants/globals.dart';
-import 'package:gift_grab_client/presentation/controllers/auth_controller.dart';
 import 'package:gift_grab_client/presentation/cubits/group_refresh/group_refresh.dart';
 import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_client/util/window_manager_util.dart';
