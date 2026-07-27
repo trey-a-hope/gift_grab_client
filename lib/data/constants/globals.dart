@@ -16,10 +16,12 @@ class Globals {
   // Enviroment variables
 
   static String get _env {
-    const env = String.fromEnvironment(
-      'ENVIRONMENT',
-      defaultValue: kReleaseMode ? 'production' : 'development',
-    );
+    const env = kReleaseMode ? 'production' : 'development';
+
+    // String.fromEnvironment(
+    //   'ENVIRONMENT',
+    //   defaultValue: kReleaseMode ? 'production' : 'development',
+    // );
 
     logger.d('Using env: $env');
     return env;
