@@ -28,17 +28,20 @@ import 'package:signals/signals_flutter.dart';
 
 import '../../core/logging.dart';
 
+/// Configures the application router and its navigation hierarchy.
 GoRouter appRouter(BuildContext context) {
-  // final clerkAuth = ClerkAuth.of(context, listen: false);
   final _authController = di<AuthController>();
-  // final authCubit = context.read<AuthCubit>();
+
   return GoRouter(
     initialLocation: '/${GoRoutes.LOGIN.name}',
+    
+    // Listens to authentication state changes to trigger router redirects.
     refreshListenable: Listenable.merge([
       SignalListenable(_authController.isAuthenticated),
     ]),
+    
+    // Handles authentication-based redirection rules.
     redirect: (context, state) {
-      // Check both Clerk's and Nakama's authentication status
       final isAuthenticated =
           _authController.isAuthenticated.value.value ?? false;
 
@@ -46,19 +49,21 @@ GoRouter appRouter(BuildContext context) {
         '/${GoRoutes.LOGIN.name}',
       );
 
-      // 1. Unauthenticated users trying to navigate protected routes -> /login
+      // Unauthenticated users trying to navigate protected routes are redirected to login.
       if (!isAuthenticated && !isLoggingIn) {
         return '/${GoRoutes.LOGIN.name}';
       }
 
-      // 2. Authenticated users sitting on /login -> /main
+      // Authenticated users on the login page are redirected to the main menu.
       if (isAuthenticated && isLoggingIn) {
         return '/${GoRoutes.MAIN.name}';
       }
 
       return null;
     },
+    
     routes: [
+      // ShellRoute provides a global error boundary for Clerk authentication errors.
       ShellRoute(
         builder: (context, state, child) => ClerkErrorListener(
           handler: (context, error) {
@@ -72,16 +77,20 @@ GoRouter appRouter(BuildContext context) {
           child: child,
         ),
         routes: [
+          // Login screen route.
           GoRoute(
             path: '/${GoRoutes.LOGIN.name}',
             name: GoRoutes.LOGIN.name,
             builder: (context, state) => const LoginPage(),
           ),
+          
+          // Main authenticated section containing nested features.
           GoRoute(
             path: '/${GoRoutes.MAIN.name}',
             name: GoRoutes.MAIN.name,
             builder: (context, state) => const MainMenuPage(),
             routes: [
+              // Gameplay route with its own RecordCreateBloc provider.
               GoRoute(
                 path: GoRoutes.GAME.name,
                 name: GoRoutes.GAME.name,
@@ -100,11 +109,15 @@ GoRouter appRouter(BuildContext context) {
                   );
                 },
               ),
+              
+              // Settings page.
               GoRoute(
                 path: GoRoutes.SETTINGS.name,
                 name: GoRoutes.SETTINGS.name,
                 builder: (context, state) => const SettingsPage(),
               ),
+              
+              // User Profile details route.
               GoRoute(
                 path: '${GoRoutes.PROFILE.name}/:uid',
                 name: GoRoutes.PROFILE.name,
@@ -114,6 +127,7 @@ GoRouter appRouter(BuildContext context) {
                   return ProfilePage(uid);
                 },
                 routes: [
+                  // Edit profile details route.
                   GoRoute(
                     path: GoRoutes.EDIT_PROFILE.name,
                     name: GoRoutes.EDIT_PROFILE.name,
@@ -121,31 +135,42 @@ GoRouter appRouter(BuildContext context) {
                   ),
                 ],
               ),
+              
+              // Search users route.
               GoRoute(
                 path: GoRoutes.SEARCH_USERS.name,
                 name: GoRoutes.SEARCH_USERS.name,
                 builder: (context, state) => const SearchUsersPage(),
               ),
+              
+              // Leaderboard / global record lists.
               GoRoute(
                 path: GoRoutes.LEADERBOARD.name,
                 name: GoRoutes.LEADERBOARD.name,
                 builder: (context, state) => const LeaderboardPage(),
               ),
+              
+              // Friend list page.
               GoRoute(
                 path: GoRoutes.FRIENDS.name,
                 name: GoRoutes.FRIENDS.name,
                 builder: (context, state) => const FriendsPage(),
               ),
+              
+              // Group management and exploration sections.
               GoRoute(
                 path: GoRoutes.GROUPS.name,
                 name: GoRoutes.GROUPS.name,
                 builder: (context, state) => const GroupsPage(),
                 routes: [
+                  // Create group page.
                   GoRoute(
                     path: GoRoutes.CREATE_GROUP.name,
                     name: GoRoutes.CREATE_GROUP.name,
                     builder: (context, state) => const CreateGroupPage(),
                   ),
+                  
+                  // Specific group details and sub-routes.
                   GoRoute(
                     path: '${GoRoutes.GROUP_DETAILS.name}/:group_id',
                     name: GoRoutes.GROUP_DETAILS.name,
@@ -155,6 +180,7 @@ GoRouter appRouter(BuildContext context) {
                       return GroupDetailsPage(groupId);
                     },
                     routes: [
+                      // Edit group page.
                       GoRoute(
                         path: GoRoutes.EDIT_GROUP.name,
                         name: GoRoutes.EDIT_GROUP.name,
@@ -165,6 +191,8 @@ GoRouter appRouter(BuildContext context) {
                       ),
                     ],
                   ),
+                  
+                  // Search groups page.
                   GoRoute(
                     path: GoRoutes.SEARCH_GROUPS.name,
                     name: GoRoutes.SEARCH_GROUPS.name,
@@ -180,11 +208,13 @@ GoRouter appRouter(BuildContext context) {
   );
 }
 
+/// A helper class that adapts a read-only Signal to a ChangeNotifier.
+/// This allows signals to be used directly as refresh listenables in GoRouter.
 class SignalListenable extends ChangeNotifier {
   late final void Function() _dispose;
 
   SignalListenable(ReadonlySignal signal) {
-    // subscribe fires immediately and on every change; returns a disposer
+    // Subscribe fires immediately and on every change; returns a disposer.
     _dispose = signal.subscribe((_) => notifyListeners());
   }
 

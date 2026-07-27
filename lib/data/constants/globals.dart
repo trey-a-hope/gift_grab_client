@@ -13,10 +13,14 @@ class Globals {
   static const String giftAsset = 'assets/images/gift-sprite.png';
 
   // Clerk
+  static const clerkLivePublishableKey =
+      'pk_live_Y2xlcmsuZ2lmdC1ncmFiLXNlcnZlci5hcHAk';
+  static const clerkTestPublishableKey =
+      'pk_test_Y29taWMtc2hpbmVyLTE3LmNsZXJrLmFjY291bnRzLmRldiQ';
   static final clerkAuthConfig = ClerkAuthConfig(
     publishableKey: Environment.isProd
-        ? 'pk_live_Y2xlcmsuZ2lmdC1ncmFiLXNlcnZlci5hcHAk'
-        : 'pk_test_Y29taWMtc2hpbmVyLTE3LmNsZXJrLmFjY291bnRzLmRldiQ',
+        ? clerkLivePublishableKey
+        : clerkTestPublishableKey,
   );
 
   // Nakama
