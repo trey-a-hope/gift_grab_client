@@ -1,6 +1,5 @@
 import 'package:clerk_flutter/clerk_flutter.dart';
-import 'package:flutter/foundation.dart';
-import 'package:gift_grab_client/core/logging.dart';
+import 'package:gift_grab_client/data/configuration/environment.dart';
 
 class Globals {
   Globals._();
@@ -13,31 +12,15 @@ class Globals {
   // Asset paths
   static const String giftAsset = 'assets/images/gift-sprite.png';
 
-  // Enviroment variables
-
-  static String get _env {
-    const env = kReleaseMode ? 'production' : 'development';
-
-    // String.fromEnvironment(
-    //   'ENVIRONMENT',
-    //   defaultValue: kReleaseMode ? 'production' : 'development',
-    // );
-
-    logger.d('Using env: $env');
-    return env;
-  }
-
-  static bool get isProd => _env == 'production';
-
   // Clerk
   static final clerkAuthConfig = ClerkAuthConfig(
-    publishableKey: isProd
+    publishableKey: Environment.isProd
         ? 'pk_live_Y2xlcmsuZ2lmdC1ncmFiLXNlcnZlci5hcHAk'
         : 'pk_test_Y29taWMtc2hpbmVyLTE3LmNsZXJrLmFjY291bnRzLmRldiQ',
   );
 
   // Nakama
-  static String nakamaClientHost = isProd
+  static String nakamaClientHost = Environment.isProd
       ? 'gift-grab-server.app'
       : '127.0.0.1';
   static const String nakamaClientServerKey = 'defaultkey';
