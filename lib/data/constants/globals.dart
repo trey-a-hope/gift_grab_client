@@ -1,5 +1,6 @@
 import 'package:clerk_flutter/clerk_flutter.dart';
 import 'package:flutter/foundation.dart';
+import 'package:gift_grab_client/core/logging.dart';
 
 class Globals {
   Globals._();
@@ -13,10 +14,16 @@ class Globals {
   static const String giftAsset = 'assets/images/gift-sprite.png';
 
   // Enviroment variables
-  static const String _env = String.fromEnvironment(
-    'ENVIRONMENT',
-    defaultValue: kReleaseMode ? 'production' : 'development',
-  );
+
+  static String get _env {
+    const env = String.fromEnvironment(
+      'ENVIRONMENT',
+      defaultValue: kReleaseMode ? 'production' : 'development',
+    );
+
+    logger.d('Using env: $env');
+    return env;
+  }
 
   static bool get isProd => _env == 'production';
 
@@ -25,7 +32,6 @@ class Globals {
     publishableKey: isProd
         ? 'pk_live_Y2xlcmsuZ2lmdC1ncmFiLXNlcnZlci5hcHAk'
         : 'pk_test_Y29taWMtc2hpbmVyLTE3LmNsZXJrLmFjY291bnRzLmRldiQ',
-    isTestMode: !isProd,
   );
 
   // Nakama
