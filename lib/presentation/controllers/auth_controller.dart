@@ -73,7 +73,10 @@ class AuthController {
       final token = await _clerkAuth.sessionToken();
       final user = _clerkAuth.user;
 
-      if (user == null) return;
+      if (user == null) {
+        isAuthenticated.value = const AsyncData(false);
+        return;
+      }
 
       final isSignUp =
           user.lastSignInAt.difference(user.createdAt).abs().inSeconds < 2;
@@ -105,27 +108,6 @@ class AuthController {
       await _sessionService.logout();
       await _clerkAuth.signOut();
       isAuthenticated.value = const AsyncData(false);
-    } catch (e) {
-      isAuthenticated.value = AsyncError(e, StackTrace.current);
-    }
-  }
-
-  /// Checks the local storage for an active Nakama session, refreshes it if needed,
-  /// and marks the authentication status as true if a valid session exists.
-  Future<void> checkAuthStatus() async {
-    try {
-      isAuthenticated.value = const AsyncLoading();
-
-      final session = (await _sessionService.getSession()).fold(
-        (success) => success,
-        (error) => throw error,
-      );
-
-      if (_sessionService.shouldRefreshSession(session)) {
-        await _sessionService.refreshSession(session);
-      }
-
-      isAuthenticated.value = const AsyncData(true);
     } catch (e) {
       isAuthenticated.value = AsyncError(e, StackTrace.current);
     }

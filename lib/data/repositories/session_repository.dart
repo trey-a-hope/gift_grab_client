@@ -28,10 +28,7 @@ class SessionRepository implements ISessionRepository {
 
     if (token == null || refreshToken == null) return null;
 
-    return Session.restore(
-      token: token,
-      refreshToken: refreshToken,
-    );
+    return Session.restore(token: token, refreshToken: refreshToken);
   }
 
   @override
@@ -54,7 +51,12 @@ class SessionRepository implements ISessionRepository {
 
   @override
   Future<void> saveSession(Session session) async {
-    await storage.write(key: _tokenKey, value: session.token);
-    await storage.write(key: _refreshTokenKey, value: session.refreshToken);
+    try {
+      await storage.write(key: _tokenKey, value: session.token);
+      await storage.write(key: _refreshTokenKey, value: session.refreshToken);
+    } catch (e) {
+      print(e.toString());
+      throw Exception('Failed to save tokens to secure storage: $e');
+    }
   }
 }

@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:gift_grab_client/data/configuration/fixed_mac_os_options.dart';
 import 'package:gift_grab_client/data/repositories/session_repository.dart';
 import 'package:gift_grab_client/domain/services/group_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
@@ -14,6 +16,10 @@ import 'package:clerk_flutter/clerk_flutter.dart';
 /// Global Dependency Injection container instance.
 final di = GetIt.I;
 
+// UsesDataProtectionKeychain set to false for local develpment,
+// and true for production.
+const macOsOptions = FixedMacOsOptions(useDataProtectionKeyChain: !kDebugMode);
+
 /// Configures and registers all the dependency injections for the application.
 Future<void> configureDependencies({
   required ClerkAuthState clerkAuthState,
@@ -27,7 +33,10 @@ Future<void> configureDependencies({
   // Manages user session credentials and local secure storage.
   di.registerSingleton<SessionService>(
     SessionService(
-      SessionRepository(const FlutterSecureStorage(), getNakamaClient()),
+      SessionRepository(
+        const FlutterSecureStorage(mOptions: macOsOptions),
+        getNakamaClient(),
+      ),
     ),
   );
 
