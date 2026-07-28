@@ -1,0 +1,1 @@
+source .env && ./build_dmg_test.sh

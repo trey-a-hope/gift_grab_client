@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+set -e
+
 # Use Codemagic's build dir if available, otherwise resolve from script location
 if [ -n "$CM_BUILD_DIR" ]; then
   PROJECT_DIR="$CM_BUILD_DIR"
@@ -28,38 +31,63 @@ security set-key-partition-list \
 
 security find-identity -v -p codesigning
 
+# App configurations
+APP_NAME="Gift Grab"
+DMG_FILENAME="$APP_NAME"
 IDENTITY="Developer ID Application: Tr3umphant.Designs, LLC (AYXEVPG9Z5)"
 APP_PATH=$(find "$PROJECT_DIR/build/macos/Build/Products/Release" -name "*.app" | head -1)
-DMG_PATH="$PROJECT_DIR/Gift Grab.dmg"
+DMG_PATH="$PROJECT_DIR/$DMG_FILENAME.dmg"
 
 echo "APP_PATH: $APP_PATH"
 echo "DMG_PATH: $DMG_PATH"
 
+# Ensure execution bits are preserved on the main binary inside Contents/MacOS
+chmod -R +x "$APP_PATH/Contents/MacOS/"
+
+# Deep sign entire bundle with hardened runtime (matching your working script)
 codesign --deep --force --verify --verbose \
   --sign "$IDENTITY" \
   --options runtime \
   "$APP_PATH"
 
+# Re-enforce executable permissions post-signing
+chmod -R +x "$APP_PATH/Contents/MacOS/"
+
+# Verify signature locally before packaging
+codesign --verify --deep --strict --verbose=2 "$APP_PATH"
+
+# Setup DMG staging directory with Applications link
+STAGING_DIR="/tmp/dmg_staging_$(date +%s)"
+rm -rf "$STAGING_DIR"
+mkdir -p "$STAGING_DIR"
+
+cp -R "$APP_PATH" "$STAGING_DIR/"
+ln -s /Applications "$STAGING_DIR/Applications"
+
 rm -f "$DMG_PATH"
 
-# Create DMG using hdiutil instead of create-dmg
+# Create DMG
 hdiutil create \
-  -volname "Gift Grab" \
-  -srcfolder "$APP_PATH" \
+  -volname "$APP_NAME" \
+  -srcfolder "$STAGING_DIR" \
   -ov \
   -format UDZO \
   "$DMG_PATH"
 
+rm -rf "$STAGING_DIR"
+
+# Submit DMG for Apple Notarization
 xcrun notarytool submit "$DMG_PATH" \
   --apple-id "trey.a.hope@gmail.com" \
   --team-id "AYXEVPG9Z5" \
   --password "$APP_SPECIFIC_PASSWORD" \
   --wait
 
+# Staple ticket to the DMG
 xcrun stapler staple "$DMG_PATH"
 
-# Copy DMG to artifacts (codemagic only)
+# Copy DMG to artifacts (Codemagic CI environment)
 if [ -n "$CM_BUILD_DIR" ]; then
   mkdir -p "$CM_EXPORT_DIR"
-  cp "$DMG_PATH" "$CM_EXPORT_DIR/Gift Grab.dmg"
+  cp "$DMG_PATH" "$CM_EXPORT_DIR/$DMG_FILENAME.dmg"
 fi
