@@ -137,7 +137,7 @@ class SettingsView extends StatelessWidget {
                         final confirm = await modalService
                             .shadConfirmationDialog(
                               context,
-                              title: const Text('Delete reqaccountuest'),
+                              title: const Text('Delete account'),
                               description: const Text(LabelText.confirm),
                             );
 

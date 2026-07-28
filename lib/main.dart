@@ -14,6 +14,7 @@ import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_client/util/window_manager_util.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nakama/nakama.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -39,6 +40,8 @@ void main() async {
     httpPort: Globals.nakamaClientHttpPort,
     ssl: UniversalPlatform.isWeb,
   );
+
+  await Hive.initFlutter();
 
   runApp(
     ClerkAuth(config: Globals.clerkAuthConfig, child: const AppInitializer()),
