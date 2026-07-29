@@ -34,6 +34,7 @@ class AccountDeleteBloc extends Bloc<AccountDeleteEvent, AccountDeleteState> {
       );
 
       await client.rpc(session: session, id: RpcFunctions.ACCOUNT_DELETE.id);
+      // TODO (Trey) - Delete clerk user.
 
       await _authController.logout();
 

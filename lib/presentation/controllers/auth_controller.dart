@@ -87,11 +87,15 @@ class AuthController {
             : 'Existing clerk user sign in - ID: ${user.id}, Username: ${user.username}',
       );
 
+      print('getting value!');
+
       final session = await _client.authenticateCustom(
         id: token.jwt,
         username: user.username,
         create: isSignUp,
       );
+
+      print('Saving session...');
 
       await _sessionService.saveSession(session);
       isAuthenticated.value = const AsyncData(true);

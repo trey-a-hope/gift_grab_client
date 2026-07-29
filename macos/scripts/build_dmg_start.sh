@@ -1,1 +1,1 @@
-source .env && ./build_dmg_test.sh
+source .env && ./build_dmg.sh
