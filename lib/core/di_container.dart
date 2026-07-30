@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:gift_grab_client/data/repositories/session_repository.dart';
 import 'package:gift_grab_client/domain/services/group_service.dart';
+import 'package:gift_grab_client/domain/services/post_hog_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/controllers/account_read_controller.dart';
 import 'package:gift_grab_client/presentation/controllers/auth_controller.dart';
@@ -17,6 +18,12 @@ final di = GetIt.I;
 Future<void> configureDependencies({
   required ClerkAuthState clerkAuthState,
 }) async {
+  // PostHog analytics
+  di.registerSingleton<PostHogService>(
+    await PostHogService()
+      ..initialize(),
+  );
+
   // Clerk authentication state managed externally.
   di.registerSingleton<ClerkAuthState>(clerkAuthState);
 
@@ -36,9 +43,10 @@ Future<void> configureDependencies({
   // Manages authentication flows and login state.
   di.registerLazySingleton<AuthController>(
     () => AuthController(
-      client: getNakamaClient(),
-      sessionService: di<SessionService>(),
-      clerkAuth: di<ClerkAuthState>(),
+      getNakamaClient(),
+      di<SessionService>(),
+      di<ClerkAuthState>(),
+      di<PostHogService>(),
     ),
   );
 
@@ -48,6 +56,7 @@ Future<void> configureDependencies({
       getNakamaClient(),
       di<SessionService>(),
       di<AuthController>(),
+      di<PostHogService>(),
     ),
   );
 

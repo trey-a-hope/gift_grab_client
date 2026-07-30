@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gift_grab_client/core/di_container.dart';
 import 'package:gift_grab_client/data/enums/go_routes.dart';
+import 'package:gift_grab_client/domain/services/post_hog_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/blocs/friend_list/view/friends_page.dart';
 import 'package:gift_grab_client/presentation/blocs/user_read/view/profile_page.dart';
@@ -24,6 +25,7 @@ import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_game/game/gift_grab_game_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nakama/nakama.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:signals/signals_flutter.dart';
 
 import '../../core/logging.dart';
@@ -33,13 +35,17 @@ GoRouter appRouter(BuildContext context) {
   final _authController = di<AuthController>();
 
   return GoRouter(
+    // Add PostHog observer to track navigation events.
+    observers: [PosthogObserver()],
+
+    // Default to login page.
     initialLocation: '/${GoRoutes.LOGIN.name}',
-    
+
     // Listens to authentication state changes to trigger router redirects.
     refreshListenable: Listenable.merge([
       SignalListenable(_authController.isAuthenticated),
     ]),
-    
+
     // Handles authentication-based redirection rules.
     redirect: (context, state) {
       final isAuthenticated =
@@ -61,7 +67,7 @@ GoRouter appRouter(BuildContext context) {
 
       return null;
     },
-    
+
     routes: [
       // ShellRoute provides a global error boundary for Clerk authentication errors.
       ShellRoute(
@@ -83,7 +89,7 @@ GoRouter appRouter(BuildContext context) {
             name: GoRoutes.LOGIN.name,
             builder: (context, state) => const LoginPage(),
           ),
-          
+
           // Main authenticated section containing nested features.
           GoRoute(
             path: '/${GoRoutes.MAIN.name}',
@@ -98,6 +104,7 @@ GoRouter appRouter(BuildContext context) {
                   final recordCreateBloc = RecordCreateBloc(
                     getNakamaClient(),
                     di<SessionService>(),
+                    di<PostHogService>(),
                   );
 
                   return BlocProvider<RecordCreateBloc>(
@@ -109,14 +116,14 @@ GoRouter appRouter(BuildContext context) {
                   );
                 },
               ),
-              
+
               // Settings page.
               GoRoute(
                 path: GoRoutes.SETTINGS.name,
                 name: GoRoutes.SETTINGS.name,
                 builder: (context, state) => const SettingsPage(),
               ),
-              
+
               // User Profile details route.
               GoRoute(
                 path: '${GoRoutes.PROFILE.name}/:uid',
@@ -135,28 +142,28 @@ GoRouter appRouter(BuildContext context) {
                   ),
                 ],
               ),
-              
+
               // Search users route.
               GoRoute(
                 path: GoRoutes.SEARCH_USERS.name,
                 name: GoRoutes.SEARCH_USERS.name,
                 builder: (context, state) => const SearchUsersPage(),
               ),
-              
+
               // Leaderboard / global record lists.
               GoRoute(
                 path: GoRoutes.LEADERBOARD.name,
                 name: GoRoutes.LEADERBOARD.name,
                 builder: (context, state) => const LeaderboardPage(),
               ),
-              
+
               // Friend list page.
               GoRoute(
                 path: GoRoutes.FRIENDS.name,
                 name: GoRoutes.FRIENDS.name,
                 builder: (context, state) => const FriendsPage(),
               ),
-              
+
               // Group management and exploration sections.
               GoRoute(
                 path: GoRoutes.GROUPS.name,
@@ -169,7 +176,7 @@ GoRouter appRouter(BuildContext context) {
                     name: GoRoutes.CREATE_GROUP.name,
                     builder: (context, state) => const CreateGroupPage(),
                   ),
-                  
+
                   // Specific group details and sub-routes.
                   GoRoute(
                     path: '${GoRoutes.GROUP_DETAILS.name}/:group_id',
@@ -191,7 +198,7 @@ GoRouter appRouter(BuildContext context) {
                       ),
                     ],
                   ),
-                  
+
                   // Search groups page.
                   GoRoute(
                     path: GoRoutes.SEARCH_GROUPS.name,
