@@ -25,6 +25,7 @@ import 'package:gift_grab_client/presentation/services/modal_service.dart';
 import 'package:gift_grab_game/game/gift_grab_game_widget.dart';
 import 'package:go_router/go_router.dart';
 import 'package:nakama/nakama.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
 import 'package:signals/signals_flutter.dart';
 
 import '../../core/logging.dart';
@@ -34,6 +35,10 @@ GoRouter appRouter(BuildContext context) {
   final _authController = di<AuthController>();
 
   return GoRouter(
+    // Add PostHog observer to track navigation events.
+    observers: [PosthogObserver()],
+
+    // Default to login page.
     initialLocation: '/${GoRoutes.LOGIN.name}',
 
     // Listens to authentication state changes to trigger router redirects.
