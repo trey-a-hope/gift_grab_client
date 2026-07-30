@@ -1,4 +1,5 @@
 import 'package:gift_grab_client/core/logging.dart';
+import 'package:gift_grab_client/domain/services/post_hog_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:gift_grab_client/presentation/controllers/auth_controller.dart';
 import 'package:nakama/nakama.dart';
@@ -10,6 +11,7 @@ class AccountReadController {
   final NakamaBaseClient _client;
   final SessionService _sessionService;
   final AuthController _authController;
+  final PostHogService _postHogService;
 
   /// FutureSignal that loads and holds the user's Nakama Account data.
   late final FutureSignal<Account> accountSignal;
@@ -23,6 +25,7 @@ class AccountReadController {
     this._client,
     this._sessionService,
     this._authController,
+    this._postHogService,
   ) {
     accountSignal = futureSignal<Account>(
       _fetchAccount,
@@ -57,6 +60,7 @@ class AccountReadController {
       },
       (error) {
         logger.e('Error getting session: $error');
+        _postHogService.errors.error(error, StackTrace.current, null);
         throw error;
       },
     );

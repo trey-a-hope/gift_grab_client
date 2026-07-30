@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:clerk_flutter/clerk_flutter.dart';
 import 'package:gift_grab_client/core/logging.dart';
+import 'package:gift_grab_client/domain/services/post_hog_service.dart';
 import 'package:gift_grab_client/domain/services/session_service.dart';
 import 'package:nakama/nakama.dart';
 import 'package:signals/signals_hooks.dart';
@@ -11,6 +12,7 @@ class AuthController {
   final NakamaBaseClient _client;
   final SessionService _sessionService;
   final ClerkAuthState _clerkAuth;
+  final PostHogService _postHogService;
 
   /// Signal to track changes to the Clerk session ID.
   late final Signal<String?> _clerkSessionId;
@@ -29,11 +31,12 @@ class AuthController {
 
   /// Initializes the AuthController and sets up listeners and effects
   /// to automatically sync Clerk auth state changes with Nakama.
-  AuthController({
-    required this._client,
-    required this._sessionService,
-    required this._clerkAuth,
-  }) {
+  AuthController(
+    this._client,
+    this._sessionService,
+    this._clerkAuth,
+    this._postHogService,
+  ) {
     _clerkSessionId = signal(
       _clerkAuth.session?.id,
       options: const SignalOptions(name: 'AuthController.clerkSessionId'),
@@ -96,6 +99,7 @@ class AuthController {
       );
 
       print('Saving session...');
+      await _postHogService.identifies.userLoggedIn(user: user);
 
       await _sessionService.saveSession(session);
       isAuthenticated.value = const AsyncData(true);
@@ -111,6 +115,7 @@ class AuthController {
       isAuthenticated.value = const AsyncLoading();
       await _sessionService.logout();
       await _clerkAuth.signOut();
+      await _postHogService.events.userLoggedOut();
       isAuthenticated.value = const AsyncData(false);
     } catch (e) {
       isAuthenticated.value = AsyncError(e, StackTrace.current);
